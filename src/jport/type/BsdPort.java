@@ -415,14 +415,17 @@ class BsdPort //... refactor IndexPort?
 
     @Override final public int hashCode()
     {
-        return ci_name.hashCode();
+        return this.ci_name.hashCode();
     }
 
     @Override final public int compareTo( final Portable another )
     {
         if( another == this ) return 0;
-
-        return ci_name.compareTo( another.getCaseInsensitiveName() );
+        
+        final int compared = this.ci_name.compareTo( another.getCaseInsensitiveName() );
+        return ( compared != 0 )
+                ? compared
+                : this.version.compareTo( another.getVersion() );
     }
 
     @Override final public String toString()

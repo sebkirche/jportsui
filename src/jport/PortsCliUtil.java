@@ -90,7 +90,7 @@ public class PortsCliUtil
      *
      * @return as reported by the CLI "port echo installed" all of which are type CliPort
      */
-    static synchronized Set<Portable> cliAllStatus()
+    static synchronized Set<Portable> cliAllStatus( ) //... final boolean includeInstalled )
     {
         if( HAS_PORT_CLI == false ) return Collections.emptySet();
 

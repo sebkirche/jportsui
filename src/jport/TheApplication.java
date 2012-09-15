@@ -81,9 +81,21 @@ public class TheApplication
      */
     synchronized public void probeUpdate()
     {
-        reindex(); // start parsing "PortsIndex" in this thread
-        PortsCliUtil.cliAllStatus(); // continue in this thread with CLI requests
-        vCurrentPortsCatalog.scanDates(); // then fetch the mod dates from the file system
+        // complete parsing "PortsIndex" in this thread
+        reindex();
+
+        //  since I/O bound, fetch the port folder modification dates from the file system in a seperate thread
+        new Thread
+                ( new Runnable() // anonymous class
+                        {   @Override public void run()
+                            {   vCurrentPortsCatalog.scanDates();
+                            }
+                        }
+                , TheApplication.class.getCanonicalName()
+                ).start();
+
+        // continue in this thread with CLI requests
+        PortsCliUtil.cliAllStatus();
 
         if( TheUiHolder.isReady() == true )
         {   // from the Swing thread, reload port table, clear selection etc.
@@ -101,19 +113,12 @@ public class TheApplication
      * Reread and parse the "PortsIndex" into a new Map.
      * The time stamp of the current catalog is the refresh time.
      *
-     * @return the <B>previous</B> Ports catalog for running against <code>prev.whatIsNew( perform() )</code>
+     * @return the <B> *previous* </B> Ports catalog for running against <code>prev.whatIsNew( perform() )</code>
      */
     private PortsCatalog reindex()
     {
         final PortsCatalog prevPortsCatalog = vCurrentPortsCatalog;
-
-        if( PortsConstants.DEBUG ) System.out.println( "@"+ TheApplication.class.getSimpleName() );
-        final long startMillisec = System.currentTimeMillis();
-
         vCurrentPortsCatalog = new PortsCatalog();
-
-        if( PortsConstants.DEBUG ) System.out.println( TheApplication.class.getSimpleName() +".update() ms="+ ( System.currentTimeMillis() - startMillisec ) );
-
         return prevPortsCatalog;
     }
 

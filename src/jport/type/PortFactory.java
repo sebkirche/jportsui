@@ -13,12 +13,12 @@ public class PortFactory
 
     /**
      *
-     * @param line
+     * @param text plain-text entry for the port
      * @return NONE if was not able to parse the line
      */
-    static public Portable createFromPortIndexFile( final String line )
+    static public Portable createFromPortIndexFile( final String text )
     {
-        final PortBuilder pb = new PortBuilder( line );
+        final PortBuilder pb = new PortBuilder( text );
         return ( pb.didParse() == true )
                 ? new BsdPort( pb )
                 : Portable.NONE;
@@ -31,10 +31,11 @@ public class PortFactory
      * @param cliVariants
      * @return
      */
-    static public Portable create( final Portable prevPort, final String cliVersion, String[] cliVariants )
+    static public Portable create( final Portable prevPort, final String cliVersion, final String[] cliVariants )
     {
         final boolean isMatch = prevPort.isInstalled() == true
                 && prevPort.getVersionInstalled().equals( cliVersion )
+//...                && prevPort.getVersion().equals( cliVersion )
                 && Arrays.deepEquals( prevPort.getVariantsInstalled(), cliVariants );
 
         return ( isMatch == true )

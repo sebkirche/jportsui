@@ -10,11 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import jport.common.Util;
-import jport.gui.TheUiHolder;
 import jport.type.PortFactory;
 import jport.type.Portable;
 
@@ -26,7 +23,11 @@ import jport.type.Portable;
  */
 public class PortsCatalog
 {
+    /** This file created by MacPorts. */
     static final private String _PORTS_FILE_NAME = "PortIndex";
+
+    /** As of 2012-09-01, ~15,500 port entries. */
+    static final private int _FORECAST_COUNT = 20000;
 
     static final PortsCatalog NONE = new PortsCatalog( false );
 
@@ -46,17 +47,20 @@ public class PortsCatalog
 
     final private PortsVariants fPortsVariants = new PortsVariants();
 
+    final private PortsInventory fPortsInventory;
+
     volatile private PortsDate vPortsDate = null;
 
     /**
      * For initial NONE catalog.
      *
-     * @param ignore code smell
+     * @param ignore unique signature code smell
      */
     private PortsCatalog( final boolean ignore )
     {
         fCiName_to_PortMap = Collections.emptyMap();
         fAllPorts = PortsConstants.NO_PORTS;
+        fPortsInventory = new PortsInventory();
     }
 
     /**
@@ -69,10 +73,8 @@ public class PortsCatalog
 
     private PortsCatalog( final String filePathName )
     {
-        final Map<String,Portable> map = new HashMap<String,Portable>( 20000 ); // normally ~15K
+        final Map<String,Portable> map = new HashMap<String,Portable>( _FORECAST_COUNT );
 
-        try
-        {
             final File filePath = ( PortsConstants.HAS_MAC_PORTS == true )
                     ? new File( filePathName )
                     : new File( _PORTS_FILE_NAME ); // fall back to project folder for dev work
@@ -83,8 +85,11 @@ public class PortsCatalog
                 System.exit( 1 );
             }
 
+            if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +" OPTIMIZATION="+ PortsConstants.OPTIMIZATION );
+            final long startMillisec = System.currentTimeMillis();
+
             if( PortsConstants.OPTIMIZATION )
-            {   // scanner uses regex, this is 2x faster
+            {   // Scanner uses regex, this is 2x faster on startup -AND- accommodates multi-line port info
                 try
                 {
                     final byte[] bytes = Util.retreiveFileBytes( filePath ); // assumes UTF-8 encoding when constructing the String from bytes?
@@ -102,7 +107,7 @@ public class PortsCatalog
                         int magnitude = 1;
                         int r = q - 1;
                         do
-                        {   // extract positive size
+                        {   // parse positive integer
                             final int digit = bytes[ r ] - (byte)'0';
                             size += digit * magnitude;
                             magnitude *= 10;
@@ -126,17 +131,17 @@ public class PortsCatalog
                         }
 
                         // longer info line
-                        final String line = new String( bytes, p, q - p );
+                        final String text = new String( bytes, p, q - p ); // convert from bytes
                         p = q + 1;
                         q = p + 1;
 
-                        final Portable port = PortFactory.createFromPortIndexFile( line );
+                        final Portable port = PortFactory.createFromPortIndexFile( text );
                         if( port != Portable.NONE )
-                        {   // parsed ok
+                        {   // text parsed ok
                             final String ci_portName = port.getCaseInsensitiveName();
 
-                            // no name collisions occur, this means we only get the lastest version from the file
-                            if( false && map.containsKey( ci_portName ) ) { System.out.println( port ); }
+                            // no name collisions occurred, this means we only get the lastest version from the file
+                            if( PortsConstants.DEBUG && map.containsKey( ci_portName ) ) { System.out.println( port ); }
 
                             map.put( ci_portName, port );
                         }
@@ -150,37 +155,46 @@ public class PortsCatalog
             else
             {   // 2x slower but 10x more maintainable
                 // misses the case where the port info crosses multiple lines
-                final Scanner scanner = new Scanner( filePath, "UTF-8" ); // *THROWS* FileNotFoundException
-                while( scanner.hasNext() == true ) // scan.useDelimiter( "\\n" ) <- this regex works but is not needed
-                {   // Scanner default is to read file line-by-line
-                    final String line = scanner.nextLine(); // some lines are empty ""
-                    if( line.length() > 40 )
-                    {
-                        final Portable port = PortFactory.createFromPortIndexFile( line );
-                        if( port != Portable.NONE )
-                        {   // parsed ok
-                            final String ci_portName = port.getCaseInsensitiveName();
+                try
+                {
+                    final Scanner scanner = new Scanner( filePath, "UTF-8" ); // *THROWS* FileNotFoundException
+                    while( scanner.hasNext() == true ) // scan.useDelimiter( "\\n" ) <- this regex works but is not needed
+                    {   // Scanner default is to read file line-by-line
+                        final String line = scanner.nextLine(); // some lines are empty ""
+                        if( line.length() > 40 )
+                        {
+                            final Portable port = PortFactory.createFromPortIndexFile( line );
+                            if( port != Portable.NONE )
+                            {   // line parsed ok
+                                final String ci_portName = port.getCaseInsensitiveName();
 
-                            // no name collisions occur, this means we only get the lastest version from the file
-                            if( false && map.containsKey( ci_portName ) ) { System.out.println( port ); }
+                                // no name collisions occur, this means we only get the lastest version from the file
+                                if( PortsConstants.DEBUG && map.containsKey( ci_portName ) ) { System.out.println( port ); }
 
-                            map.put( ci_portName, port );
+                                map.put( ci_portName, port );
+                            }
+                        }
+                        else
+                        {   // wrong, just junk '\n' inside a {} Needs to keep going
+                            // System.out.println( line );
                         }
                     }
-                    else
-                    {   // wrong, just junk '\n' inside a {} Needs to keep going
-                        // System.out.println( line );
-                    }
+                    scanner.close();
                 }
-                scanner.close();
+                catch( FileNotFoundException ex ) // handled above with File.exist()
+                {}
             }
-        }
-        catch( FileNotFoundException ex )
-        {
-            Logger.getLogger( TheUiHolder.class.getName() ).log( Level.SEVERE, null, ex );
-        }
+
+            if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +"->constructor parse ms="+ ( System.currentTimeMillis() - startMillisec ) );
 
         fCiName_to_PortMap = map;
+
+        if( PortsConstants.HAS_MAC_PORTS == true )
+        {   // augment with installed ports which includes MULTIPLE versions with differing variants
+
+        }
+
+        fPortsInventory = new PortsInventory( this );
 
         // values to array and sort by name and version
         final Collection<Portable> setCollection = map.values();
@@ -193,9 +207,9 @@ public class PortsCatalog
     public PortsVariants getPortsVariants() { return fPortsVariants; }
 
     /**
-     * Look up a port by name.
+     * Look up a port by case-insensitive name.
      *
-     * @param portName case-insensitive
+     * @param portName treated as case-insensitive
      * @return Portable.NONE if not found, there are a couple dozen of these
      */
     public Portable parse( final String portName )
@@ -237,7 +251,7 @@ public class PortsCatalog
      * @return in alphabetical order, all ports described in the "PortIndex" file
      */
     synchronized public Portable[] getAllPorts() { return fAllPorts; }
-
+    
     public long getModificationEpoch( final Portable port )
     {
         return ( vPortsDate != null )
@@ -267,7 +281,7 @@ public class PortsCatalog
 
     /**
      * TESTING
-     * 
+     *
      * @param args
      */
     static public void main( String[] args )

@@ -34,9 +34,9 @@ public class PortsMarker
 
     /**
      * Sparsely populated mutable information for the immutable Port object.
-     * Because keying by Port ref, map must be re-keyed whenever PortIndex file parse occurs.
+     * If keying by Portable ref, map must be re-keyed whenever PortIndex file parse occurs.
      */
-    final private Map<Portable,EPortMark> fPort_to_MarkMap = new HashMap<Portable,EPortMark>(); //... fPortName_to_MarkMap
+    final private Map<Portable,EPortMark> fPort_to_MarkMap = new HashMap<Portable,EPortMark>();
 
     PortsMarker()
     {}

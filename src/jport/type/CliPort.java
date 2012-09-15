@@ -41,6 +41,7 @@ class CliPort extends BsdPort
     {
         fStatusSet.add( statusEnum );
 
+//...    if(false) //... each installed port may have seperate versions now
         switch( statusEnum )
         {
             case UNINSTALLED :

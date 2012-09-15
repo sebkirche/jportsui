@@ -184,10 +184,10 @@ public class StringsUtil_
 
     //ENHANCE -> StringsUtil
     /**
-     * Non-deep scan, just flat transform.
+     * Non-deep scan, just flat transform to new String[].
      *
      * @param objs can contain 'null' elements
-     * @return 'null's will be ""
+     * @return 'null' elements are assigned ""
      */
     static public String[] toStrings( final Object[] objs )
     {

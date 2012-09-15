@@ -59,7 +59,7 @@ class Thread_Worker extends Thread
                 {
                     if( fRunQueue.isEmpty() == true ) // Findbugs recommendation
                     {
-                        this.wait(); // *BLOCKS*
+                        this.wait( 2000 ); // *BLOCKS*
                     }
                 }
 

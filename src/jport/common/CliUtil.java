@@ -6,12 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.SwingUtilities;
-import jport.common.StringsUtil_;
 
 
 /**
@@ -41,9 +39,8 @@ public class CliUtil
             final Map<String,String> env = pb.environment();
             final Set<String> set = env.keySet();
             final String[] keys = StringsUtil_.toStrings( set );
-            Arrays.sort( keys );
 
-            for( final String key : keys )
+            for( final String key : StringsUtil_.sort( keys ) )
             {
                 System.out.println( key + " = " + env.get( key ) );
             }
@@ -210,7 +207,7 @@ public class CliUtil
                 {   // wait for drainage completion to notify of released lock
                     while( inputDrainThread.isAlive() == true && Thread.currentThread().isInterrupted() == false )
                     {   // wait for drainage to complete on Win/Mac, their thread scheduler does not .yield() like Linux
-                        inputDrainThread.wait();
+                        inputDrainThread.wait( 2000 );
                     }
                 }
 

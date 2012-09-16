@@ -40,29 +40,6 @@ public class TheApplication
     private boolean isReady() { return vCurrentPortsCatalog != PortsCatalog.NONE; }
 
     /**
-     * Subscribe to Port elemental notifications.
-     *
-     * @return just the listener .add() & .remove() aspect of the interface
-     */
-    public Notifiable<Listenable<Portable>> getPortsNotifier() { return fPortElementNotifier; }
-
-    /**
-     * Sends message to all C.R.U.D. listeners
-     *
-     * @param elemental
-     * @param port
-     */
-    public void causeNotification( final EElemental elemental, final Portable port )
-    {
-        fPortElementNotifier.causeNotification( elemental, port );
-    }
-
-    public void causeReset()
-    {
-        RESET_CATALOG_NOTIFIER.causeReset();
-    }
-
-    /**
      *
      * @return facility for letting the user indicate desired port status change requests
      */
@@ -128,4 +105,27 @@ public class TheApplication
      * @return just the listener .add() & .remove() aspect of the interface
      */
     static public Notifiable<Resetable> getResetNotifier() { return RESET_CATALOG_NOTIFIER; }
+
+    /**
+     * Subscribe to Port elemental notifications.
+     *
+     * @return just the listener .add() & .remove() aspect of the interface
+     */
+    public Notifiable<Listenable<Portable>> getCrudNotifier() { return fPortElementNotifier; }
+
+    /**
+     * Sends message to all C.R.U.D. listeners
+     *
+     * @param elemental
+     * @param port
+     */
+    public void causeCrudNotification( final EElemental elemental, final Portable port )
+    {
+        fPortElementNotifier.causeNotification( elemental, port );
+    }
+
+    public void causeReset()
+    {
+        RESET_CATALOG_NOTIFIER.causeReset();
+    }
 }

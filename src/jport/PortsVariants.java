@@ -185,7 +185,7 @@ public class PortsVariants
             }
         }
 
-        TheApplication.INSTANCE.causeNotification( EElemental.UPDATED, onPort );
+        TheApplication.INSTANCE.causeCrudNotification( EElemental.UPDATED, onPort );
     }
 
 //    private String[] getApplyVariants( final Portable ofPort )

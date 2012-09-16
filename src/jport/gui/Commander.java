@@ -58,7 +58,7 @@ public class Commander
     {
         if( port != null )
         {
-            TheApplication.INSTANCE.causeNotification( EElemental.RETRIEVED, port );
+            TheApplication.INSTANCE.causeCrudNotification( EElemental.RETRIEVED, port );
             return true;
         }
 

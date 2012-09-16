@@ -172,7 +172,7 @@ public class JPanel_CommandBar extends JPanel
 
         jField_Search.addFocusListener( this );
 
-        TheApplication.INSTANCE.getPortsNotifier().addListener( this );
+        TheApplication.INSTANCE.getCrudNotifier().addListener( this );
     }
 
     /**

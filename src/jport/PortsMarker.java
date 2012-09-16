@@ -145,7 +145,7 @@ public class PortsMarker
             iter.remove();
 
             // notification only shows correct state when removed from Map
-            TheApplication.INSTANCE.causeNotification( EElemental.UPDATED, port );
+            TheApplication.INSTANCE.causeCrudNotification( EElemental.UPDATED, port );
         }
 
         fPort_to_MarkMap.clear(); // not required, but may GC map's internal bucket allocation
@@ -197,7 +197,7 @@ public class PortsMarker
         }
 
         // mutable information ASSOCIATED with the Port has changed
-        TheApplication.INSTANCE.causeNotification( EElemental.UPDATED, port );
+        TheApplication.INSTANCE.causeCrudNotification( EElemental.UPDATED, port );
     }
 
     public void unmark( final Portable port )
@@ -228,7 +228,7 @@ public class PortsMarker
                     case Dependant_Uninstall  : // fall-thru
                     case Dependant_Deactivate :
                         {   fPort_to_MarkMap.remove( depPort );
-                            TheApplication.INSTANCE.causeNotification( EElemental.UPDATED, depPort );
+                            TheApplication.INSTANCE.causeCrudNotification( EElemental.UPDATED, depPort );
                         }   break;
                 }
             }
@@ -308,7 +308,7 @@ public class PortsMarker
                 }
 
                 // update UI
-                TheApplication.INSTANCE.causeNotification( EElemental.UPDATED, depPort );
+                TheApplication.INSTANCE.causeCrudNotification( EElemental.UPDATED, depPort );
             }
             // else same mark
         }

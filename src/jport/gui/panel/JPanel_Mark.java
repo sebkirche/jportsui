@@ -88,7 +88,7 @@ public class JPanel_Mark extends JPanel
 
         // listener
         ab_Unmark.addActionListener( this );
-        TheApplication.INSTANCE.getPortsNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
+        TheApplication.INSTANCE.getCrudNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
     }
 
     /**

@@ -94,7 +94,7 @@ public class JPanel_CommonInfo extends JPanel
 
         // listener
         abHomepage.addActionListener( this );
-        TheApplication.INSTANCE.getPortsNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
+        TheApplication.INSTANCE.getCrudNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
     }
 
     /**

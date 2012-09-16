@@ -67,7 +67,7 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
         this.toggelSortColumn( EColumn.NAME );
 
         // listener
-        TheApplication.INSTANCE.getPortsNotifier().addListener( this );
+        TheApplication.INSTANCE.getCrudNotifier().addListener( this );
 
         if( JPopupMenuProvidable.class.isAssignableFrom( Portable.class ) == false )
         {   // future proofing

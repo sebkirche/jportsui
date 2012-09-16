@@ -50,7 +50,7 @@ public abstract class AJLabel_PortInfo extends JLabel
         // listener
 //        if( assignedPort == Portable.NONE )
 //        {
-            TheApplication.INSTANCE.getPortsNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
+            TheApplication.INSTANCE.getCrudNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
 //        }
 //        else
 //        {   // conform the non-dynamic view

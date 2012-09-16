@@ -202,7 +202,7 @@ class BsdPort //... refactor IndexPort?
 
     @Override public void setStatus( final EPortStatus statusEnum )
     {
-        throw new IllegalArgumentException( "Only "+ CliPort.class.getCanonicalName() +" supports requesting status changes" );
+        throw new IllegalArgumentException( "Only "+ InstalledPort.class.getCanonicalName() +" supports requesting status changes" );
     }
 
     @Deprecated

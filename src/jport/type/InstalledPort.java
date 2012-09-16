@@ -8,19 +8,19 @@ import jport.PortsConstants.EPortStatus;
 
 
 /**
- * These CliPorts have more information from CLI calls than the "QuickIndex" parse of the BsdPort.
+ * These instances have more information from CLI calls than the "QuickIndex" parse of the BsdPort.
  * Usually locally installed, but possibly outdated.
  *
  * @author sbaber
  */
-class CliPort extends BsdPort
+class InstalledPort extends BsdPort
 {
     final private String   fVersionInstalled;
     final private String[] fVariantsInstalled;
 
     final Set<EPortStatus> fStatusSet = EnumSet.noneOf( EPortStatus.class );
 
-    CliPort( final BsdPort copyPort, final String versionInstalled, final String[] variantsInstalled )
+    InstalledPort( final BsdPort copyPort, final String versionInstalled, final String[] variantsInstalled )
     {
         super( copyPort );
 

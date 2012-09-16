@@ -18,38 +18,34 @@ import jport.gui.TheUiHolder;
  */
 public class JPortsUI
 {
-    static final private boolean _THREADS_PROOF = false;
-
     private JPortsUI() {}
 
     public static void main( String[] args )
     {
+        final Object MONITOR = JPortsUI.class;
+
         // fork GUI building into Event Dispatch thread as required by Swing guidelines
         SwingUtilities.invokeLater( new Runnable() // anonymous class
                 {   @Override public void run()
-                    {   synchronized( JPortsUI.class )
+                    {   synchronized( MONITOR )
                         {
-                            if( _THREADS_PROOF ) System.out.println( "TheUiHolder begin constructing" );
                             TheUiHolder.INSTANCE.init(); // start Swing in EDT thread
-                            if( _THREADS_PROOF ) System.out.println( "TheUiHolder end constructing" );
-
-                            JPortsUI.class.notifyAll();
+                            MONITOR.notifyAll();
                         }
                     }
                 } );
 
+        // if only one Processor Core, wait until GUI finishes constructing
         if( Runtime.getRuntime().availableProcessors() < 2 )
-        {   // if only one Processor Core, wait until GUI finishes constructing
+        {
             try
             {
-                synchronized( JPortsUI.class )
+                synchronized( MONITOR )
                 {
-                    if( _THREADS_PROOF ) System.out.println( "TheApplication is waiting" );
                     while( TheUiHolder.isReady() == false )
                     {
-                        JPortsUI.class.wait(); // *BLOCKS*
+                        MONITOR.wait( 2000 ); // *BLOCKS*
                     }
-                    if( _THREADS_PROOF ) System.out.println( "TheApplication done waiting" );
                 }
             }
             catch( InterruptedException ex )
@@ -57,11 +53,9 @@ public class JPortsUI
         }
 
         // but start parsing "PortsIndex" in this thread
-        if( _THREADS_PROOF ) System.out.println( "TheApplication begin constructing" );
         TheApplication.INSTANCE.probeUpdate(); // *BLOCKS*
-        if( _THREADS_PROOF ) System.out.println( "TheApplication end constructing" );
 
-        // enable table even if GUI reported not ready
+        // enable ports table in EDT even if GUI reported not ready
         SwingUtilities.invokeLater( new Runnable() // anonymous class
                 {   @Override public void run()
                     {   TheUiHolder.INSTANCE.goLive();

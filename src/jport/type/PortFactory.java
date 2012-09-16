@@ -40,7 +40,7 @@ public class PortFactory
 
         return ( isMatch == true )
                 ? prevPort // simply return
-                : new CliPort // does not match, needs to update
+                : new InstalledPort // does not match, needs to update
                     ( (BsdPort)prevPort
                     , cliVersion
                     , cliVariants

@@ -3,7 +3,6 @@ package jport;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +58,7 @@ public class PortsCatalog
     }
 
     /**
-     * Read from the Mac's "PortIndex" file.
+     * Reread and parse the "PortsIndex" file into a new Map.
      */
     PortsCatalog()
     {

@@ -6,7 +6,7 @@ import jport.type.Portable;
 
 
 /**
- * Alphabetized array of all installed with multiply versioned variants
+ * Ordered array of all installed with multiply versioned variants
  * and all not installed ports described in the "PortIndex" file.
  *
  * @author sbaber
@@ -16,7 +16,7 @@ public class PortsInventory
     static
     {}
 
-    /** All values in alphabetical order. */
+    /** All values in case-insensitive alphabetical order with descending version number tie-breakers. */
     final private Portable[] fAllPorts;
 
     PortsInventory()

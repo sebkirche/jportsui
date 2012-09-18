@@ -53,6 +53,7 @@ public class TheApplication
 
     /**
      * Reload catalog index, status, and modification dates.
+     * The time stamp of the current catalog is the refresh time.
      * Completely refreshes the GUI in regards to the status of all known Ports.
      * Enables the main table for selections.
      */
@@ -60,7 +61,6 @@ public class TheApplication
     {
         // complete parsing "PortsIndex" in this thread
         vCurrentPortsCatalog = new PortsCatalog();
-//        reindex();
 
         //  since I/O bound, fetch the port folder modification dates from the file system in a seperate thread
         new Thread
@@ -73,7 +73,7 @@ public class TheApplication
                 ).start();
 
         // continue in this thread with each Port status CLI requests
-//        PortsCliUtil.cliAllStatus();
+//dead, pity that   ->     PortsCliUtil.cliAllStatus();
 
         if( TheUiHolder.isReady() == true )
         {   // from the Swing thread, reload port table, clear selection etc.
@@ -85,19 +85,6 @@ public class TheApplication
                         }
                     } );
         }
-    }
-
-    /**
-     * Reread and parse the "PortsIndex" into a new Map.
-     * The time stamp of the current catalog is the refresh time.
-     *
-     * @return the <B> *previous* </B> Ports catalog for running against <code>prev.whatIsNew( perform() )</code>
-     */
-    private PortsCatalog reindex()
-    {
-        final PortsCatalog prevPortsCatalog = vCurrentPortsCatalog;
-        vCurrentPortsCatalog = new PortsCatalog();
-        return prevPortsCatalog;
     }
 
     /**

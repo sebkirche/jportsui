@@ -93,7 +93,8 @@ public class Commander
      */
     public void markOutdatedPorts()
     {
-        for( final Portable port : TheApplication.INSTANCE.getPortsCatalog().getAllPorts() )
+        final Portable[] allPorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts();
+        for( final Portable port : allPorts )
         {
             if( port.hasStatus( EPortStatus.OUTDATED ) == true )
             {

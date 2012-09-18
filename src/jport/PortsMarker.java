@@ -59,8 +59,7 @@ public class PortsMarker
         {
 //... should just use a port name to mark mapping or associate with PortsCatalog and copy construct a new Marks map
             final Portable prevPort = entry.getKey(); // alias
-            final Portable refreshPort = portsCatalog.equate( prevPort );
-//dead            final Portable refreshPort = portsCatalog.parse( prevPort.getCaseInsensitiveName() );
+            final Portable refreshPort = portsCatalog.getPortsInventory().equate( prevPort ); // previously -> portsCatalog.parse( prevPort.getCaseInsensitiveName() );
             if( refreshPort != null )
             {
                 final EPortMark mark = entry.getValue(); // alias

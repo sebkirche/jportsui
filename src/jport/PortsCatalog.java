@@ -40,16 +40,10 @@ public class PortsCatalog
     final private long fParse_EpochTimeMillisec = System.currentTimeMillis();
 
     /** Key is the case-insensitive port name. */
+    final private PortsDep             fPortsDep = new PortsDep( this );
+    final private PortsVariants        fPortsVariants = new PortsVariants();
     final private Map<String,Portable> fCiName_to_PortMap;
-
-    /** All values in alphabetical order. */
-    final private Portable[] fAllPorts;
-
-    final private PortsDep fPortsDep = new PortsDep( this );
-
-    final private PortsVariants fPortsVariants = new PortsVariants();
-
-//    final private PortsInventory fPortsInventory;
+    final private PortsInventory       fPortsInventory;
 
     volatile private PortsDate vPortsDate = null;
 
@@ -61,8 +55,7 @@ public class PortsCatalog
     private PortsCatalog( final boolean ignore )
     {
         fCiName_to_PortMap = Collections.emptyMap();
-        fAllPorts = PortsConstants.NO_PORTS;
-//        fPortsInventory = new PortsInventory();
+        fPortsInventory = new PortsInventory();
     }
 
     /**
@@ -116,9 +109,7 @@ public class PortsCatalog
         // augment with installed ports the included MULTIPLE versions with differing variants
         allPortSet.addAll( ciName_to_PortMap.values() );
 
-        // values to array and sort by name and version
-        fAllPorts = allPortSet.toArray( new Portable[ allPortSet.size() ] );
-        Arrays.sort( fAllPorts );
+        fPortsInventory = new PortsInventory( allPortSet );
 
         fCiName_to_PortMap = ciName_to_PortMap;
     }
@@ -248,6 +239,8 @@ public class PortsCatalog
 
     public PortsVariants getPortsVariants() { return fPortsVariants; }
 
+    public PortsInventory getPortsInventory() { return fPortsInventory; }
+
     /**
      * Look up a port by case-insensitive name.
      *
@@ -262,51 +255,37 @@ public class PortsCatalog
                 : Portable.NONE;
     }
 
-    /**
-     * Look up a matching new port by case-insensitive name and version.
-     *
-     * @param otherPort from a previous catalog
-     * @return Portable.NONE if not found
-     */
-    Portable equate( final Portable otherPort )
-    {
-        final int index = Arrays.binarySearch( fAllPorts, otherPort );
-        return ( index >= 0 )
-                ? fAllPorts[ index ]
-                : Portable.NONE;
-    }
+//    /* *
+//     * Compares old port entries to freshly CLI interrogated ports.
+//     * Called after "port echo $PSEUDO_NAME".
+//     *
+//     * @param fromCliChangeSet updated information from CLI is a CliPort
+//     */
+//    synchronized private Set<Portable> inform( final Set<Portable> fromCliChangeSet )
+//    {
+//        for( final Portable cliPort : fromCliChangeSet )
+//        {
+//            if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getName() +".inform("+  cliPort +')' );
+//
+//            final Portable prevPort = fCiName_to_PortMap.get( cliPort.getCaseInsensitiveName() );
+//            fCiName_to_PortMap.put( cliPort.getCaseInsensitiveName(), cliPort );
+//
+//            final int i = Util.indexOfIdentity( prevPort, fAllPorts );
+//            if( i != Util.INVALID_INDEX )
+//            {   // valid index
+//                fAllPorts[ i ] = cliPort;
+//                //... port changed event for detail views?
+//            }
+//        }
+//
+//        return fromCliChangeSet;
+//    }
 
-    /**
-     * Compares old port entries to freshly CLI interrogated ports.
-     * Called after "port echo $PSEUDO_NAME".
-     *
-     * @param fromCliChangeSet updated information from CLI is a CliPort
-     */
-    synchronized private Set<Portable> inform( final Set<Portable> fromCliChangeSet )
-    {
-        for( final Portable cliPort : fromCliChangeSet )
-        {
-            if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getName() +".inform("+  cliPort +')' );
-
-            final Portable prevPort = fCiName_to_PortMap.get( cliPort.getCaseInsensitiveName() );
-            fCiName_to_PortMap.put( cliPort.getCaseInsensitiveName(), cliPort );
-
-            final int i = Util.indexOfIdentity( prevPort, fAllPorts );
-            if( i != Util.INVALID_INDEX )
-            {   // valid index
-                fAllPorts[ i ] = cliPort;
-                //... port changed event for detail views?
-            }
-        }
-
-        return fromCliChangeSet;
-    }
-
-    /**
+    /* *
      *
      * @return in alphabetical order, all ports described in the "PortIndex" file
      */
-    synchronized public Portable[] getAllPorts() { return fAllPorts; }
+//    synchronized public Portable[] getAllPorts() { return fAllPorts; }
 
     public long getModificationEpoch( final Portable port )
     {
@@ -320,7 +299,7 @@ public class PortsCatalog
      */
     void scanDates()
     {
-        vPortsDate = new PortsDate( getAllPorts() );
+        vPortsDate = new PortsDate( this );
     }
 
     public long getLastSyncEpoch()

@@ -49,8 +49,9 @@ public class HistogramUiFactory
      */
     static public Component createComponent( final AbstractButton ab_Any, final EHistogram histoEnum )
     {
-        final Histogram_<String> histogram  = new Histogram_<String>( String.class );
-        for( final Portable port : TheApplication.INSTANCE.getPortsCatalog().getAllPorts() )
+        final Histogram_<String> histogram = new Histogram_<String>( String.class );
+        final Portable[] allPorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts();
+        for( final Portable port : allPorts )
         {
             for( final String key : histoEnum.transform( port ) )
             {
@@ -85,7 +86,7 @@ public class HistogramUiFactory
      * handles Histogram instantiations table selections.
      */
     static private class PrivateListener
-        implements 
+        implements
               ListSelectionListener
             , ActionListener
     {

@@ -29,9 +29,9 @@ class PortsDate
     /**
      * Generally, a slow operation.
      *
-     * @param ports
+     * @param portCatalog 
      */
-    PortsDate( final Portable[] ports )
+    PortsDate( final PortsCatalog portCatalog )
     {
         if( PortsConstants.HAS_MAC_PORTS == false ) return; // devel
 
@@ -45,8 +45,10 @@ class PortsDate
 //                        {   return o1.getPortDirectory().compareTo( o2.getPortDirectory() );
 //                        }
 //                    } );
-        
-        for( final Portable port : ports )
+
+        //... ends up double checking some of the inodes
+        final Portable[] allPorts = portCatalog.getPortsInventory().getAllPorts();
+        for( final Portable port : allPorts )
         {   // none of the mod dates are = 0L
             final File filePath = new File( portsPath, port.getPortDirectory() +"/Portfile" );
             fPort_to_EpochMap.put( port, filePath.lastModified() ); // auto-box

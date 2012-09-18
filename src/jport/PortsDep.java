@@ -35,7 +35,7 @@ public class PortsDep
 
     /**
      *
-     * @param portsCatalog of this particular parsing of the ports catalog
+     * @param portsCatalog of this particular parsing of the ports catalog for future lazy referencing
      */
     PortsDep( final PortsCatalog portsCatalog )
     {
@@ -128,7 +128,8 @@ public class PortsDep
     {
         final Set<Portable> dependantsSet = new HashSet<Portable>();
 
-        for( final Portable port : fPortsCatalog.getAllPorts() )
+        final Portable[] allPorts = fPortsCatalog.getPortsInventory().getAllPorts();
+        for( final Portable port : allPorts )
         {
             _SCRATCH_DEP_SET.clear(); // needed inside for() loop
             recursiveDepSet( port );

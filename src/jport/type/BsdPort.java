@@ -399,8 +399,7 @@ class BsdPort //... refactor IndexPort?
         {
             final Portable other = (Portable)obj;
             return this.ci_name.equals( other.getCaseInsensitiveName() )
-                && ( this.isInstalled() == other.isInstalled() )
-                && this.getVersionInstalled().equals( other.getVersionInstalled() );
+                && ( this.isInstalled() == other.isInstalled() && this.getVersionInstalled().equals( other.getVersionInstalled() ) );
         }
 
         return false;
@@ -419,7 +418,7 @@ class BsdPort //... refactor IndexPort?
         final int compared = this.ci_name.compareTo( another.getCaseInsensitiveName() );
         return ( compared != 0 )
                 ? compared
-                : this.getVersionInstalled().compareTo( another.getVersionInstalled() );
+                : -1 * this.getVersionInstalled().compareTo( another.getVersionInstalled() ); // reverse order of version numbers
     }
 
     @Override final public String toString()

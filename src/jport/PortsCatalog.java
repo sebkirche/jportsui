@@ -80,36 +80,37 @@ public class PortsCatalog
         final Set<Portable> allPortSet = new HashSet<Portable>( _FORECAST_COUNT );
 
         // interrogate the CLI for user's installed Ports status
-        final Map<EPortStatus,Set<CliPortInfo>> status_to_InfoSet_Map = PortsCliUtil.cliAllStatus2(); // *BLOCKS* for CLI
-        final Map<CliPortInfo,Set<EPortStatus>> cpi_to_StatusSet_Map = CliPortInfo.reverseMultiMapping( status_to_InfoSet_Map );
+        final Map<EPortStatus,Set<CliPortInfo>> status_to_CpiSet_Map = PortsCliUtil.cliAllStatus2(); // *BLOCKS* for CLI
+        final Map<CliPortInfo,Set<EPortStatus>> cpi_to_StatusSet_Map = CliPortInfo.createInverseMultiMapping( status_to_CpiSet_Map );
 
         for( final Map.Entry<CliPortInfo,Set<EPortStatus>> entry : cpi_to_StatusSet_Map.entrySet() )
         {
             final CliPortInfo cpi = entry.getKey(); // alias
-            final Set<EPortStatus> statusSet = entry.getValue(); // alias
-
-            // known to be in the Name->Port map
             final String ciName = cpi.getCaseInsensitiveName();
-
             final Portable prevPort = ciName_to_PortMap.get( ciName );
-            final Portable cliPort = PortFactory.createFromCli( prevPort, cpi );
 
-            for( final EPortStatus statusEnum : statusSet )
-            {
-                cliPort.setStatus( statusEnum );
-            }
+            if( prevPort != null )
+            {   // always expected to be found
+                final Portable cliPort = PortFactory.createFromCli( prevPort, cpi );
 
+                final Set<EPortStatus> statusSet = entry.getValue(); // alias
+                for( final EPortStatus statusEnum : statusSet )
+                {   // assign each status found in the CLI
+                    cliPort.setStatus( statusEnum );
+                }
 
-            // MacPorts guarantees only one Active version per Port
-            if( statusSet.contains( EPortStatus.ACTIVE ) == true )
-            {   // Replace existing index Port with the ACTIVE installed port info version.
-                // That ensures that any ci_named dep Ports refer here-in.
-                ciName_to_PortMap.put( ciName, cliPort );
+                // MacPorts guarantees only one Active version per Port
+                if( statusSet.contains( EPortStatus.ACTIVE ) == true )
+                {   // Replace existing index Port with the ACTIVE installed port info version.
+                    // That ensures that any ci_named dep Ports refer here-in.
+                    ciName_to_PortMap.put( ciName, cliPort );
+                }
+                else
+                {   // copy in other Inactive Port versions and also modify Active status with Outdated, etc.
+                    allPortSet.add( cliPort );
+                }
             }
-            else
-            {   // copy in other Inactive Port versions and also modify Active status with Outdated, etc.
-                allPortSet.add( cliPort );
-            }
+            // else port now deprecated?
         }
 
         // augment with installed ports the included MULTIPLE versions with differing variants
@@ -262,12 +263,26 @@ public class PortsCatalog
     }
 
     /**
+     * Look up a matching new port by case-insensitive name and version.
+     *
+     * @param otherPort from a previous catalog
+     * @return Portable.NONE if not found
+     */
+    Portable equate( final Portable otherPort )
+    {
+        final int index = Arrays.binarySearch( fAllPorts, otherPort );
+        return ( index >= 0 )
+                ? fAllPorts[ index ]
+                : Portable.NONE;
+    }
+
+    /**
      * Compares old port entries to freshly CLI interrogated ports.
      * Called after "port echo $PSEUDO_NAME".
      *
      * @param fromCliChangeSet updated information from CLI is a CliPort
      */
-    synchronized Set<Portable> inform( final Set<Portable> fromCliChangeSet )
+    synchronized private Set<Portable> inform( final Set<Portable> fromCliChangeSet )
     {
         for( final Portable cliPort : fromCliChangeSet )
         {

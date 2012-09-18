@@ -39,7 +39,7 @@ public class JDialog_ApplyMarks extends JDialog
     static
     {}
 
-    final private Map<EPortMark,? extends Set<Portable>> fResolvedMap = TheApplication.INSTANCE.getPortsMarker().getInverseMultiMapping();
+    final private Map<EPortMark,? extends Set<Portable>> fResolvedMap = TheApplication.INSTANCE.getPortsMarker().createInverseMultiMapping();
 
     final private AbstractButton ab_Simulate = new JCheckBox( "Simulate" );
     final private AbstractButton ab_Cancel   = new JButton( "Cancel" );

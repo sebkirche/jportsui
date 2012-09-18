@@ -74,7 +74,7 @@ public class CliPortInfo
      * @param kvMap
      * @return
      */
-    static public Map<CliPortInfo,Set<EPortStatus>> reverseMultiMapping( final Map<EPortStatus,Set<CliPortInfo>> kvMap )
+    static public Map<CliPortInfo,Set<EPortStatus>> createInverseMultiMapping( final Map<EPortStatus,Set<CliPortInfo>> kvMap )
     {
         final Map<CliPortInfo,Set<EPortStatus>> invMap = new HashMap<CliPortInfo, Set<EPortStatus>>();
 

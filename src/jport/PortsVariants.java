@@ -60,6 +60,11 @@ public class PortsVariants
     {
         final String portName = ofPort.getName().trim();
 
+        // does not know the Mark but needs to be included for versioned Activate / Inactivate
+        final String version = ( ofPort.isInstalled() == true ) ? ofPort.getVersionInstalled() : "";
+
+        // variant changes
+        final String variant;
         if( fPort_to_ApplyVariantSet_Map.containsKey( ofPort ) == true )
         {
             final Set<String> installedVariantSet = getInstalledVariantSet( ofPort, false );
@@ -67,24 +72,31 @@ public class PortsVariants
 
             if( applyVariantSet.equals( installedVariantSet ) == false )
             {   // sanity check
-                final StringBuilder sb = new StringBuilder( portName );
-                sb.append( '@' ); // required to apply variants but a version number can be skipped
+                final StringBuilder sb = new StringBuilder();
 
                 final Set<String> includeVariantSet = new TreeSet<String>( applyVariantSet );
-                for( final String variant : includeVariantSet )
+                for( final String includeVariant : includeVariantSet )
                 {
-                    sb.append( '+' ).append( variant.trim() );
+                    sb.append( '+' ).append( includeVariant.trim() );
                 }
-
                 //... might need to return to exclusionSet and '-'
 
-                return sb.toString();
+                variant = sb.toString();
             }
-            // else no change to variants
+            else
+            {   // no change to variants
+                variant = "";
+            }
+        }
+        else
+        {
+            variant = "";
         }
 
-        // just the name alone
-        return portName;
+        // required to apply variants or version number
+        final String at = ( variant.isEmpty() && version.isEmpty() ) ? "" : "@";
+
+        return portName + at + version + variant;
     }
 
     /**

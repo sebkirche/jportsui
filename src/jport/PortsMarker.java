@@ -59,7 +59,8 @@ public class PortsMarker
         {
 //... should just use a port name to mark mapping or associate with PortsCatalog and copy construct a new Marks map
             final Portable prevPort = entry.getKey(); // alias
-            final Portable refreshPort = portsCatalog.parse( prevPort.getCaseInsensitiveName() );
+            final Portable refreshPort = portsCatalog.equate( prevPort );
+//dead            final Portable refreshPort = portsCatalog.parse( prevPort.getCaseInsensitiveName() );
             if( refreshPort != null )
             {
                 final EPortMark mark = entry.getValue(); // alias
@@ -114,7 +115,7 @@ public class PortsMarker
      *
      * @return non-sparse, immutable, inverse mapping from the ports mark collection in sorted order
      */
-    synchronized public Map<EPortMark,SortedSet<Portable>> getInverseMultiMapping()
+    synchronized public Map<EPortMark,SortedSet<Portable>> createInverseMultiMapping()
     {
         final Map<EPortMark,SortedSet<Portable>> inverseMap = new EnumMap<EPortMark, SortedSet<Portable>>( EPortMark.class );
         for( final EPortMark mark : EPortMark.VALUES )

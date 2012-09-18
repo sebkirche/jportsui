@@ -71,8 +71,7 @@ class CachedUriContent
         abstract UriContent get( URI uri );
 
         /**
-         * @param uri
-         * @param contentBytes to put into the cache, can be 'null' for 404
+         * @param uriContent to put into the cache, can be 'null' for 404
          */
         abstract void put( UriContent uriContent );
     }
@@ -234,8 +233,7 @@ class CachedUriContent
          * Rather perverse as the UI thread is the only one guaranteed to keep the
          * JVM live without having to build a real ServiceProvider architecture.
          *
-         * @param uri
-         * @param contentBytes
+         * @param uriContent
          */
         @Override synchronized public void put( final UriContent uriContent )
         {

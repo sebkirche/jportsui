@@ -59,7 +59,8 @@ public class TheApplication
     synchronized public void probeUpdate()
     {
         // complete parsing "PortsIndex" in this thread
-        reindex();
+        vCurrentPortsCatalog = new PortsCatalog();
+//        reindex();
 
         //  since I/O bound, fetch the port folder modification dates from the file system in a seperate thread
         new Thread
@@ -71,8 +72,8 @@ public class TheApplication
                 , TheApplication.class.getCanonicalName()
                 ).start();
 
-        // continue in this thread with CLI requests
-        PortsCliUtil.cliAllStatus();
+        // continue in this thread with each Port status CLI requests
+//        PortsCliUtil.cliAllStatus();
 
         if( TheUiHolder.isReady() == true )
         {   // from the Swing thread, reload port table, clear selection etc.

@@ -107,7 +107,7 @@ public class JPanel_CommonInfo extends JPanel
         if( port.hasStatus( EPortStatus.INSTALLED ) == false )
         {   // Uninstalled
             return FONT_GRAY +"Status"+ FONT_OFF +" \t Uninstalled" +'\n'
-                 + FONT_GRAY +"Latest Version"+ FONT_OFF +" \t "+ port.getVersion() +'\n';
+                 + FONT_GRAY +"Latest Version"+ FONT_OFF +" \t "+ port.getLatestVersion() +'\n';
         }
         else
         {   // Installed
@@ -126,8 +126,8 @@ public class JPanel_CommonInfo extends JPanel
                             ? FONT_GRAY +"Installed Version"+ FONT_OFF +" \t "+ port.getVersionInstalled() +'\n'
                             : FONT_GRAY +"Installed Version"+ FONT_OFF +" \t "+"<FONT color=red><B>OUTDATED</B><BR>"+ port.getVersionInstalled() + FONT_OFF +'\n' )
                  + ( ( isOutdated == false )
-                            ? FONT_GRAY +"Latest Version"+ FONT_OFF +" \t "+ port.getVersion() +'\n'
-                            : FONT_GRAY +"Latest Version"+ FONT_OFF +" \t <B>"+ port.getVersion() +"</B>" +'\n' );
+                            ? FONT_GRAY +"Latest Version"+ FONT_OFF +" \t "+ port.getLatestVersion() +'\n'
+                            : FONT_GRAY +"Latest Version"+ FONT_OFF +" \t <B>"+ port.getLatestVersion() +"</B>" +'\n' );
         }
     }
 

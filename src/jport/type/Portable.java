@@ -22,36 +22,39 @@ public interface Portable
     abstract public String      getName();
     abstract public String      getShortDescription();
     abstract public String      getLongDescription();
-    abstract public String      getVersion();
+    abstract public String      getLatestVersion();
     abstract public String      getHomepage();
     abstract public String      getDomain();
 
+    // multi
     abstract public String[]    getCategories();
     abstract public String[]    getLicenses();
     abstract public String[]    getMaintainers();
     abstract public String[]    getVariants();
 
-    abstract public boolean     isInstalled();
-    abstract public boolean     hasStatus( final EPortStatus statusEnum );
-    abstract public void        setStatus( final EPortStatus statusEnum );
+    /** @return Used for comparisons */
+    abstract public String      getCaseInsensitiveName();
+    abstract public String      getPortDirectory();
+    abstract public long        getModificationEpoch();
 
+    // deps
     abstract public boolean     hasDependency( final Portable onPort );
     abstract public Portable[]  getFullDependencies();
     abstract public Portable[]  getDeps();
     abstract public Portable[]  getDependants();
 
-    abstract public String[]    getVariantsInstalled();
-    abstract public String      getVersionInstalled();
-
+    // status change request marks
     abstract public boolean     isUnmarked();
     abstract public EPortMark   getMark();
     abstract public void        setMark( final EPortMark markEnum );
     abstract public void        unmark();
 
-    /** @return Used for comparisons */
-    abstract public String      getCaseInsensitiveName();
-    abstract public String      getPortDirectory();
-    abstract public long        getModificationEpoch();
+    // only applies to installed ports
+    abstract public boolean     isInstalled();
+    abstract public boolean     hasStatus( final EPortStatus statusEnum );
+    abstract public void        setStatus( final EPortStatus statusEnum );
+    abstract public String[]    getVariantsInstalled();
+    abstract public String      getVersionInstalled();
 
 
     // ================================================================================

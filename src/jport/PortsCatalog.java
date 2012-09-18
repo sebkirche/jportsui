@@ -4,14 +4,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import javax.swing.JOptionPane;
+import jport.PortsConstants.EPortStatus;
 import jport.common.Util;
+import jport.type.CliPortInfo;
 import jport.type.PortFactory;
 import jport.type.Portable;
 
@@ -47,7 +49,7 @@ public class PortsCatalog
 
     final private PortsVariants fPortsVariants = new PortsVariants();
 
-    final private PortsInventory fPortsInventory;
+//    final private PortsInventory fPortsInventory;
 
     volatile private PortsDate vPortsDate = null;
 
@@ -60,7 +62,7 @@ public class PortsCatalog
     {
         fCiName_to_PortMap = Collections.emptyMap();
         fAllPorts = PortsConstants.NO_PORTS;
-        fPortsInventory = new PortsInventory();
+//        fPortsInventory = new PortsInventory();
     }
 
     /**
@@ -73,18 +75,68 @@ public class PortsCatalog
 
     private PortsCatalog( final String filePathName )
     {
-        final Map<String,Portable> map = new HashMap<String,Portable>( _FORECAST_COUNT );
+        final Map<String,Portable> ciName_to_PortMap = _parsePortIndex( filePathName ); // *BLOCKS* for disk I/O
 
-            final File filePath = ( PortsConstants.HAS_MAC_PORTS == true )
-                    ? new File( filePathName )
-                    : new File( _PORTS_FILE_NAME ); // fall back to project folder for dev work
+        final Set<Portable> allPortSet = new HashSet<Portable>( _FORECAST_COUNT );
 
-            if( filePath.exists() == false )
-            {   // PortIndex file not found
-                JOptionPane.showMessageDialog( null, filePathName +"\n does not seem to exist." );
-                System.exit( 1 );
+        // interrogate the CLI for user's installed Ports status
+        final Map<EPortStatus,Set<CliPortInfo>> status_to_InfoSet_Map = PortsCliUtil.cliAllStatus2(); // *BLOCKS* for CLI
+        final Map<CliPortInfo,Set<EPortStatus>> cpi_to_StatusSet_Map = CliPortInfo.reverseMultiMapping( status_to_InfoSet_Map );
+
+        for( final Map.Entry<CliPortInfo,Set<EPortStatus>> entry : cpi_to_StatusSet_Map.entrySet() )
+        {
+            final CliPortInfo cpi = entry.getKey(); // alias
+            final Set<EPortStatus> statusSet = entry.getValue(); // alias
+
+            // known to be in the Name->Port map
+            final String ciName = cpi.getCaseInsensitiveName();
+
+            final Portable prevPort = ciName_to_PortMap.get( ciName );
+            final Portable cliPort = PortFactory.createFromCli( prevPort, cpi );
+
+            for( final EPortStatus statusEnum : statusSet )
+            {
+                cliPort.setStatus( statusEnum );
             }
 
+
+            // MacPorts guarantees only one Active version per Port
+            if( statusSet.contains( EPortStatus.ACTIVE ) == true )
+            {   // Replace existing index Port with the ACTIVE installed port info version.
+                // That ensures that any ci_named dep Ports refer here-in.
+                ciName_to_PortMap.put( ciName, cliPort );
+            }
+            else
+            {   // copy in other Inactive Port versions and also modify Active status with Outdated, etc.
+                allPortSet.add( cliPort );
+            }
+        }
+
+        // augment with installed ports the included MULTIPLE versions with differing variants
+        allPortSet.addAll( ciName_to_PortMap.values() );
+
+        // values to array and sort by name and version
+        fAllPorts = allPortSet.toArray( new Portable[ allPortSet.size() ] );
+        Arrays.sort( fAllPorts );
+
+        fCiName_to_PortMap = ciName_to_PortMap;
+    }
+
+    static private Map<String,Portable> _parsePortIndex( final String filePathName )
+    {
+        final Map<String,Portable> map = new HashMap<String,Portable>( _FORECAST_COUNT );
+
+        final File filePath = ( PortsConstants.HAS_MAC_PORTS == true )
+                ? new File( filePathName )
+                : new File( _PORTS_FILE_NAME ); // fall back to project folder for dev work
+
+        if( filePath.exists() == false )
+        {   // Port index file not found
+            JOptionPane.showMessageDialog( null, filePathName +"\n does not seem to exist." );
+            System.exit( 1 );
+        }
+        else
+        {   // found Port index
             if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +" OPTIMIZATION="+ PortsConstants.OPTIMIZATION );
             final long startMillisec = System.currentTimeMillis();
 
@@ -92,7 +144,7 @@ public class PortsCatalog
             {   // Scanner uses regex, this is 2x faster on startup -AND- accommodates multi-line port info
                 try
                 {
-                    final byte[] bytes = Util.retreiveFileBytes( filePath ); // assumes UTF-8 encoding when constructing the String from bytes?
+                    final byte[] bytes = Util.retreiveFileBytes( filePath ); //? assumes UTF-8 encoding when constructing the String from bytes?
                     int p = 0;
                     int q = 1;
                     while( q < bytes.length )
@@ -186,20 +238,9 @@ public class PortsCatalog
             }
 
             if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +"->constructor parse ms="+ ( System.currentTimeMillis() - startMillisec ) );
-
-        fCiName_to_PortMap = map;
-
-        if( PortsConstants.HAS_MAC_PORTS == true )
-        {   // augment with installed ports which includes MULTIPLE versions with differing variants
-
         }
 
-        fPortsInventory = new PortsInventory( this );
-
-        // values to array and sort by name and version
-        final Collection<Portable> setCollection = map.values();
-        fAllPorts = setCollection.toArray( new Portable[ setCollection.size() ] );
-        Arrays.sort( fAllPorts );
+        return map;
     }
 
     public PortsDep getDeps() { return fPortsDep; }
@@ -251,7 +292,7 @@ public class PortsCatalog
      * @return in alphabetical order, all ports described in the "PortIndex" file
      */
     synchronized public Portable[] getAllPorts() { return fAllPorts; }
-    
+
     public long getModificationEpoch( final Portable port )
     {
         return ( vPortsDate != null )

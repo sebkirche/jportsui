@@ -117,7 +117,7 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
             case _           : return _html( port ) + _lexigraph( port );
             case NAME        : return port.getName(); // html colors mess up sorting
             case INSTALLED   : return _html( port ) + port.getVersionInstalled();
-            case LATEST      : return port.getVersion();
+            case LATEST      : return port.getLatestVersion();
             case DESCRIPTION : return port.getShortDescription();
 //            case DESCRIPTION : return "<HTML><SMALL>"+ row.getShortDescription(); no elipses
 //            case LICENSE     : return ( row.getLicenses() == Util.EMPTY_STRINGS ) ? "" : Arrays.toString( row.getLicenses() );

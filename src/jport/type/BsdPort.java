@@ -107,7 +107,7 @@ class BsdPort //... refactor IndexPort?
         name              = cp.name;
         homepage          = cp.homepage;
         epoch             = cp.epoch;
-        version           = cp.version;
+        version           = cp.version; // latest version
         revision          = cp.revision;
 
         description       = cp.description;
@@ -169,7 +169,7 @@ class BsdPort //... refactor IndexPort?
     @Override public String getName()             { return this.name; }
     @Override public String getShortDescription() { return this.description; }
     @Override public String getLongDescription()  { return this.long_description; }
-    @Override public String getVersion()          { return this.version; }
+    @Override public String getLatestVersion()          { return this.version; }
     @Override public String getHomepage()         { return this.homepage; }
 
     @Override public String[] getCategories()     { return this.categories; }
@@ -177,8 +177,8 @@ class BsdPort //... refactor IndexPort?
     @Override public String[] getMaintainers()    { return this.maintainers; }
     @Override public String[] getVariants()       { return this.variants; } // possible variants that can be installed
 
-    @Override public String getCaseInsensitiveName()     { return ci_name; }
-    @Override public String getPortDirectory()           { return portdir; }
+    @Override public String getCaseInsensitiveName() { return ci_name; }
+    @Override public String getPortDirectory()       { return portdir; }
 
     @Override public String getDomain()
     {
@@ -197,22 +197,19 @@ class BsdPort //... refactor IndexPort?
      */
     @Override public boolean hasStatus( final EPortStatus statusEnum )
     {
-        return statusEnum == EPortStatus.ALL || statusEnum == EPortStatus.UNINSTALLED; // the other stati require that the Port is installed
+        if( statusEnum == null ) return false;
+
+        switch( statusEnum )
+        {
+            case ALL         : return true;
+            case UNINSTALLED : return true;
+            default          : return false; // any other stati require installation of the Port
+        }
     }
 
     @Override public void setStatus( final EPortStatus statusEnum )
     {
         throw new IllegalArgumentException( "Only "+ InstalledPort.class.getCanonicalName() +" supports requesting status changes" );
-    }
-
-    @Deprecated
-    private boolean hasAnyStatus( final EPortStatus... stati )
-    {
-        for( final EPortStatus status : stati )
-        {
-            if( hasStatus( status ) == true ) return true;
-        }
-        return false;
     }
 
     @Override public String getVersionInstalled() { return ""; }
@@ -394,13 +391,6 @@ class BsdPort //... refactor IndexPort?
                                                     : Color.YELLOW.darker(); // ?
     }
 
-    private boolean moreEquals( final BsdPort port )
-    {
-        if( port == this ) return true;
-
-        return this.ci_name.equals( port.ci_name ) && this.version.equals( port.version );
-    }
-
     @Override final public boolean equals( final Object obj )
     {
         if( obj == this ) return true;
@@ -408,14 +398,18 @@ class BsdPort //... refactor IndexPort?
         if( obj instanceof BsdPort )
         {
             final Portable other = (Portable)obj;
-            return this.ci_name.equals( other.getCaseInsensitiveName() );
+            return this.ci_name.equals( other.getCaseInsensitiveName() )
+                && ( this.isInstalled() == other.isInstalled() )
+                && this.getVersionInstalled().equals( other.getVersionInstalled() );
         }
+
         return false;
     }
 
     @Override final public int hashCode()
     {
-        return this.ci_name.hashCode();
+        return this.ci_name.hashCode()
+            + ( ( this.isInstalled() == false ) ? 0 : 37 * this.getVersionInstalled().hashCode() );
     }
 
     @Override final public int compareTo( final Portable another )
@@ -425,7 +419,7 @@ class BsdPort //... refactor IndexPort?
         final int compared = this.ci_name.compareTo( another.getCaseInsensitiveName() );
         return ( compared != 0 )
                 ? compared
-                : this.version.compareTo( another.getVersion() );
+                : this.getVersionInstalled().compareTo( another.getVersionInstalled() );
     }
 
     @Override final public String toString()

@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 
 /**
+ * Static factory methods.
  *
  * @author sbaber
  */
@@ -24,14 +25,27 @@ public class PortFactory
                 : Portable.NONE;
     }
 
+    static public Portable createFromCli( final Portable port, final CliPortInfo cpi )
+    {
+        return new InstalledPort
+                ( (BsdPort)port
+                , cpi.getVersionInstalled()
+                , cpi.getVariants()
+                );
+    }
+
     /**
      *
      * @param prevPort
      * @param cliVersion
      * @param cliVariants
-     * @return
+     * @return if prevPort is a match then it is returned
      */
-    static public Portable create( final Portable prevPort, final String cliVersion, final String[] cliVariants )
+    static private Portable create
+            ( final Portable prevPort
+            , final String cliVersion
+            , final String[] cliVariants
+            )
     {
         final boolean isMatch = prevPort.isInstalled() == true
                 && prevPort.getVersionInstalled().equals( cliVersion )

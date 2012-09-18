@@ -129,12 +129,12 @@ public class JPanel_CommandBar extends JPanel
         searchPanel.add( ab_ClearSearch );
 
         // assemble
-        jPop_MoreCmd.add( jItem_Detail );
-        jPop_MoreCmd.add( jItem_Upgrade );
-        jPop_MoreCmd.addSeparator();
         jPop_MoreCmd.add( jItem_ResetMark );
         jPop_MoreCmd.add( jItem_ResetFilter );
         jPop_MoreCmd.add( jItem_ResetCache );
+        jPop_MoreCmd.addSeparator();
+        jPop_MoreCmd.add( jItem_Detail );
+        jPop_MoreCmd.add( jItem_Upgrade );
         jPop_MoreCmd.addSeparator();
         jPop_MoreCmd.add( jItem_About );
 

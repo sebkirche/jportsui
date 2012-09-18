@@ -8,6 +8,7 @@ import jport.type.Portable;
  *
  * @author sbaber
  */
+@Deprecated
 class PortsInventory
 {
     /** All values in alphabetical order. */

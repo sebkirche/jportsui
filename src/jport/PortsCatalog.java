@@ -38,9 +38,10 @@ public class PortsCatalog
     /** Time of "PortIndex" file parse. */
     final private long fParse_EpochTimeMillisec = System.currentTimeMillis();
 
-    /** Key is the case-insensitive port name. */
     final private PortsDep             fPortsDep = new PortsDep( this );
     final private PortsVariants        fPortsVariants = new PortsVariants();
+    
+    /** Key is the case-insensitive port name. */
     final private Map<String,Portable> fCiName_to_PortMap;
     final private PortsInventory       fPortsInventory;
 

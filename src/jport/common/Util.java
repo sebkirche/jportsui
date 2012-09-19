@@ -354,47 +354,53 @@ public class Util
         // replacing 'null' value Sets with Collections.emptySet() does not have to be done because 'null' keys are prohibited
         return invMap;
     }
-    
-//    static public <K,V> Map<V,Set<K>> createReverseMultiMapping( final boolean inverseNeedsOrderedKeys, final Map<K,Set<V>> kvMap )
-//    {
-//        final Map<V,Set<K>> invMap = ( inverseNeedsOrderedKeys == true )
-//                ? new TreeMap<V, Set<K>>()
-//                : new HashMap<V, Set<K>>();
-//
-//        // invert keys - values
-//        for( final Map.Entry<K,Set<V>> entry : kvMap.entrySet() )
-//        {
-//            final Set<V> invKey = entry.getValue(); // alias
-//            final K invValue = entry.getKey(); // alias
-//            if( invKey != null )
-//            {   // values maybe 'null' but keys can not be
-//                if( invMap.containsKey( invKey ) == false )
-//                {   // a singleton element is always ordered
-//                    final Set<K> set = Collections.singleton( invValue );
-//                    invMap.put( invKey, set );
-//                }
-//                else
-//                {   // seen the inverse key before
-//                    final Set<K> set = invMap.get( invKey );
-//                    if( set.size() > 1 )
-//                    {   // set already bigger
-//                        set.add( invValue );
-//                    }
-//                    else
-//                    {   // copy to a bigger, non-singleton set
-//                        final Set<K> biggerSet = ( inverseNeedsOrderedValues == true )
-//                                ? new TreeSet<K>( set )
-//                                : new HashSet<K>( set );
-//                        biggerSet.add( invValue );
-//                        invMap.put( invKey, biggerSet );
-//                    }
-//                }
-//            }
-//        }
-//
-//        // replacing 'null' value Sets with Collections.emptySet() does not have to be done because 'null' keys are prohibited
-//        return invMap;
-//    }
+
+    //ENHANCE CollectionsUtil
+    static private <K,V> Map<V,Set<K>> createInverseMultiMapping
+            ( final boolean inverseNeedsOrderedKeys
+            , final Map<K,Set<V>> kvMap
+            )
+    {
+        final Map<V,Set<K>> invMap = ( inverseNeedsOrderedKeys == true )
+                ? new TreeMap<V, Set<K>>()
+                : new HashMap<V, Set<K>>();
+
+        // invert keys - values
+        for( final Map.Entry<K,Set<V>> entry : kvMap.entrySet() )
+        {
+            final Set<V> invKeySet = entry.getValue(); // alias
+            final K invValue = entry.getKey(); // alias
+            
+            if( invKeySet != null )
+            {   // values maybe 'null' but keys can not be
+                for( final V invKey : invKeySet )
+                {
+                    if( invMap.containsKey( invKey ) == false )
+                    {   // a singleton element is always ordered
+                        final Set<K> set = Collections.singleton( invValue );
+                        invMap.put( invKey, set );
+                    }
+                    else
+                    {   // seen the inverse key before
+                        final Set<K> set = invMap.get( invKey );
+                        if( set.size() > 1 )
+                        {   // set already bigger
+                            set.add( invValue );
+                        }
+                        else
+                        {   // copy to a bigger, non-singleton set
+                            final Set<K> biggerSet = new HashSet<K>( set );
+                            biggerSet.add( invValue );
+                            invMap.put( invKey, biggerSet );
+                        }
+                    }
+                }
+            }
+        }
+
+        // replacing 'null' value Sets with Collections.emptySet() does not have to be done because 'null' keys are prohibited
+        return invMap;
+    }
 
     /**
      * Performs a complete read of an existing File.

@@ -169,7 +169,8 @@ class BsdPort //... refactor IndexPort?
     @Override public String getName()             { return this.name; }
     @Override public String getShortDescription() { return this.description; }
     @Override public String getLongDescription()  { return this.long_description; }
-    @Override public String getLatestVersion()          { return this.version; }
+    @Override public String getLatestVersion()    { return this.version; }
+    @Override public String getLatestRevision()   { return this.revision; }
     @Override public String getHomepage()         { return this.homepage; }
 
     @Override public String[] getCategories()     { return this.categories; }
@@ -213,6 +214,7 @@ class BsdPort //... refactor IndexPort?
     }
 
     @Override public String getVersionInstalled() { return ""; }
+    @Override public String getRevisionInstalled() { return "0"; }
 
     @Override public String[] getVariantsInstalled() { return StringsUtil_.NO_STRINGS; }
 

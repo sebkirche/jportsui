@@ -23,6 +23,7 @@ public interface Portable
     abstract public String      getShortDescription();
     abstract public String      getLongDescription();
     abstract public String      getLatestVersion();
+    abstract public String      getLatestRevision();
     abstract public String      getHomepage();
     abstract public String      getDomain();
 
@@ -55,6 +56,7 @@ public interface Portable
     abstract public void        setStatus( final EPortStatus statusEnum );
     abstract public String[]    getVariantsInstalled();
     abstract public String      getVersionInstalled();
+    abstract public String      getRevisionInstalled();
 
 
     // ================================================================================

@@ -121,13 +121,17 @@ public class JPanel_CommonInfo extends JPanel
 
             final boolean isOutdated = port.hasStatus( EPortStatus.OUTDATED );
 
+            final String installedVerRev = port.getVersionInstalled() + ( "0".equals( port.getRevisionInstalled() ) ? "" : "<SMALL>_"+ port.getRevisionInstalled() +"</SMALL>" );
+
+            final String latestVerRev = port.getLatestVersion() + ( "0".equals( port.getLatestRevision() ) ? "" : "<SMALL>_"+ port.getLatestRevision() +"</SMALL>" );
+
             return FONT_GRAY +"Status"+ FONT_OFF +" \t "+ obsolete + installed +'\n'
                  + ( ( isOutdated == false )
                             ? FONT_GRAY +"Installed Version"+ FONT_OFF +" \t "+ port.getVersionInstalled() +'\n'
                             : FONT_GRAY +"Installed Version"+ FONT_OFF +" \t "+"<FONT color=red><B>OUTDATED</B><BR>"+ port.getVersionInstalled() + FONT_OFF +'\n' )
                  + ( ( isOutdated == false )
-                            ? FONT_GRAY +"Latest Version"+ FONT_OFF +" \t "+ port.getLatestVersion() +'\n'
-                            : FONT_GRAY +"Latest Version"+ FONT_OFF +" \t <B>"+ port.getLatestVersion() +"</B>" +'\n' );
+                            ? FONT_GRAY +"Latest Version"+ FONT_OFF +" \t "+ latestVerRev +'\n'
+                            : FONT_GRAY +"Latest Version"+ FONT_OFF +" \t <B>"+ latestVerRev +"</B>" +'\n' );
         }
     }
 

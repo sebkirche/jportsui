@@ -173,7 +173,7 @@ public class PortsCliUtil
      *
      * @return as reported by the CLI "port echo installed" all of which are type CliPort
      */
-    static Map<EPortStatus,Set<CliPortInfo>> cliAllStatus2()
+    static Map<EPortStatus,Set<CliPortInfo>> cliAllStatus()
     {
         final Map<EPortStatus,Set<CliPortInfo>> status_to_InfoSet_Map = new EnumMap<EPortStatus, Set<CliPortInfo>>( EPortStatus.class );
 
@@ -197,7 +197,7 @@ public class PortsCliUtil
                     }   break; 
 
                 default :
-                    {   status_to_InfoSet_Map.put( statusEnum, cliEcho2( statusEnum ) );
+                    {   status_to_InfoSet_Map.put( statusEnum, cliEcho( statusEnum ) );
                         break;
                     }
             }
@@ -212,7 +212,7 @@ public class PortsCliUtil
      * @param statusEnum type of port name, version and variant information to echo
      * @return as reported by the CLI
      */
-    static private Set<CliPortInfo> cliEcho2( final EPortStatus statusEnum )
+    static private Set<CliPortInfo> cliEcho( final EPortStatus statusEnum )
     {
         final Set<CliPortInfo> set = new HashSet<CliPortInfo>();
 
@@ -241,8 +241,9 @@ public class PortsCliUtil
             }
 
             final CliPortInfo cpi = new CliPortInfo
-                    ( cliPortName
-                    , cliVersion
+                    ( cliPortName.intern()
+                    , cliVersion.intern()
+                    , "0" //... look for '_'
                     , cliVariants
                     );
             set.add( cpi );

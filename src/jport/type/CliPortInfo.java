@@ -20,6 +20,7 @@ public class CliPortInfo
     final private String   fCi_name;
     final private String   fName;
     final private String   fVersionInstalled;
+    final private String   fRevisionInstalled;
     final private String[] fVariants;
 
     /**
@@ -31,18 +32,21 @@ public class CliPortInfo
     public CliPortInfo
         ( final String   name
         , final String   versionInstalled
+        , final String   revisionInstalled
         , final String[] variants
         )
     {
-        fCi_name          = name.toLowerCase().intern();
-        fName             = name;
-        fVersionInstalled = versionInstalled;
-        fVariants         = variants;
+        fCi_name           = name.toLowerCase().intern();
+        fName              = name;
+        fVersionInstalled  = versionInstalled;
+        fRevisionInstalled = revisionInstalled;
+        fVariants          = variants;
     }
 
     public String   getCaseInsensitiveName() { return fCi_name; }
     public String   getName()                { return fName; }
     public String   getVersionInstalled()    { return fVersionInstalled; }
+    public String   getRevisionInstalled()   { return fRevisionInstalled; }
     public String[] getVariants()            { return fVariants; }
 
     @Override final public boolean equals( final Object obj )

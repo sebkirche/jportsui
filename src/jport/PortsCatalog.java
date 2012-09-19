@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JOptionPane;
 import jport.PortsConstants.EPortStatus;
 import jport.common.Util;
@@ -30,7 +31,9 @@ public class PortsCatalog
     /** As of 2012-09-01, ~15,500 port entries. */
     static final private int _FORECAST_COUNT = 20000;
 
-    static final PortsCatalog NONE = new PortsCatalog( false );
+    static final private AtomicInteger _ID = new AtomicInteger();
+
+    static final PortsCatalog NONE = new PortsCatalog();
 
     static
     {}
@@ -49,10 +52,8 @@ public class PortsCatalog
 
     /**
      * For initial NONE catalog.
-     *
-     * @param ignore unique signature code smell
      */
-    private PortsCatalog( final boolean ignore )
+    private PortsCatalog()
     {
         fCiName_to_PortMap = Collections.emptyMap();
         fPortsInventory = new PortsInventory();
@@ -60,20 +61,23 @@ public class PortsCatalog
 
     /**
      * Reread and parse the "PortsIndex" file into a new Map.
+     * 
+     * @param prevCatalog was Initial
      */
-    PortsCatalog()
+    PortsCatalog( final PortsCatalog prevCatalog )
     {
-        this( PortsConstants.PORTS_PATH + _PORTS_FILE_NAME );
-    }
-
-    private PortsCatalog( final String filePathName )
-    {
-        final Map<String,Portable> ciName_to_PortMap = _parsePortIndex( filePathName ); // *BLOCKS* for disk I/O
+        final Map<String,Portable> ciName_to_PortMap = ( true )
+                ? _parsePortIndex( PortsConstants.PORTS_PATH + _PORTS_FILE_NAME ) // *BLOCKS* for disk I/O
+                : prevCatalog.fCiName_to_PortMap;
 
         final Set<Portable> allPortSet = new HashSet<Portable>( _FORECAST_COUNT );
 
         // interrogate the CLI for user's installed Ports status
-        final Map<EPortStatus,Set<CliPortInfo>> status_to_CpiSet_Map = PortsCliUtil.cliAllStatus2(); // *BLOCKS* for CLI
+        @SuppressWarnings("unchecked")
+        final Map<EPortStatus,Set<CliPortInfo>> status_to_CpiSet_Map = ( true )
+                ? PortsCliUtil.cliAllStatus() // *BLOCKS* for CLI
+                : Collections.EMPTY_MAP;
+
         final Map<CliPortInfo,Set<EPortStatus>> cpi_to_StatusSet_Map = CliPortInfo.createInverseMultiMapping( status_to_CpiSet_Map );
 
         for( final Map.Entry<CliPortInfo,Set<EPortStatus>> entry : cpi_to_StatusSet_Map.entrySet() )
@@ -112,6 +116,8 @@ public class PortsCatalog
         fPortsInventory = new PortsInventory( allPortSet );
 
         fCiName_to_PortMap = ciName_to_PortMap;
+
+        _ID.incrementAndGet();
     }
 
     static private Map<String,Portable> _parsePortIndex( final String filePathName )

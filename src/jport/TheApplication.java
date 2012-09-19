@@ -37,8 +37,6 @@ public class TheApplication
      */
     private TheApplication() {}
 
-    private boolean isReady() { return vCurrentPortsCatalog != PortsCatalog.NONE; }
-
     /**
      *
      * @return facility for letting the user indicate desired port status change requests
@@ -60,7 +58,7 @@ public class TheApplication
     synchronized public void probeUpdate()
     {
         // complete parsing "PortsIndex" in this thread
-        vCurrentPortsCatalog = new PortsCatalog();
+        vCurrentPortsCatalog = new PortsCatalog( vCurrentPortsCatalog );
 
         //  since I/O bound, fetch the port folder modification dates from the file system in a seperate thread
         new Thread

@@ -55,6 +55,7 @@ public class JPanel_CommandBar extends JPanel
     final private AbstractButton ab_More           = new JButton( "More \u25BC" ); // unicode downward triangle, can not be HTML or will wreck BoxLayout
     final private AbstractButton ab_ClearSearch    = new JButton( "X" );
 
+    final private JMenuItem      jItem_MarkInactive= new JMenuItem( "Mark \u2192 All Inactive" );
     final private JMenuItem      jItem_Detail      = new JMenuItem( "Details..." );
     final private JMenuItem      jItem_Upgrade     = new JMenuItem( "Update MacPorts..." );
     final private JMenuItem      jItem_ResetMark   = new JMenuItem( "Reset Marks" );
@@ -89,6 +90,7 @@ public class JPanel_CommandBar extends JPanel
         ab_Apply         .setToolTipText( "Applies marked Port status change requests" );
         ab_More          .setToolTipText( "Show other commands" );
         ab_ClearSearch   .setToolTipText( "Clear search text" );
+        jItem_MarkInactive.setToolTipText("Marks all inactive Ports for removal" );
         jItem_Detail     .setToolTipText( "Show Port details in a separate window" );
         jItem_ResetMark  .setToolTipText( "Remove all Port marks" );
         jItem_ResetFilter.setToolTipText( "Show all Ports without any filtering" );
@@ -129,6 +131,8 @@ public class JPanel_CommandBar extends JPanel
         searchPanel.add( ab_ClearSearch );
 
         // assemble
+        jPop_MoreCmd.add( jItem_MarkInactive );
+        jPop_MoreCmd.addSeparator();
         jPop_MoreCmd.add( jItem_ResetMark );
         jPop_MoreCmd.add( jItem_ResetFilter );
         jPop_MoreCmd.add( jItem_ResetCache );
@@ -235,6 +239,10 @@ public class JPanel_CommandBar extends JPanel
             else if( ab == ab_More )
             {
                 jPop_MoreCmd.show( ab_More, 0, ab_More.getHeight() );
+            }
+            else if( ab == jItem_MarkInactive )
+            {
+                fCommander.markInactivePorts();
             }
             else if( ab == jItem_Detail )
             {

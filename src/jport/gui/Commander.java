@@ -88,7 +88,7 @@ public class Commander
     }
 
     /**
-     * Change all ports that need updating to Upgrade.
+     * Change request all ports that need updating to Upgrade.
      * Dependencies will be assumed as resolved by MacPorts.
      */
     public void markOutdatedPorts()
@@ -99,6 +99,20 @@ public class Commander
             if( port.hasStatus( EPortStatus.OUTDATED ) == true )
             {
                 port.setMark( EPortMark.Upgrade );
+            }
+        }
+
+        TheUiHolder.INSTANCE.setTableSortByMark();
+    }
+
+    public void markInactivePorts()
+    {
+        final Portable[] allPorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts();
+        for( final Portable port : allPorts )
+        {
+            if( port.hasStatus( EPortStatus.INACTIVE ) == true )
+            {
+                port.setMark( EPortMark.Uninstall );
             }
         }
 

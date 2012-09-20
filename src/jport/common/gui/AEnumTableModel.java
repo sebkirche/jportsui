@@ -267,9 +267,10 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
             {   // set column width
                 final int pixelWidth = ((WidthProvidable)columnEnum).provideWidth();
                 if( pixelWidth != -1 ) // '-1' is flex-space
-                {
+                {   // lock column size
                     final TableColumn column = jTable.getColumnModel().getColumn( i );
                     column.setPreferredWidth( pixelWidth );
+                    column.setMinWidth( pixelWidth );
                     column.setMaxWidth( pixelWidth );
                 }
                 // else flex space

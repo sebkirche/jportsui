@@ -61,6 +61,17 @@ public class PortsCliUtil
                 : CliUtil.forkCommand( listener, "ping", "-n ", "4", "localhost" ); // waits a sec on Windows
     }
 
+    /**
+     * Where local BSD/XNU provides, some Port binaries do not need to be installed.
+     * Ex. gperf, unzip
+     */
+    static String[] lsUsrBin()
+    {
+        if( HAS_PORT_CLI == false ) return StringsUtil_.NO_STRINGS;
+
+        return CliUtil.executeCommand( "/bin/ls" );
+    }
+
     static public String cliPortVersion()
     {
         if( HAS_PORT_CLI == false ) return "NOT AVAILABLE";
@@ -84,88 +95,6 @@ public class PortsCliUtil
 
         return CliUtil.executeCommand( _PORT_BIN_PATH, ECmd.CONTENTS._(), port.getName() );
     }
-
-//    /* *
-//     * Full accounting avoids asking for All ports or Uninstalled ports as
-//     * these are assumed from the "PortIndex" parsing.
-//     * Note: Inefficient but I do not know a way to get all status attributes for each installed port, see "man port"
-//     *
-//     * @return as reported by the CLI "port echo installed" all of which are type CliPort
-//     */
-//    static synchronized private Set<Portable> cliAllStatus_OLD( ) //... final boolean includeInstalled )
-//    {
-//        if( HAS_PORT_CLI == false ) return Collections.emptySet();
-//
-//        // start with Installed ports
-//        final Set<Portable> set = cliEcho( EPortStatus.INSTALLED );
-//
-//        for( final EPortStatus statusEnum : EPortStatus.VALUES )
-//        {
-//            switch( statusEnum )
-//            {
-//                case ALL : case UNINSTALLED : case INSTALLED : break; // do not run CLI on these
-//
-//                default : cliEcho( statusEnum ); break;
-//            }
-//        }
-//
-//        return set;
-//    }
-//
-//    /* *
-//     * Requests package info from the Ports CLI.
-//     *
-//     * @param statusEnum type of information to echo
-//     * @return as reported by the CLI all of which are type CliPort
-//     */
-//    static private Set<Portable> cliEcho_OLD( final EPortStatus statusEnum )
-//    {
-//        final Set<Portable> set = new HashSet<Portable>();
-//
-//        final String portStatus = statusEnum.name().toLowerCase(); // a psuedo-name
-//        final String[] lines = CliUtil.executeCommand( _PORT_BIN_PATH, ECmd.ECHO._(), portStatus );
-//
-//        for( final String untrimmedLine : lines )
-//        {   // CLI reported information
-//            final String line = untrimmedLine.trim(); // required
-//            final int p = line.indexOf( '@' ); // installed version
-//            final String cliPortName = line.substring( 0, p ).trim();
-//
-//            final int q = line.indexOf( '+' ); // installed variants
-//            final String cliVersion = ( q != -1 ) ? line.substring( p + 1, q ) : line.substring( p + 1 );
-//            final String r = ( q != -1 ) ? line.substring( q + 1 ) : "";
-//            final String[] variantSplits = r.split( "[+]" ); // on literal '+'
-//            final String[] cliVariants;
-//            if( variantSplits.length == 0 || variantSplits[ 0 ].isEmpty() == true )
-//            {
-//                cliVariants = StringsUtil_.NO_STRINGS;
-//            }
-//            else
-//            {
-//                cliVariants = variantSplits;
-//                Arrays.sort( cliVariants ); // must sort for .deepEquals()
-//            }
-//
-//            // replace if needed
-//            final Portable prevPort = TheApplication.INSTANCE.getPortsCatalog().parse( cliPortName );
-//            if( prevPort != Portable.NONE )
-//            {
-////... gather multiple versions of a port (and their variants) into new CliPorts()
-//                final Portable cliPort = PortFactory.create( prevPort, cliVersion, cliVariants );
-//                cliPort.setStatus( statusEnum );
-//                set.add( cliPort );
-//            }
-//            else
-//            {   // else not found indicating a PortIndex parse error when "sudo port sync" introduced a new port
-//                System.err.println( "'PortIndex' parsing did not find \""+ prevPort +'"' );
-//            }
-//        }
-//
-//        if( PortsConstants.DEBUG ) { System.out.println(); System.out.println( statusEnum ); }
-//
-//        return TheApplication.INSTANCE.getPortsCatalog().inform( set );
-//    }
-
 
     /**
      * Full accounting avoids asking for All ports or Uninstalled ports as
@@ -247,7 +176,7 @@ public class PortsCliUtil
                     ? cliVersionRevision.substring( 0, r )
                     : cliVersionRevision;
             final String cliRevision = ( r != Util.INVALID_INDEX )
-                    ? cliVersionRevision.substring( r )
+                    ? cliVersionRevision.substring( r + 1 )
                     : "0";
             
             final CliPortInfo cpi = new CliPortInfo

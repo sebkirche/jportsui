@@ -122,7 +122,7 @@ public class JPanel_CommonInfo extends JPanel
                     : " <U>"+ FONT_GRAY + port.getRevisionInstalled() + FONT_OFF +"</U>" );
             final String latestVerRev    = port.getLatestVersion()    + ( "0".equals( port.getLatestRevision() )    
                     ? ""
-                    : " <SMALL><U>"+ FONT_GRAY + port.getLatestRevision() + FONT_OFF +"</U></SMALL>" );
+                    : " <SMALL><U>"+ port.getLatestRevision() +"</U></SMALL>" );
 
             final boolean isOutdated = port.hasStatus( EPortStatus.OUTDATED );
             return FONT_GRAY +"Status"+ FONT_OFF +" \t "+ obsolete + installed +'\n'

@@ -64,6 +64,7 @@ class BsdPort //... refactor IndexPort?
     /** Mutable because lazily instantiated.  Not recursive, see .getFullDeps() for that. */
     private Portable[] mUniqueDependencies = null;
 
+    private int mHashCode = 0;
 
     /**
      * Constructor for the NONE port, to avoid use of 'null'.
@@ -400,8 +401,13 @@ class BsdPort //... refactor IndexPort?
         if( obj instanceof BsdPort )
         {
             final Portable other = (Portable)obj;
-            return this.ci_name.equals( other.getCaseInsensitiveName() )
-                && ( this.isInstalled() == other.isInstalled() && this.getVersionInstalled().equals( other.getVersionInstalled() ) );
+            if( this.ci_name.equals( other.getCaseInsensitiveName() ) == false ) return false;
+            if( this.isInstalled() != other.isInstalled() ) return false;
+            if( this.isInstalled() == false ) return true; // other will also be 'false'
+
+            // both installed
+            return this.getVersionInstalled().equals( other.getVersionInstalled() )
+                && this.getRevisionInstalled().equals( other.getRevisionInstalled() );
         }
 
         return false;
@@ -409,8 +415,23 @@ class BsdPort //... refactor IndexPort?
 
     @Override final public int hashCode()
     {
-        return this.ci_name.hashCode()
-            + ( ( this.isInstalled() == false ) ? 0 : 37 * this.getVersionInstalled().hashCode() );
+        if( mHashCode == 0 )
+        {   // lazy init
+            if( this.isInstalled() == false )
+            {
+                mHashCode = this.ci_name.hashCode();
+            }
+            else
+            {
+                int hash = 7;
+                hash = 67 * hash + this.getRevisionInstalled().hashCode();
+                hash = 67 * hash + this.getVersionInstalled().hashCode();
+                hash = 67 * hash + this.ci_name.hashCode();
+                mHashCode = hash;
+            }
+        }
+
+        return mHashCode;
     }
 
     @Override final public int compareTo( final Portable another )

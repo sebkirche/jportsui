@@ -196,6 +196,7 @@ public abstract class AJLabel_PortInfo extends JLabel
 
         @Override void setPort( final Portable port )
         {
+            int count = 0;
             if( port == Portable.NONE )
             {
                 setText( SELECT_PORT_TEXT );
@@ -221,7 +222,11 @@ public abstract class AJLabel_PortInfo extends JLabel
 
                 Arrays.sort( names ); // moves Actives <FONT.. to the top
                 super.setText( true, names ); // table
+
+                count = ports.length;
             }
+
+            this.setToolTipText( ( count == 0 ) ? null : "<HTML><B>"+ count +"</B> dependencies" );
         }
     }
 
@@ -239,6 +244,7 @@ public abstract class AJLabel_PortInfo extends JLabel
 
         @Override void setPort( final Portable port )
         {
+            int count = 0;
             if( port == Portable.NONE )
             {
                 setText( SELECT_PORT_TEXT );
@@ -264,7 +270,11 @@ public abstract class AJLabel_PortInfo extends JLabel
 
                 Arrays.sort( names ); // moves Actives <FONT.. to the top
                 super.setText( true, names ); // table
+
+                count = ports.length;
             }
+
+            this.setToolTipText( ( count == 0 ) ? null : "<HTML><B>"+ count +"</B> Ports dependant on <B>"+ port.getName() );
         }
     }
 

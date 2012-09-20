@@ -15,6 +15,7 @@ import jport.PortsConstants.EPortStatus;
 import jport.common.CliUtil;
 import jport.common.CliUtil.Listener;
 import jport.common.StringsUtil_;
+import jport.common.Util;
 import jport.type.CliPortInfo;
 import jport.type.Portable;
 
@@ -226,9 +227,9 @@ public class PortsCliUtil
             final String cliPortName = line.substring( 0, p ).trim();
 
             final int q = line.indexOf( '+' ); // installed variants
-            final String cliVersion = ( q != -1 ) ? line.substring( p + 1, q ) : line.substring( p + 1 );
-            final String r = ( q != -1 ) ? line.substring( q + 1 ) : "";
-            final String[] variantSplits = r.split( "[+]" ); // on literal '+'
+            final String cliVersionRevision = ( q != -1 ) ? line.substring( p + 1, q ) : line.substring( p + 1 );
+            final String multiVariant = ( q != -1 ) ? line.substring( q + 1 ) : "";
+            final String[] variantSplits = multiVariant.split( "[+]" ); // on literal '+'
             final String[] cliVariants;
             if( variantSplits.length == 0 || variantSplits[ 0 ].isEmpty() == true )
             {
@@ -240,10 +241,19 @@ public class PortsCliUtil
                 Arrays.sort( cliVariants ); // must sort for .deepEquals()
             }
 
+            // extract installed revision number after underscore char
+            final int r = cliVersionRevision.lastIndexOf( '_' );
+            final String cliVersion = ( r != Util.INVALID_INDEX )
+                    ? cliVersionRevision.substring( 0, r )
+                    : cliVersionRevision;
+            final String cliRevision = ( r != Util.INVALID_INDEX )
+                    ? cliVersionRevision.substring( r )
+                    : "0";
+            
             final CliPortInfo cpi = new CliPortInfo
                     ( cliPortName.intern()
                     , cliVersion.intern()
-                    , "0" //... look for '_'
+                    , cliRevision.intern()
                     , cliVariants
                     );
             set.add( cpi );

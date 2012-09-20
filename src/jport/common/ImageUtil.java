@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import javax.imageio.ImageIO;
 
 
 /**
@@ -15,11 +16,38 @@ import java.io.IOException;
  */
 public class ImageUtil
 {
+    static
+    {
+//        System.setProperty("nl.ikarus.nxt.priv.imageio.icoreader.autoselect.icon","true");
+//        nl.ikarus.nxt.priv.imageio.icoreader.lib.ICOReaderSpi.registerIcoReader();
+    }
+
     private ImageUtil() {}
+
+    static Image _parseImage( final String resourceName, final byte[] bytes )
+    {
+        if( bytes.length == 0 ) return null;
+
+        if( resourceName.toLowerCase().endsWith( ".ico" ) == false )
+        {   // Java can make a good show of JPEG, GIF, PNG, etc.
+            return Toolkit.getDefaultToolkit().createImage( bytes );
+        }
+        else
+        {
+            try
+            {   // use registered ICO plug-in @ nl.ikarus.nxt.priv.imageio.icoreader.lib.ICOReader
+                return ImageIO.read( new ByteArrayInputStream( bytes ) ); // [] wrapper does not need to be closed
+            }
+            catch( IOException ex )
+            {   // no point in handing off to Toolkit as the .ICO plug-in will intercept there also
+                return null;
+            }
+        }
+    }
 
     //ENHANCE
     /**
-     * Special case for Java's broken ".ICO" handling and the web's sloppy adherence to standards.
+     * Special case Java's borken ".ICO" handling and the web's sloppy adherence to W3C standards.
      *
      * @param resourceName used to check file extension when MIME type info is lost, ".ico", ".png", ".gif", etc.
      * @param bytes content @ URI
@@ -27,8 +55,6 @@ public class ImageUtil
      */
     static Image parseImage( final String resourceName, final byte[] bytes )
     {
-        if( bytes == null ) throw new NullPointerException();
-
         if( bytes.length == 0 ) return null;
 
         if( resourceName.toLowerCase().endsWith( ".ico" ) == false )
@@ -37,7 +63,7 @@ public class ImageUtil
         }
         else
         {   // special cased, AWT tends to fail with transparent ".ICO".  Bug not completely fixed as of JDK7.07.
-            final ByteArrayInputStream bais = new ByteArrayInputStream( bytes ); // wraps a read marker around a byte[]
+            final ByteArrayInputStream bais = new ByteArrayInputStream( bytes ); // wraps a read marker around a byte[], does not need to be closed
             try
             {   // generally a Microsoft .ICO image
                 final Ico ico = new Ico( bais ); // THROWS BadIcoResException

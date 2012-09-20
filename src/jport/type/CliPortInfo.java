@@ -25,9 +25,10 @@ public class CliPortInfo
 
     /**
      *
-     * @param variants
      * @param name
      * @param versionInstalled
+     * @param revisionInstalled
+     * @param variants
      */
     public CliPortInfo
         ( final String   name
@@ -56,7 +57,9 @@ public class CliPortInfo
         if( obj instanceof CliPortInfo )
         {
             final CliPortInfo other = (CliPortInfo)obj;
-            return this.fName.equals( other.fName ) && this.fVersionInstalled.equals( other.fVersionInstalled );
+            return this.fName.equals( other.fName )
+                && this.fVersionInstalled.equals( other.fVersionInstalled )
+                && this.fRevisionInstalled.equals( other.fRevisionInstalled );
         }
 
         return false;
@@ -64,12 +67,16 @@ public class CliPortInfo
 
     @Override final public int hashCode()
     {
-        return this.fName.hashCode() + 17 * this.fVersionInstalled.hashCode();
+        int hash = 7;
+        hash = 11 * hash + fRevisionInstalled.hashCode();
+        hash = 11 * hash + fVersionInstalled.hashCode();
+        hash = 11 * hash + fName.hashCode();
+        return hash;
     }
 
     @Override public String toString()
     {
-        return fName +'@'+ fVersionInstalled;
+        return fName +'@'+ fVersionInstalled +'_'+ fRevisionInstalled;
     }
 
     /**

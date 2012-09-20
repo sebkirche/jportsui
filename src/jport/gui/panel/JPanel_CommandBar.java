@@ -98,7 +98,7 @@ public class JPanel_CommandBar extends JPanel
         jItem_Upgrade    .setToolTipText( "Have MacPorts self-update itself" );
         jItem_About      .setToolTipText( "Credits" );
         jCombo_LookIn    .setToolTipText( "Choose what Port information to search" );
-        jField_Search    .setToolTipText( "Type [ENTER] or [CR] to begin search" );
+        jField_Search    .setToolTipText( "<HTML>Type [ENTER] or [CR] to begin search<BR>Use [+] to require each term" );
 
         ab_Sync      .setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
         ab_Apply     .setEnabled( false );

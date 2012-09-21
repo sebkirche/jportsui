@@ -2,7 +2,7 @@
 
 import javax.swing.SwingUtilities;
 import jport.TheApplication;
-import jport.TheMacBin;
+import jport.TheOsBinaries;
 import jport.gui.TheUiHolder;
 
 
@@ -33,7 +33,7 @@ public class JPortsUI
                 {   @Override public void run()
                     {   synchronized( MONITOR )
                         {
-                            TheMacBin.INSTANCE.has( "?" ); // hey lazy Swing thread, do some work!
+                            TheOsBinaries.INSTANCE.has( "?" ); // hey lazy Swing thread, do some work!
                             TheUiHolder.INSTANCE.init(); // start Swing in EDT thread
                             MONITOR.notifyAll();
                         }

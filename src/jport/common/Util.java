@@ -36,6 +36,11 @@ public class Util
         return System.getProperty( "os.name" ).toLowerCase().startsWith( "mac" );
     }
 
+    static public boolean isOnWindows()
+    {
+        return System.getProperty( "os.name" ).toLowerCase().startsWith( "win" );
+    }
+
     /**
      * Linear Search an array for an identity with '==' instead of
      * using Arrays.binarySearch() when the array can not be sort ordered

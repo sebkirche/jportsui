@@ -61,17 +61,6 @@ public class PortsCliUtil
                 : CliUtil.forkCommand( listener, "ping", "-n ", "4", "localhost" ); // waits a sec on Windows
     }
 
-    /**
-     * Where local BSD/XNU provides, some Port binaries do not need to be installed.
-     * Ex. gperf, unzip
-     */
-    static String[] lsUsrBin()
-    {
-        if( HAS_PORT_CLI == false ) return StringsUtil_.NO_STRINGS;
-
-        return CliUtil.executeCommand( "/bin/ls" );
-    }
-
     static public String cliPortVersion()
     {
         if( HAS_PORT_CLI == false ) return "NOT AVAILABLE";

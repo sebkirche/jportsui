@@ -169,7 +169,7 @@ public class CliUtil
 
             fListener = listener;
 
-            if( DEBUG == true )
+            if( DEBUG )
             {
                 System.out.print( "  TO CLI --> " );
                 for( final String cmd : cliCommands  ) System.out.print( cmd + " " ); // same line
@@ -196,6 +196,8 @@ public class CliUtil
                 final Thread inputDrainThread = new Thread_InputStreamDrain( fListener, inputStream, fOutputFromCliList );
                 inputDrainThread.start();
 
+                final long now = System.currentTimeMillis();
+
                 // @link "http://www.javamex.com/tutorials/threads/yield.shtml"
                 // required for proper fork staging, failed on Win/Mac as Linux robins -all- Threads, whereas Mac/Win does not
                 Thread.yield(); // did not want to .sleep(1) if avoidable however .yield() on some JVMs is implemented as .sleep( 0 )
@@ -210,6 +212,9 @@ public class CliUtil
                         inputDrainThread.wait( 2000 );
                     }
                 }
+
+                final long elapsedMillisec = System.currentTimeMillis() - now;
+                if( DEBUG ) System.out.println( CliProcess.class.getSimpleName() +".execute()= "+ elapsedMillisec +" ms <-"+ StringsUtil_.concatenate( " ", fProcessBuilder.command() ) );
 
                 // completed
                 final String[] outputLines = StringsUtil_.toStrings( fOutputFromCliList );
@@ -262,7 +267,7 @@ public class CliUtil
             String errLine = "";
             while( ( errLine = errorStream.readLine() ) != null )
             {   // display err output from CLI
-                if( DEBUG == true ) System.err.println( "FROM CLI <-- " + errLine );
+                if( DEBUG ) System.err.println( "FROM CLI <-- " + errLine );
 
                 if( "Password:".equals( errLine ) == false )
                 {

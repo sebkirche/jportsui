@@ -8,6 +8,7 @@ import jport.PortsConstants;
 import jport.PortsConstants.EPortMark;
 import jport.PortsConstants.EPortStatus;
 import jport.TheApplication;
+import jport.TheMacBin;
 import jport.common.HttpUtil;
 import jport.common.StringsUtil_;
 
@@ -205,6 +206,7 @@ class BsdPort //... refactor IndexPort?
         {
             case ALL         : return true;
             case UNINSTALLED : return true;
+            case INSTALLED   : return TheMacBin.INSTANCE.has( name );
             default          : return false; // any other stati require installation of the Port
         }
     }

@@ -2,6 +2,7 @@
 
 import javax.swing.SwingUtilities;
 import jport.TheApplication;
+import jport.TheMacBin;
 import jport.gui.TheUiHolder;
 
 
@@ -18,6 +19,9 @@ import jport.gui.TheUiHolder;
  */
 public class JPortsUI
 {
+    static
+    {}
+
     private JPortsUI() {}
 
     public static void main( String[] args )
@@ -29,6 +33,7 @@ public class JPortsUI
                 {   @Override public void run()
                     {   synchronized( MONITOR )
                         {
+                            TheMacBin.INSTANCE.has( "?" ); // hey lazy Swing thread, do some work!
                             TheUiHolder.INSTANCE.init(); // start Swing in EDT thread
                             MONITOR.notifyAll();
                         }

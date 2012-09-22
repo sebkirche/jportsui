@@ -20,6 +20,7 @@ import javax.swing.event.ChangeListener;
 import jport.PortsConstants;
 import jport.PortsConstants.EPortStatus;
 import jport.TheApplication;
+import jport.TheOsBinaries;
 import jport.common.GuiUtil_;
 import jport.common.Reset.Resetable;
 import jport.gui.TheUiHolder;
@@ -59,6 +60,7 @@ public class JPanel_StatusFilter extends JPanel
 
     final private ButtonGroup    fButtonGroup    = new ButtonGroup(); // needed for prefs
     final private AbstractButton ab_Marked       = new JToggleButton( "<HTML><FONT size=+0><I>Marked" );
+    final private AbstractButton ab_Native       = new JToggleButton( "<HTML><I>Native" );
     final private AbstractButton ab_WhatsNew     = new JToggleButton( "<HTML><I>What's new?" );
     final private JComboBox      jCombo_Duration = new JComboBox( EDuration.values() );
     final private JSpinner       jSpin_Day       = new JSpinner( new SpinnerNumberModel( DEFAULT_WHATS_NEW_DAY, 1, 9999, 1 ) ); // val min max step
@@ -74,6 +76,7 @@ public class JPanel_StatusFilter extends JPanel
 
         jSpin_Day  .setToolTipText( "<HTML>Show Ports that have had their<BR>information updated within <I>X</I> days" );
         ab_WhatsNew.setToolTipText( "<HTML>Show Ports that have had their<BR>information updated within <I>X</I> days" );
+        ab_Native  .setToolTipText( "<HTML>Show set of binaries that are provided by your OS" );
         ab_Marked  .setToolTipText( "<HTML>Show Ports that have a pending<BR>status change request mark" );
 
         final int BUTTON_HEIGHT_PIX = 34; // needs to be big enough so that the square button Mac-PLAF
@@ -99,7 +102,10 @@ public class JPanel_StatusFilter extends JPanel
 
             switch( e )
             {
-                case ALL : case UNINSTALLED : case INSTALLED : case OUTDATED :
+                case ALL         : // fall-thru
+                case UNINSTALLED : // fall-thru
+                case INSTALLED   : // fall-thru
+                case OUTDATED    :
                         ab.setText( "<HTML><FONT size=+0><B>"+ e.toString() );
                         break;
             }
@@ -108,6 +114,10 @@ public class JPanel_StatusFilter extends JPanel
             {
                 case ALL :
                         ab.setSelected( true );
+                        break;
+
+                case OBSOLETE :
+                        northPanel.add( ab_Native );
                         break;
                     
                 case OUTDATED : // case Obsolete :
@@ -137,9 +147,11 @@ public class JPanel_StatusFilter extends JPanel
         jSpin_Day.setEnabled( false );
 
         ab_Marked.setFocusable( false );
+        ab_Native.setFocusable( false );
         ab_WhatsNew.setFocusable( false );
 
         fButtonGroup.add( ab_Marked );
+        fButtonGroup.add( ab_Native );
         fButtonGroup.add( ab_WhatsNew );
         
         southPanel.add( Box.createVerticalStrut( BUTTON_HEIGHT_PIX ) );
@@ -154,6 +166,7 @@ public class JPanel_StatusFilter extends JPanel
 
         // listener
         ab_Marked.addActionListener( this );
+        ab_Native.addActionListener( this );
         ab_WhatsNew.addActionListener( this );
         jCombo_Duration.addActionListener( this );
 
@@ -184,6 +197,14 @@ public class JPanel_StatusFilter extends JPanel
                 jSpin_Day.setEnabled( true );
                 setEpochFilter( mAgeMillisec );
                 return; // required
+            }
+            else if( ab == ab_Native )
+            {
+                predicate = new Predicatable() // anonymous class
+                        {   @Override public boolean evaluate( final Portable port )
+                            {   return TheOsBinaries.INSTANCE.has( port.getName() );
+                            }
+                        };
             }
             else if( ab == ab_Marked )
             {

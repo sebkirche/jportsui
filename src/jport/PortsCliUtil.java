@@ -110,10 +110,11 @@ public class PortsCliUtil
         {
             switch( statusEnum )
             {
-                case ALL : case UNINSTALLED : // do not run CLI on these
+                case ALL : // fall-thru
+                case UNINSTALLED : // do not run CLI on these
                     {   final Set<CliPortInfo> emptySet = Collections.emptySet();
                         status_to_InfoSet_Map.put( statusEnum, emptySet );
-                    }   break; 
+                    }   break;
 
                 default :
                     {   status_to_InfoSet_Map.put( statusEnum, cliEcho( statusEnum ) );

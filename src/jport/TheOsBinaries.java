@@ -27,6 +27,7 @@ public class TheOsBinaries
         final String[] dirPathNames = ( Util.isOnWindows() == false )
                 ? new String[] { "/bin", "/sbin", "/usr/bin", "/usr/sbin" }
                 : new String[] { "C:\\cygwin\\bin" };
+        
         for( final String dirPathName : dirPathNames )
         {
             final File dirPath = new File( dirPathName );
@@ -41,13 +42,13 @@ public class TheOsBinaries
                 for( final File file : files )
                 {
                     final String fileName = file.getName();
-                    final int p = fileName.indexOf( '.' );
+                    final int p = fileName.indexOf( '.' ); // remove ".exe" from Cygwin bins
                     final String trimmed = ( p == Util.INVALID_INDEX )
                             ? fileName.intern() // expected
                             : fileName.substring( 0, p ).intern();
 
                     if( trimmed.isEmpty() == false )
-                    {   // not the directory header
+                    {
                         fOsBinNameSet.add( trimmed );
                     }
                 }

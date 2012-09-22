@@ -250,10 +250,10 @@ public class PortsMarker
             final EPortMark targetDepMark;
             switch( parentMark )
             {
-                case Upgrade :
-                case Install :
+                case Upgrade  :  // fall-thru
+                case Install  :  // fall-thru
                 case Activate :
-                    {   targetDepMark =
+                    {   targetDepMark = // sequential check logic
                                   ( depPort.hasStatus( EPortStatus.OUTDATED ) )    ? EPortMark.Dependency_Upgrade
                                 : ( depPort.hasStatus( EPortStatus.INACTIVE ) )    ? EPortMark.Dependency_Activate
                                 : ( depPort.hasStatus( EPortStatus.UNINSTALLED ) ) ? EPortMark.Dependency_Install

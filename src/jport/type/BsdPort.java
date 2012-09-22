@@ -206,7 +206,6 @@ class BsdPort //... refactor IndexPort?
         {
             case ALL         : return true;
             case UNINSTALLED : return true;
-            case INSTALLED   : return TheOsBinaries.INSTANCE.has( name );
             default          : return false; // any other stati require installation of the Port
         }
     }

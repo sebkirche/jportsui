@@ -22,11 +22,11 @@ public class Ico
 
    private final static int BMIH_LENGTH = 40; // BITMAPINFOHEADER length
 
-   private byte [] icoimage = new byte [0]; // new byte [0] facilitates read()
+   private byte [] mIcoBytes = new byte [0]; // new byte [0] facilitates read()
 
    private int numImages;
 
-   private BufferedImage [] bi;
+   private BufferedImage [] mBufferedImages;
 
    private int [] colorCount;
 
@@ -35,14 +35,24 @@ public class Ico
       this (file.getAbsolutePath ());
    }
 
+   public Ico (String filename) throws BadIcoResException, IOException
+   {
+      this (new FileInputStream (filename));
+   }
+
+   public Ico (URL url) throws BadIcoResException, IOException
+   {
+      this (url.openStream ());
+   }
+
    public Ico (InputStream is) throws BadIcoResException, IOException
    {
-      try
-      {
-          read (is);
-          parseICOImage ();
-      }
-      finally
+        this( read( is ) ); //... .read() needs overhaul
+
+       try
+       {
+       }
+       finally
       {
           try
           {
@@ -54,14 +64,10 @@ public class Ico
       }
    }
 
-   public Ico (String filename) throws BadIcoResException, IOException 
+   public Ico( final byte[] bytes ) throws BadIcoResException, IOException
    {
-      this (new FileInputStream (filename));
-   }
-
-   public Ico (URL url) throws BadIcoResException, IOException
-   {
-      this (url.openStream ());
+       mIcoBytes = bytes;          
+       parseICOImage ();
    }
 
    public BufferedImage getImage (int index)
@@ -69,7 +75,7 @@ public class Ico
       if (index < 0 || index >= numImages)
           throw new IllegalArgumentException ("index out of range");
 
-     return bi [index];
+     return mBufferedImages [index];
    }
 
    public int getNumColors (int index)
@@ -99,83 +105,81 @@ public class Ico
    {
       // Check resource type field.
 
-      if (icoimage [2] != 1 || icoimage [3] != 0)
+      if (mIcoBytes [2] != 1 || mIcoBytes [3] != 0)
           throw new BadIcoResException ("Not an ICO resource");
 
-      numImages = ubyte (icoimage [5]);
+      numImages = ubyte (mIcoBytes [5]);
       numImages <<= 8;
-      numImages |= icoimage [4];
+      numImages |= mIcoBytes [4];
 
-      bi = new BufferedImage [numImages];
+      mBufferedImages = new BufferedImage [numImages];
 
       colorCount = new int [numImages];
 
       for (int i = 0; i < numImages; i++)
       {
-           int width = ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH]);
+           colorCount [i] = ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+2]);
 
-           int height = ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+1]);
-
-           colorCount [i] = ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+2]);
-
-           int bytesInRes = ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+11]);
+           int bytesInRes = ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+11]);
            bytesInRes <<= 8;
-           bytesInRes |= ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+10]);
+           bytesInRes |= ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+10]);
            bytesInRes <<= 8;
-           bytesInRes |= ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+9]);
+           bytesInRes |= ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+9]);
            bytesInRes <<= 8;
-           bytesInRes |= ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+8]);
+           bytesInRes |= ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+8]);
 
-           int imageOffset = ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+15]);
+           int imageOffset = ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+15]);
            imageOffset <<= 8;
-           imageOffset |= ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+14]);
+           imageOffset |= ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+14]);
            imageOffset <<= 8;
-           imageOffset |= ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+13]);
+           imageOffset |= ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+13]);
            imageOffset <<= 8;
-           imageOffset |= ubyte (icoimage [FDE_OFFSET+i*DE_LENGTH+12]);
+           imageOffset |= ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+12]);
 
-           if (icoimage [imageOffset] == 40 &&
-               icoimage [imageOffset+1] == 0 &&
-               icoimage [imageOffset+2] == 0 &&
-               icoimage [imageOffset+3] == 0)
+           if (mIcoBytes [imageOffset] == 40 &&
+               mIcoBytes [imageOffset+1] == 0 &&
+               mIcoBytes [imageOffset+2] == 0 &&
+               mIcoBytes [imageOffset+3] == 0)
            {
                // BITMAPINFOHEADER detected
 
-               int _width = ubyte (icoimage [imageOffset+7]);
+               int _width = ubyte (mIcoBytes [imageOffset+7]);
                _width <<= 8;
-               _width |= ubyte (icoimage [imageOffset+6]);
+               _width |= ubyte (mIcoBytes [imageOffset+6]);
                _width <<= 8;
-               _width |= ubyte (icoimage [imageOffset+5]);
+               _width |= ubyte (mIcoBytes [imageOffset+5]);
                _width <<= 8;
-               _width |= ubyte (icoimage [imageOffset+4]);
+               _width |= ubyte (mIcoBytes [imageOffset+4]);
 
                // If width is 0 (for 256 pixels or higher), _width contains
                // actual width.
 
-               if (width == 0)
-                   width = _width;
+               final int width = ( ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH] ) != 0 )
+                       ? ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH])
+                       : _width;
 
-               int _height = ubyte (icoimage [imageOffset+11]);
+               int _height = ubyte (mIcoBytes [imageOffset+11]);
                _height <<= 8;
-               _height |= ubyte (icoimage [imageOffset+10]);
+               _height |= ubyte (mIcoBytes [imageOffset+10]);
                _height <<= 8;
-               _height |= ubyte (icoimage [imageOffset+9]);
+               _height |= ubyte (mIcoBytes [imageOffset+9]);
                _height <<= 8;
-               _height |= ubyte (icoimage [imageOffset+8]);
+               _height |= ubyte (mIcoBytes [imageOffset+8]);
 
                // If height is 0 (for 256 pixels or higher), _height contains
                // actual height times 2.
 
-               if (height == 0)
-                   height = _height >> 1; // Divide by 2.
+               final int height = ( ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+1]) != 0 )
+                       ? ubyte (mIcoBytes [FDE_OFFSET+i*DE_LENGTH+1])
+                       : _height >> 1; // Divide by 2.
 
-               int planes = ubyte (icoimage [imageOffset+13]);
+               int planes = ubyte (mIcoBytes [imageOffset+13]);
                planes <<= 8;
-               planes |= ubyte (icoimage [imageOffset+12]);
+               planes |= ubyte (mIcoBytes [imageOffset+12]);
 
-               int bitCount = ubyte (icoimage [imageOffset+15]);
+               int bitCount = ubyte (mIcoBytes [imageOffset+15]);
                bitCount <<= 8;
-               bitCount |= ubyte (icoimage [imageOffset+14]);
+               bitCount |= ubyte (mIcoBytes [imageOffset+14]);
 
                // If colorCount [i] is 0, the number of colors is determined
                // from the planes and bitCount values. For example, the number
@@ -202,7 +206,7 @@ public class Ico
                        colorCount [i] = (int) Math.pow (2, bitCount*planes);
                }
 
-               bi [i] = new BufferedImage (width, height,
+               mBufferedImages [i] = new BufferedImage (width, height,
                                            BufferedImage.TYPE_INT_ARGB);
 
                // Parse image to image buffer.
@@ -219,16 +223,16 @@ public class Ico
                    for (int row = 0; row < height; row++)
                         for (int col = 0; col < width; col++)
                         {
-                             int rgb = ubyte (icoimage [colorTableOffset+row*
+                             int rgb = ubyte (mIcoBytes [colorTableOffset+row*
                                                      scanlineBytes+col*4+2]);
                              rgb <<= 8;
-                             rgb |= ubyte (icoimage [colorTableOffset+row*
+                             rgb |= ubyte (mIcoBytes [colorTableOffset+row*
                                                      scanlineBytes+col*4+1]);
                              rgb <<= 8;
-                             rgb |= ubyte (icoimage [colorTableOffset+row*
+                             rgb |= ubyte (mIcoBytes [colorTableOffset+row*
                                                      scanlineBytes+col*4]);
 
-                             bi [i].setRGB (col, height-1-row, rgb);
+                             mBufferedImages [i].setRGB (col, height-1-row, rgb);
                         }
                    
                }
@@ -248,7 +252,7 @@ public class Ico
                         {
                              int index;
 
-                             if ((ubyte (icoimage [xorImageOffset+row*
+                             if ((ubyte (mIcoBytes [xorImageOffset+row*
                                                    scanlineBytes+col/8])
                                  & masks [col%8]) != 0)
                                  index = 1;
@@ -256,21 +260,21 @@ public class Ico
                                  index = 0;
 
                              int rgb = 0;
-                             rgb |= (ubyte (icoimage [colorTableOffset+index*4
+                             rgb |= (ubyte (mIcoBytes [colorTableOffset+index*4
                                                       +2]));
                              rgb <<= 8;
-                             rgb |= (ubyte (icoimage [colorTableOffset+index*4
+                             rgb |= (ubyte (mIcoBytes [colorTableOffset+index*4
                                                       +1]));
                              rgb <<= 8;
-                             rgb |= (ubyte (icoimage [colorTableOffset+index*
+                             rgb |= (ubyte (mIcoBytes [colorTableOffset+index*
                                                       4]));
 
-                             if ((ubyte (icoimage [andImageOffset+row*
+                             if ((ubyte (mIcoBytes [andImageOffset+row*
                                                    scanlineBytes+col/8])
                                  & masks [col%8]) != 0)
-                                 bi [i].setRGB (col, height-1-row, rgb);
+                                 mBufferedImages [i].setRGB (col, height-1-row, rgb);
                              else
-                                 bi [i].setRGB (col, height-1-row,
+                                 mBufferedImages [i].setRGB (col, height-1-row,
                                                 0xff000000 | rgb);
                         }
                }
@@ -290,34 +294,34 @@ public class Ico
                              int index;
                              if ((col & 1) == 0) // even
                              {
-                                 index = ubyte (icoimage [xorImageOffset+row*
+                                 index = ubyte (mIcoBytes [xorImageOffset+row*
                                                           scanlineBytes+col/2]);
                                  index >>= 4;
                              }
                              else
                              {
-                                 index = ubyte (icoimage [xorImageOffset+row*
+                                 index = ubyte (mIcoBytes [xorImageOffset+row*
                                                           scanlineBytes+col/2])
                                                 &15;
                              }
 
                              int rgb = 0;
-                             rgb |= (ubyte (icoimage [colorTableOffset+index*4
+                             rgb |= (ubyte (mIcoBytes [colorTableOffset+index*4
                                                       +2]));
                              rgb <<= 8;
-                             rgb |= (ubyte (icoimage [colorTableOffset+index*4
+                             rgb |= (ubyte (mIcoBytes [colorTableOffset+index*4
                                                       +1]));
                              rgb <<= 8;
-                             rgb |= (ubyte (icoimage [colorTableOffset+index*
+                             rgb |= (ubyte (mIcoBytes [colorTableOffset+index*
                                                       4]));
 
-                             if ((ubyte (icoimage [andImageOffset+row*
+                             if ((ubyte (mIcoBytes [andImageOffset+row*
                                                    calcScanlineBytes (width, 1)
                                                    +col/8]) & masks [col%8])
                                  != 0)
-                                 bi [i].setRGB (col, height-1-row, rgb);
+                                 mBufferedImages [i].setRGB (col, height-1-row, rgb);
                              else
-                                 bi [i].setRGB (col, height-1-row,
+                                 mBufferedImages [i].setRGB (col, height-1-row,
                                                 0xff000000 | rgb);
                         }
                }
@@ -335,26 +339,26 @@ public class Ico
                         for (int col = 0; col < width; col++)
                         {
                              int index;
-                             index = ubyte (icoimage [xorImageOffset+row*
+                             index = ubyte (mIcoBytes [xorImageOffset+row*
                                                       scanlineBytes+col]);
 
                              int rgb = 0;
-                             rgb |= (ubyte (icoimage [colorTableOffset+index*4
+                             rgb |= (ubyte (mIcoBytes [colorTableOffset+index*4
                                                       +2]));
                              rgb <<= 8;
-                             rgb |= (ubyte (icoimage [colorTableOffset+index*4
+                             rgb |= (ubyte (mIcoBytes [colorTableOffset+index*4
                                                       +1]));
                              rgb <<= 8;
-                             rgb |= (ubyte (icoimage [colorTableOffset+index*4
+                             rgb |= (ubyte (mIcoBytes [colorTableOffset+index*4
                                                       ]));
 
-                             if ((ubyte (icoimage [andImageOffset+row*
+                             if ((ubyte (mIcoBytes [andImageOffset+row*
                                                    calcScanlineBytes (width, 1)
                                                    +col/8]) & masks [col%8])
                                  != 0)
-                                 bi [i].setRGB (col, height-1-row, rgb);
+                                 mBufferedImages [i].setRGB (col, height-1-row, rgb);
                              else
-                                 bi [i].setRGB (col, height-1-row,
+                                 mBufferedImages [i].setRGB (col, height-1-row,
                                                 0xff000000 | rgb);
                         }
                }
@@ -366,57 +370,61 @@ public class Ico
                    for (int row = 0; row < height; row++)
                         for (int col = 0; col < width; col++)
                         {
-                             int rgb = ubyte (icoimage [colorTableOffset+row*
+                             int rgb = ubyte (mIcoBytes [colorTableOffset+row*
                                                         scanlineBytes+col*4+3]);
                              rgb <<= 8;
-                             rgb |= ubyte (icoimage [colorTableOffset+row*
+                             rgb |= ubyte (mIcoBytes [colorTableOffset+row*
                                                      scanlineBytes+col*4+2]);
                              rgb <<= 8;
-                             rgb |= ubyte (icoimage [colorTableOffset+row*
+                             rgb |= ubyte (mIcoBytes [colorTableOffset+row*
                                                      scanlineBytes+col*4+1]);
                              rgb <<= 8;
-                             rgb |= ubyte (icoimage [colorTableOffset+row*
+                             rgb |= ubyte (mIcoBytes [colorTableOffset+row*
                                                      scanlineBytes+col*4]);
 
-                             bi [i].setRGB (col, height-1-row, rgb);
+                             mBufferedImages [i].setRGB (col, height-1-row, rgb);
                         }
                }
            }
            else
-           if (icoimage [imageOffset] == (byte)0x89 &&
-               icoimage [imageOffset+1] == 0x50 &&
-               icoimage [imageOffset+2] == 0x4e &&
-               icoimage [imageOffset+3] == 0x47 &&
-               icoimage [imageOffset+4] == 0x0d &&
-               icoimage [imageOffset+5] == 0x0a &&
-               icoimage [imageOffset+6] == 0x1a &&
-               icoimage [imageOffset+7] == 0x0a)
+           if (mIcoBytes [imageOffset] == (byte)0x89 &&
+               mIcoBytes [imageOffset+1] == 0x50 &&
+               mIcoBytes [imageOffset+2] == 0x4e &&
+               mIcoBytes [imageOffset+3] == 0x47 &&
+               mIcoBytes [imageOffset+4] == 0x0d &&
+               mIcoBytes [imageOffset+5] == 0x0a &&
+               mIcoBytes [imageOffset+6] == 0x1a &&
+               mIcoBytes [imageOffset+7] == 0x0a)
            {
                // PNG detected
 
                ByteArrayInputStream bais;
-               bais = new ByteArrayInputStream (icoimage, imageOffset,
+               bais = new ByteArrayInputStream (mIcoBytes, imageOffset,
                                                 bytesInRes); 
-               bi [i] = ImageIO.read (bais);
+               mBufferedImages [i] = ImageIO.read (bais);
            }
            else
                throw new BadIcoResException ("BITMAPINFOHEADER or PNG "+
                                              "expected");
       }
 
-      icoimage = null; // This array can now be garbage collected.
+      mIcoBytes = null; // This array can now be garbage collected.
    }
 
-   private void read (InputStream is) throws IOException
+   static private byte[] read (InputStream is) throws IOException
    {
+        byte[] icoImage = new byte [0]; // new byte [0] facilitates read()
+
       int bytesToRead;
       while ((bytesToRead = is.available ()) != 0)
       {
-         byte [] icoimage2 = new byte [icoimage.length+bytesToRead];
-         System.arraycopy (icoimage, 0, icoimage2, 0, icoimage.length);
-         is.read (icoimage2, icoimage.length, bytesToRead);         
-         icoimage = icoimage2;
+         byte [] icoimage2 = new byte [icoImage.length+bytesToRead];
+         System.arraycopy (icoImage, 0, icoimage2, 0, icoImage.length);
+         is.read (icoimage2, icoImage.length, bytesToRead);
+         icoImage = icoimage2;
       }
+
+      return icoImage;
    }
 
    static private int ubyte (byte b)

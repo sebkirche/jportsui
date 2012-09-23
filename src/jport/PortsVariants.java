@@ -61,7 +61,9 @@ public class PortsVariants
         final String portName = ofPort.getName().trim();
 
         // does not know the Mark but needs to be included for versioned Activate / Inactivate
-        final String version = ( ofPort.isInstalled() == true ) ? ofPort.getVersionInstalled() : "";
+        final String versionRevision = ( ofPort.isInstalled() == true )
+                ? ofPort.getVersionInstalled() +'_'+ ofPort.getRevisionInstalled()
+                : "";
 
         // variant changes
         final String variant;
@@ -94,9 +96,9 @@ public class PortsVariants
         }
 
         // required to apply variants or version number
-        final String at = ( variant.isEmpty() && version.isEmpty() ) ? "" : "@";
+        final String at = ( variant.isEmpty() && versionRevision.isEmpty() ) ? "" : "@";
 
-        return portName + at + version + variant;
+        return portName + at + versionRevision + variant;
     }
 
     /**

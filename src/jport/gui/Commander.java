@@ -272,7 +272,6 @@ public class Commander
      */
     public void cleanInstalledRemoveInactivePorts()
     {
-//! all blow up (no goLive etc.) when password wrong or err result code
         final String cliCmd = "sudo port -u -p clean --all installed";
         final JDialog passwordDialog = new JDialog_PasswordPlease
                 ( cliCmd

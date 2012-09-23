@@ -29,7 +29,7 @@ public class CliUtil
     static final private boolean _CONSOLE_OUT_PROCESS_ENVIRONMENT = false;
 
     /** When DEBUG true shows CLI command and Errors on console. */
-    static final private boolean DEBUG = true;
+    static final private boolean DEBUG = false;
 
     static // initializer block
     {

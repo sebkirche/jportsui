@@ -55,9 +55,10 @@ public class PortsMarker
 
         final Set<Portable> unmarkableSet = new HashSet<Portable>( size );
 
-        for( final Entry<Portable,EPortMark> entry : fPort_to_MarkMap.entrySet() )
+        final Iterator<Entry<Portable,EPortMark>> iterator = fPort_to_MarkMap.entrySet().iterator();        
+        while( iterator.hasNext() )
         {
-//... should just use a port name to mark mapping or associate with PortsCatalog and copy construct a new Marks map
+            final Entry<Portable,EPortMark> entry = iterator.next();
             final Portable prevPort = entry.getKey(); // alias
             final Portable refreshPort = portsCatalog.getPortsInventory().equate( prevPort ); // previously -> portsCatalog.parse( prevPort.getCaseInsensitiveName() );
             if( refreshPort != null )
@@ -97,8 +98,8 @@ public class PortsMarker
                 }
             }
             else
-            {   // removed from PortsIndex
-//... don't throw ConcurrentModification, needs an Iterator.remove()
+            {   // may have been removed from PortsIndex
+                iterator.remove();
             }
         }
 

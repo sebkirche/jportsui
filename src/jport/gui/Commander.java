@@ -191,11 +191,11 @@ public class Commander
     }
 
     /**
-     * Updates the MacPorts CLI software itself, and performs a Port tree rsync.
+     * Updates the MacPorts CLI software itself, and performs a Port tree rsync as a side-effect.
      */
     public void updateMacPortsItself()
     {
-        final String cliCmd = "sudo port -d selfupdate";
+        final String cliCmd = "sudo port -v selfupdate";
         final JDialog passwordDialog = new JDialog_PasswordPlease
                 ( cliCmd
                 , vAdminPassword
@@ -228,7 +228,7 @@ public class Commander
      */
     public void syncPorts()
     {
-        final String cliCmd = "sudo port sync -v";
+        final String cliCmd = "sudo port -v sync";
         final JDialog passwordDialog = new JDialog_PasswordPlease
                 ( cliCmd
                 , vAdminPassword
@@ -243,6 +243,41 @@ public class Commander
                                             , new Cliable() // anonymous class
                                                     {   @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
                                                         {   return PortsCliUtil.cliSyncUpdate( vAdminPassword, listener );
+                                                        }
+                                                    }
+                                            , _RESULT_CODE_LISTENABLE
+                                            );
+                                    processDialog.setVisible( true );
+                                }
+                                // else cancelled
+                            }
+                        }
+                );
+        passwordDialog.setVisible( true );
+    }
+
+    /**
+     * Cleans all installed Ports of distribution files, working files, and logs.
+     * Supposed to also Removes all inactive Ports.
+     */
+    public void cleanInstalledRemoveInactivePorts()
+    {
+//! all blow up (no goLive etc.) when password wrong or err result code
+        final String cliCmd = "sudo port -u -p clean --all installed";
+        final JDialog passwordDialog = new JDialog_PasswordPlease
+                ( cliCmd
+                , vAdminPassword
+                , new Targetable<String>() // anonymous class
+                        {   @Override public void target( String obj )
+                            {   vAdminPassword = obj;
+                                if( vAdminPassword.isEmpty() == false )
+                                {
+                                    TheUiHolder.INSTANCE.goDark();
+                                    final JDialog processDialog = new JDialog_ProcessStream
+                                            ( cliCmd
+                                            , new Cliable() // anonymous class
+                                                    {   @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
+                                                        {   return PortsCliUtil.cliCleanInstalledRemoveInactive( vAdminPassword, listener );
                                                         }
                                                     }
                                             , _RESULT_CODE_LISTENABLE

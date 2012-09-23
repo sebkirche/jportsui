@@ -13,7 +13,6 @@ import java.util.Set;
 import jport.PortsConstants.EPortMark;
 import jport.PortsConstants.EPortStatus;
 import jport.common.CliUtil;
-import jport.common.CliUtil.Listener;
 import jport.common.StringsUtil_;
 import jport.common.Util;
 import jport.type.CliPortInfo;
@@ -34,12 +33,15 @@ public class PortsCliUtil
             , SELFUPDATE ( true ) // update macPorts software and ports tree
             , ECHO // print
             , CONTENTS // files installed by the port
+            , CLEAN // removes distribution, working, and/or log files
             ;
                     private ECmd() { this( false ); }
                     private ECmd( final boolean needAdmin ) { fNeedAdmin = needAdmin; }
                     final private boolean fNeedAdmin;
                     String _() { return this.name().toLowerCase(); }
             }
+
+    static final private Thread DEAD_THREAD = new Thread( new Runnable() { @Override public void run() {} }, "DEAD_THREAD" );
 
     static final private String _PORT_BIN_PATH = "/opt/local/bin/port"; //... this is non-portable, use "which port" command instead
     static final public boolean HAS_PORT_CLI = new File( _PORT_BIN_PATH ).exists();
@@ -54,7 +56,7 @@ public class PortsCliUtil
         return ( lines.length != 0 ) ? lines[ 0 ] : "";
     }
 
-    static public Thread cliTest( final Listener listener )
+    static public Thread cliTest( final CliUtil.Listener listener )
     {
         return ( HAS_PORT_CLI )
                 ? CliUtil.forkCommand( listener, "list", "installed" ) // "locate Portfile" ~= 4,500, "locate perl" ~= 6,200 "locate java" ~= 54,000 "locate /" ~850,000
@@ -162,9 +164,11 @@ public class PortsCliUtil
 
             // extract installed revision number after underscore char
             final int r = cliVersionRevision.lastIndexOf( '_' );
+
             final String cliVersion = ( r != Util.INVALID_INDEX )
                     ? cliVersionRevision.substring( 0, r )
                     : cliVersionRevision;
+            
             final String cliRevision = ( r != Util.INVALID_INDEX )
                     ? cliVersionRevision.substring( r + 1 )
                     : "0";
@@ -235,21 +239,29 @@ public class PortsCliUtil
             ( final String           password
             , final boolean          isSimulated
             , final Map<EPortMark,S> map
-            , final Listener         listener
+            , final CliUtil.Listener listener
             )
     {
-        if( HAS_PORT_CLI == false ) return null;
+        if( HAS_PORT_CLI == false ) return DEAD_THREAD;
 
         final String cliCmd = getApplyMarksCli( isSimulated, map );
         final String bashIt = cliCmd.replace( "sudo port", "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH );
         return CliUtil.forkCommand( listener, UNIX_BIN_BASH, BASH_OPT_C, bashIt );
     }
 
-    static synchronized public Thread cliUpdateMacPortsItself( final String password, final Listener listener )
+    /**
+     * Updates the MacPorts CLI software itself, and performs a Port tree rsync as a side-effect.
+     *
+     * @param password
+     * @param listener
+     * @return 'null' if no ports
+     */
+    static synchronized public Thread cliUpdateMacPortsItself( final String password, final CliUtil.Listener listener )
     {
-        if( HAS_PORT_CLI == false ) return null;
+        if( HAS_PORT_CLI == false ) return DEAD_THREAD;
 
-        final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ ECmd.SELFUPDATE._() + " ; ";
+        final String portCmd = "-v "+ ECmd.SELFUPDATE._();
+        final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd + " ; ";
         return CliUtil.forkCommand( listener, UNIX_BIN_BASH, BASH_OPT_C, bashIt ); // ok!
     }
 
@@ -260,11 +272,29 @@ public class PortsCliUtil
      * @param password
      * @return 'null' if no ports
      */
-    static synchronized public Thread cliSyncUpdate( final String password, final Listener listener )
+    static synchronized public Thread cliSyncUpdate( final String password, final CliUtil.Listener listener )
     {
-        if( HAS_PORT_CLI == false ) return null;
+        if( HAS_PORT_CLI == false ) return DEAD_THREAD;
 
-        final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +" -v "+ ECmd.SYNC._() + " ; ";
+        final String portCmd = "-v "+ ECmd.SYNC._();
+        final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd + " ; ";
         return CliUtil.forkCommand( listener, UNIX_BIN_BASH, BASH_OPT_C, bashIt ); // ok!
+    }
+
+    /**
+     * Cleans all installed Ports of distribution files, working files, and logs.
+     * Needs / Was supposed to Removes all inactive Ports also.
+     *
+     * @param password
+     * @param listener
+     * @return 'null' if no ports
+     */
+    static synchronized public Thread cliCleanInstalledRemoveInactive( final String password, final CliUtil.Listener listener )
+    {
+        if( HAS_PORT_CLI == false ) return DEAD_THREAD;
+
+        final String portCmd = "-u -p "+ ECmd.CLEAN._() +" --all "+ EPortStatus.INSTALLED.name().toLowerCase();
+        final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd +" ; ";
+        return CliUtil.forkCommand( listener, UNIX_BIN_BASH, BASH_OPT_C, bashIt );
     }
 }

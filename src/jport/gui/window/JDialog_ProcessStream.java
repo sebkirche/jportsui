@@ -69,7 +69,7 @@ public class JDialog_ProcessStream extends JDialog
      * @param cliable the port command thread to .start()
      * @param resultCodeListenable permits intelligence regarding failed port CLI commands, can be 'null'
      */
-    JDialog_ProcessStream
+    private JDialog_ProcessStream
             ( final boolean isLotsOfFastOutput
             , final String dialogTitle
             , final Cliable cliable
@@ -85,13 +85,13 @@ public class JDialog_ProcessStream extends JDialog
         this.setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );// required
         ((JPanel)this.getContentPane()).setBorder( BorderFactory.createEmptyBorder( 10, 10, 5, 10 ) ); // T L B R
 
-        final JList jl = new JList();
-        jl.setFont( new Font( Font.MONOSPACED, Font.BOLD, 12 ) );
-        jl.setForeground( Color.GREEN.brighter() );
-        jl.setBackground( Color.BLACK );
-        jl.setLayoutOrientation( JList.VERTICAL );
-        jl.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
-        jl.setVisibleRowCount( -1 ); // all
+        final JList jList = new JList();
+        jList.setFont( new Font( Font.MONOSPACED, Font.BOLD, 12 ) );
+        jList.setForeground( Color.GREEN.brighter() );
+        jList.setBackground( Color.BLACK );
+        jList.setLayoutOrientation( JList.VERTICAL );
+        jList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+        jList.setVisibleRowCount( -1 ); // all
 
         final AbstractButton ab_Cancel = FocusedButtonFactory.create( "Cancel", "" );
         ab_Cancel.setEnabled( false );
@@ -101,17 +101,20 @@ public class JDialog_ProcessStream extends JDialog
 
         // console
         final Listener listener = ( isLotsOfFastOutput == true )
-                ?   new LateListening( this, jl, jProgress, ab_Cancel, resultCodeListenable )
-                :   new LiveListening( this, jl, jProgress, ab_Cancel, resultCodeListenable );
+                ?   new LateListening( this, jList, jProgress, ab_Cancel, resultCodeListenable )
+                :   new LiveListening( this, jList, jProgress, ab_Cancel, resultCodeListenable );
 
-        final Thread thread = cliable.provideExecutingCommandLineInterfaceThread( listener );
-        if( thread != null )
+//        try
+//        {   // try-catch to keep AWT thread alive for proper UI recovery
+
+        final Thread runningThread = cliable.provideExecutingCommandLineInterfaceThread( listener );
+        if( runningThread != null )
         {
             final JPanel southPanel = new JPanel( new GridLayout( 1, 0 ) );
             southPanel.add( jProgress );
             southPanel.add( ab_Cancel );
 
-            final JScrollPane jsp = JScrollPaneFactory_.create( jl, EScrollPolicy.VERT_AS_NEEDED__HORIZ_NONE );
+            final JScrollPane jsp = JScrollPaneFactory_.create( jList, EScrollPolicy.VERT_AS_NEEDED__HORIZ_NONE );
 
             // assemble rest of gui in this AWT thread
             this.add( Box.createHorizontalStrut( 800 ), BorderLayout.NORTH );
@@ -139,6 +142,12 @@ public class JDialog_ProcessStream extends JDialog
         {   // no Ports binary to run
             this.dispose();
         }
+
+//        }
+//        catch( Exception ex )
+//        {
+//            ex.printStackTrace();
+//        }
     }
 
 

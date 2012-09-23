@@ -1,6 +1,7 @@
 package jport.gui.panel;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -49,24 +50,25 @@ public class JPanel_CommandBar extends JPanel
     final private Commander      fCommander;
 
     // ignored on Mac-PLAF are .setBackground() and .setContentAreaFilled()
-    final private AbstractButton ab_Sync           = new JButton( "\u21BB Sync" ); // unicode clockwise arrow
-    final private AbstractButton ab_MarkOutdated   = new JButton( "Mark \u2192 All Upgrades" ); // unicode right arrow
-    final private AbstractButton ab_Apply          = new JButton( "\u221A Apply..." ); // unicode square root
-    final private AbstractButton ab_More           = new JButton( "More \u25BC" ); // unicode downward triangle, can not be HTML or will wreck BoxLayout
-    final private AbstractButton ab_ClearSearch    = new JButton( "X" );
+    final private AbstractButton ab_Sync              = new JButton( "\u21BB Sync" ); // unicode clockwise arrow
+    final private AbstractButton ab_MarkOutdated      = new JButton( "Mark \u2192 All Upgrades" ); // unicode right arrow
+    final private AbstractButton ab_Apply             = new JButton( "\u221A Apply..." ); // unicode square root
+    final private AbstractButton ab_MoreCommand       = new JButton( "More \u25BC" ); // unicode downward triangle, can not be HTML or will wreck BoxLayout
+    final private AbstractButton ab_ClearSearch       = new JButton( "X" );
 
-    final private JMenuItem      jItem_MarkInactive= new JMenuItem( "Mark \u2192 All Inactive" );
-    final private JMenuItem      jItem_Detail      = new JMenuItem( "Details..." );
-    final private JMenuItem      jItem_Upgrade     = new JMenuItem( "Update MacPorts..." );
-    final private JMenuItem      jItem_ResetMark   = new JMenuItem( "Reset Marks" );
-    final private JMenuItem      jItem_ResetFilter = new JMenuItem( "Reset Filters" );
-    final private JMenuItem      jItem_ResetCache  = new JMenuItem( "Reset Logo Cache" );
-    final private JMenuItem      jItem_About       = new JMenuItem( "About "+ PortsConstants.APP_NAME +"..." );
+    final private JMenuItem      jItem_PortDetail     = new JMenuItem( "Details..." );
+    final private JMenuItem      jItem_ResetMark      = new JMenuItem( "Reset Marks" );
+    final private JMenuItem      jItem_ResetFilter    = new JMenuItem( "Reset Filters" );
+    final private JMenuItem      jItem_ResetCache     = new JMenuItem( "Reset Logo Cache" );
+    final private JMenuItem      jItem_MarkInactive   = new JMenuItem( "Mark \u2192 All Inactive" );
+    final private JMenuItem      jItem_CleanInstalled = new JMenuItem( "Clean Ports..." );
+    final private JMenuItem      jItem_UpgradeCli     = new JMenuItem( "Update MacPorts..." );
+    final private JMenuItem      jItem_AboutApp       = new JMenuItem( "About "+ PortsConstants.APP_NAME +"..." );
 
-    final private JPopupMenu     jPop_MoreCmd      = new JPopupMenu();
+    final private JPopupMenu     jPop_MoreCmd         = new JPopupMenu();
 
-    final private JComboBox      jCombo_LookIn     = new JComboBox( ESearchWhere.values() );
-    final private JTextField     jField_Search     = new JTextField( 16 );
+    final private JComboBox      jCombo_LookIn        = new JComboBox( ESearchWhere.values() );
+    final private JTextField     jField_Search        = new JTextField( 16 );
 
 
     /**
@@ -85,32 +87,33 @@ public class JPanel_CommandBar extends JPanel
                 +"of a MacPorts installation, pulling in the<BR>"
                 +"latest revision available of the Portfiles from<BR>"
                 +"the MacPorts rsync server.";
-        ab_Sync          .setToolTipText( SYNC_TIP );
-        ab_MarkOutdated  .setToolTipText( "Marks all outdated Ports for upgrading" );
-        ab_Apply         .setToolTipText( "Applies marked Port status change requests" );
-        ab_More          .setToolTipText( "Show other commands" );
-        ab_ClearSearch   .setToolTipText( "Clear search text" );
-        jItem_MarkInactive.setToolTipText("Marks all inactive Ports for removal" );
-        jItem_Detail     .setToolTipText( "Show Port details in a separate window" );
-        jItem_ResetMark  .setToolTipText( "Remove all Port marks" );
-        jItem_ResetFilter.setToolTipText( "Show all Ports without any filtering" );
-        jItem_ResetCache .setToolTipText( "Remove JPortUI project logos from your computer" );
-        jItem_Upgrade    .setToolTipText( "Have MacPorts self-update itself" );
-        jItem_About      .setToolTipText( "Credits" );
-        jCombo_LookIn    .setToolTipText( "Choose what Port information to search" );
-        jField_Search    .setToolTipText( "<HTML>Type [ENTER] or [CR] to begin search<BR>Use [+] to require each term" );
+        ab_Sync             .setToolTipText( SYNC_TIP );
+        ab_MarkOutdated     .setToolTipText( "Marks all outdated Ports for upgrading" );
+        ab_Apply            .setToolTipText( "Applies marked Port status change requests" );
+        ab_MoreCommand      .setToolTipText( "Show other commands" );
+        ab_ClearSearch      .setToolTipText( "Clear search text" );
+        jItem_PortDetail    .setToolTipText( "Show Port details in a separate window" );
+        jItem_ResetMark     .setToolTipText( "Remove all Port marks" );
+        jItem_ResetFilter   .setToolTipText( "Show all Ports without any filtering" );
+        jItem_ResetCache    .setToolTipText( "Remove JPortUI project logos from your computer" );
+        jItem_MarkInactive  .setToolTipText("Marks all inactive Ports for removal" );
+        jItem_CleanInstalled.setToolTipText( "<HTML>Clean installed Ports of working, distribution and log files<BR>Remove inactive Ports" );
+        jItem_UpgradeCli    .setToolTipText( "Have MacPorts self-update itself" );
+        jItem_AboutApp      .setToolTipText( "Credits" );
+        jCombo_LookIn       .setToolTipText( "Choose what Port information to search" );
+        jField_Search       .setToolTipText( "<HTML>Type [ENTER] or [CR] to begin search<BR>Use [+] to require each term" );
 
-        ab_Sync      .setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
-        ab_Apply     .setEnabled( false );
-        jItem_Detail .setEnabled( false );
-        jItem_Upgrade.setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
+        ab_Sync         .setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
+        ab_Apply        .setEnabled( false );
+        jItem_PortDetail.setEnabled( false );
+        jItem_UpgradeCli.setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
         // leaving ab_MarkOutdated enabled because if any Ports are outdated, then we wont know until later in the Notifier Elemental from CLI recon
 
         for( final Component component : new Component[] // required for text field to gain focus at startup
                 { ab_Sync
                 , ab_MarkOutdated
                 , ab_Apply
-                , ab_More
+                , ab_MoreCommand
                 , ab_ClearSearch
                 , jCombo_LookIn
                 }
@@ -131,30 +134,31 @@ public class JPanel_CommandBar extends JPanel
         searchPanel.add( ab_ClearSearch );
 
         // assemble
-        jPop_MoreCmd.add( jItem_MarkInactive );
+        jPop_MoreCmd.add( jItem_PortDetail );
         jPop_MoreCmd.addSeparator();
         jPop_MoreCmd.add( jItem_ResetMark );
         jPop_MoreCmd.add( jItem_ResetFilter );
         jPop_MoreCmd.add( jItem_ResetCache );
         jPop_MoreCmd.addSeparator();
-        jPop_MoreCmd.add( jItem_Detail );
-        jPop_MoreCmd.add( jItem_Upgrade );
+        jPop_MoreCmd.add( jItem_MarkInactive );
+        jPop_MoreCmd.add( jItem_CleanInstalled );
+        jPop_MoreCmd.add( jItem_UpgradeCli );
         jPop_MoreCmd.addSeparator();
-        jPop_MoreCmd.add( jItem_About );
+        jPop_MoreCmd.add( jItem_AboutApp );
 
         this.add( ab_Sync );
         this.add( ab_MarkOutdated );
         this.add( ab_Apply );
         this.add( Box.createHorizontalStrut( 20 ) );
-        this.add( ab_More );
+        this.add( ab_MoreCommand );
         this.add( Box.createHorizontalGlue() );
         this.add( hitTotalComponent ); // centered up
         this.add( Box.createHorizontalGlue() );
         this.add( searchPanel );
 
         // listeners
-        for( final AbstractButton ab : GuiUtil_.getChildren( AbstractButton.class, jPop_MoreCmd, this ) )
-        {
+        for( final AbstractButton ab : GuiUtil_.getChildren( AbstractButton.class, jPop_MoreCmd, (Container)this ) )
+        {   // popup menu items and panel's other ABs
             ab.addActionListener( this );
         }
 
@@ -204,7 +208,7 @@ public class JPanel_CommandBar extends JPanel
         switch( elemental )
         {
             case RETRIEVED :
-                    jItem_Detail.setEnabled( port != Portable.NONE );
+                    jItem_PortDetail.setEnabled( port != Portable.NONE );
                     break;
 
             case UPDATED :
@@ -236,15 +240,15 @@ public class JPanel_CommandBar extends JPanel
             {
                 clearTextSearch();
             }
-            else if( ab == ab_More )
+            else if( ab == ab_MoreCommand )
             {
-                jPop_MoreCmd.show( ab_More, 0, ab_More.getHeight() );
+                jPop_MoreCmd.show( ab_MoreCommand, 0, ab_MoreCommand.getHeight() );
             }
             else if( ab == jItem_MarkInactive )
             {
                 fCommander.markInactivePorts();
             }
-            else if( ab == jItem_Detail )
+            else if( ab == jItem_PortDetail )
             {
                 fCommander.openSelectionDetails();
             }
@@ -261,17 +265,21 @@ public class JPanel_CommandBar extends JPanel
             {
                 HttpUtil.clearCache();
             }
-            else if( ab == jItem_Upgrade )
+            else if( ab == jItem_CleanInstalled )
+            {
+                fCommander.cleanInstalledRemoveInactivePorts();
+            }
+            else if( ab == jItem_UpgradeCli )
             {
                 fCommander.updateMacPortsItself();
             }
-            else if( ab == jItem_About )
+            else if( ab == jItem_AboutApp )
             {
                 ModalDialogFactory.showConfirmation
                         ( EConfirmationChoices.OK
                         , TheUiHolder.INSTANCE.getMainFrame()
                         , PortsConstants.APP_NAME +" Credits"
-                        , "<HTML>UI designed and coded by Stephen Baber<BR>MacPorts availble @ http://www.macports.org/"
+                        , "<HTML>UI designed and coded by Stephen Baber<BR><SMALL>MacPorts availble @ http://www.macports.org/"
                         );
             }
         }

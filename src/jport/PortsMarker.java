@@ -46,21 +46,22 @@ public class PortsMarker
      * Not associated with PortsCatalog in case an error kept the Apply from working
      * and the user's change requests needed to stick around.
      *
-     * @param portsCatalog from a newly loaded index which also references non-equitable, status updated ports
+     * @param refreshedPortsCatalog from a newly loaded index which also references non-equitable, status updated ports
      */
-    synchronized void exchangeAudit( final PortsCatalog portsCatalog )
+    synchronized void exchangeAudit( final PortsCatalog refreshedPortsCatalog )
     {
         final int size = fPort_to_MarkMap.size();
         if( size == 0 ) return; // nothing to do
 
         final Set<Portable> unmarkableSet = new HashSet<Portable>( size );
 
+        // avoid concurrent modification exception when iterator.remove()
         final Iterator<Entry<Portable,EPortMark>> iterator = fPort_to_MarkMap.entrySet().iterator();        
         while( iterator.hasNext() )
         {
             final Entry<Portable,EPortMark> entry = iterator.next();
             final Portable prevPort = entry.getKey(); // alias
-            final Portable refreshPort = portsCatalog.getPortsInventory().equate( prevPort ); // previously -> portsCatalog.parse( prevPort.getCaseInsensitiveName() );
+            final Portable refreshPort = refreshedPortsCatalog.getPortsInventory().equate( prevPort );
             if( refreshPort != null )
             {
                 final EPortMark mark = entry.getValue(); // alias
@@ -98,7 +99,7 @@ public class PortsMarker
                 }
             }
             else
-            {   // may have been removed from PortsIndex
+            {   // may have been removed from PortsIndex when Obsoleted
                 iterator.remove();
             }
         }

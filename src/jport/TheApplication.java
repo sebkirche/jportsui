@@ -78,11 +78,24 @@ public class TheApplication
             SwingUtilities.invokeLater( new Runnable()
                     {   @Override public void run()
                         {   TheApplication.INSTANCE.causeReset();
-                            getPortsMarker().exchangeAudit( vCurrentPortsCatalog ); // unmark any applied changes from CLI or JPortsUI
-                            TheUiHolder.INSTANCE.goLive();
+                            deprang();
                         }
                     } );
         }
+    }
+
+    /**
+     * Unmark any applied changes from CLI or JPortsUI.
+     * Turn the JTable back on.
+     */
+    public void deprang()
+    {
+        SwingUtilities.invokeLater( new Runnable()
+                {   @Override public void run()
+                    {   getPortsMarker().exchangeAudit( vCurrentPortsCatalog );
+                        TheUiHolder.INSTANCE.goLive();
+                    }
+                } );
     }
 
     /**

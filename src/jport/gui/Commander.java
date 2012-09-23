@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 import jport.PortsCliUtil;
 import jport.PortsConstants.EPortMark;
 import jport.PortsConstants.EPortStatus;
@@ -35,7 +36,16 @@ public class Commander
     static final private OneArgumentListenable<Integer> _RESULT_CODE_LISTENABLE = new OneArgumentListenable<Integer> () // para-lambda anonymous class
             {   @Override public void listen( final Integer resultCode )
                 {   if( resultCode == 0 )
-                    {   TheApplication.INSTANCE.probeUpdate(); // *BLOCKS*
+                    {   // implies a Port command ran successfully
+                        TheApplication.INSTANCE.probeUpdate(); // *BLOCKS*
+                    }
+                    else
+                    {   // recover from CLI error
+                        SwingUtilities.invokeLater( new Runnable()
+                                {   @Override public void run()
+                                    {   TheApplication.INSTANCE.deprang();
+                                    }
+                                } );
                     }
                 }
             };

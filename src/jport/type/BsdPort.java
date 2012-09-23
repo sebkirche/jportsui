@@ -8,7 +8,6 @@ import jport.PortsConstants;
 import jport.PortsConstants.EPortMark;
 import jport.PortsConstants.EPortStatus;
 import jport.TheApplication;
-import jport.TheOsBinaries;
 import jport.common.HttpUtil;
 import jport.common.StringsUtil_;
 
@@ -439,10 +438,23 @@ class BsdPort //... refactor IndexPort?
     {
         if( another == this ) return 0;
         
-        final int compared = this.ci_name.compareTo( another.getCaseInsensitiveName() );
-        return ( compared != 0 )
-                ? compared
-                : -1 * this.getVersionInstalled().compareTo( another.getVersionInstalled() ); // reverse order of version numbers
+        final int comparedCiNameCode = this.ci_name.compareTo( another.getCaseInsensitiveName() );
+        if( comparedCiNameCode != 0 )
+        {   // name differs
+            return comparedCiNameCode;
+        }
+        else
+        {   // reverse order of version numbers
+            final int comparedVersionCode = -1 * this.getVersionInstalled().compareTo( another.getVersionInstalled() ); 
+            if( comparedVersionCode != 0 )
+            {
+                return comparedVersionCode;
+            }
+            else
+            {   // revision in reverse order
+                return -1 * this.getRevisionInstalled().compareTo( another.getRevisionInstalled() );
+            }
+        }
     }
 
     @Override final public String toString()

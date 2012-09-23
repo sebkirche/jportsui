@@ -25,9 +25,7 @@ public class PortsConstants
             //
             , UNINSTALLED ( "Ports in the Ports trees that aren't installed", Color.DARK_GRAY )
             , INSTALLED   ( "set of all installed Ports", Color.GREEN )
-            //
             , OUTDATED    ( "installed Ports that are out of date with<BR>respect to their current version/revision in the Ports trees", Color.RED )
-            // Updated / New
             // ============
             //
             , ACTIVE      ( "set of installed and active Ports", Color.BLUE )
@@ -37,7 +35,6 @@ public class PortsConstants
             , UNREQUESTED ( "installed Ports that were installed only<BR>to satisfy dependencies", Color.BLUE.darker() )
             , LEAVES      ( "installed Ports that are unrequested and<BR>have no dependents", Color.GRAY )
             , OBSOLETE    ( "set of Ports that are installed but no<BR>longer exist in any Port trees", Color.YELLOW.darker() )
-            // N/A -> Current     ( "the port in the current working directory" )
             ;
                     private EPortStatus( final String tip ) { this( tip, null ); }
                     private EPortStatus( final String tip, final Color color ) { fTip = tip; fColor = color; }
@@ -59,7 +56,7 @@ public class PortsConstants
             , Deactivate ( EPortStatus.ACTIVE     , "deactivated", "-p" ) // [p]roceed to next port on error
             , Activate   ( EPortStatus.INACTIVE   , "activated"  , "-p" ) // [p]roceed to next port on error
             , Install    ( EPortStatus.UNINSTALLED, "installed"  , "-p" ) // [p]roceed to next port when a preceeding port has an error
-            , Upgrade    ( EPortStatus.OUTDATED   , "upgraded"   , "-u" ) // [u]ninstalls inactive ports
+            , Upgrade    ( EPortStatus.OUTDATED   , "upgraded"   , "-p -u" ) // [p]roceed to next port on error ; [u]ninstalls inactive ports ;
             , Dependency_Upgrade  ( Upgrade )
             , Dependency_Install  ( Install )
             , Dependant_Uninstall ( Uninstall )

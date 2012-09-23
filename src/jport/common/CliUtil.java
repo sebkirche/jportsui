@@ -29,7 +29,7 @@ public class CliUtil
     static final private boolean _CONSOLE_OUT_PROCESS_ENVIRONMENT = false;
 
     /** When DEBUG true shows CLI command and Errors on console. */
-    static final private boolean DEBUG = false;
+    static final private boolean DEBUG = true;
 
     static // initializer block
     {
@@ -291,7 +291,7 @@ public class CliUtil
             }
 
             final int resultCode = process.exitValue();
-            if( DEBUG && ( resultCode != 0 || errLine.isEmpty() == false ) ) System.err.println( "RESULT=" + resultCode );
+            if( DEBUG && ( resultCode != 0 || ( errLine != null && errLine.isEmpty() == false ) ) ) System.err.println( "RESULT=" + resultCode );
 
             Util.close( errorStream );
         }

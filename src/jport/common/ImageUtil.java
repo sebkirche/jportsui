@@ -63,10 +63,9 @@ public class ImageUtil
         }
         else
         {   // special cased, AWT tends to fail with transparent ".ICO".  Bug not completely fixed as of JDK7.07.
-            final ByteArrayInputStream bais = new ByteArrayInputStream( bytes ); // wraps a read marker around a byte[], does not need to be closed
             try
             {   // generally a Microsoft .ICO image
-                final Ico ico = new Ico( bais ); // THROWS BadIcoResException
+                final Ico ico = new Ico( bytes ); // THROWS BadIcoResException
 
                 Image largestImage = null;
                 int largestPerimeter = 0;

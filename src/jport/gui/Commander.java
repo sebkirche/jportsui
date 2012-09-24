@@ -32,24 +32,6 @@ import jport.type.Portable.Predicatable;
  */
 public class Commander
 {
-    /** If ports failed then don't reset UI. For ex. Wifi is off, but clearing the user's marks would be antisocial. */
-    static final private OneArgumentListenable<Integer> _RESULT_CODE_LISTENABLE = new OneArgumentListenable<Integer> () // para-lambda anonymous class
-            {   @Override public void listen( final Integer resultCode )
-                {   if( resultCode == 0 )
-                    {   // implies a Port command ran successfully
-                        TheApplication.INSTANCE.probeUpdate(); // *BLOCKS*
-                    }
-                    else
-                    {   // recover from CLI error
-                        SwingUtilities.invokeLater( new Runnable()
-                                {   @Override public void run()
-                                    {   TheApplication.INSTANCE.deprang();
-                                    }
-                                } );
-                    }
-                }
-            };
-
     static
     {}
 
@@ -130,7 +112,7 @@ public class Commander
     }
 
     /**
-     * 
+     *
      * @param searchText
      * @param searchWhere
      */
@@ -157,7 +139,7 @@ public class Commander
     /**
      * Confirm with user for MacPorts to change all Ports with status request changes.
      */
-    public void applyMarks()
+    public void confirmApplyMarks()
     {
         final JDialog modalDialog = new JDialog_ApplyMarks();
         modalDialog.setVisible( true );
@@ -167,37 +149,11 @@ public class Commander
      * Ask MacPorts to change all Ports with status request changes.
      *
      * @param isSimulated
-     * @param map
+     * @param mark_to_PortSet_Map
      */
-    public void applyMarksToPorts( final boolean isSimulated, final Map<EPortMark,? extends Set<Portable>> map )
+    public void applyMarksToPorts( final boolean isSimulated, final Map<EPortMark,? extends Set<Portable>> mark_to_PortSet_Map )
     {
-        final String cliCmd = "<HTML>"+ PortsCliUtil.getApplyMarksCli( isSimulated, map ).replace( " ; ", " ; <BR>" );
-        final JDialog passwordDialog = new JDialog_PasswordPlease
-                ( cliCmd
-                , vAdminPassword
-                , new Targetable<String>() // anonymous class
-                        {   @Override public void target( String obj )
-                            {   vAdminPassword = obj;
-                                if( vAdminPassword.isEmpty() == false )
-                                {
-                                    TheUiHolder.INSTANCE.goDark();
-                                    final JDialog processDialog = new JDialog_ProcessStream
-                                            ( "Applying Marks..."
-                                            , new Cliable() // anonymous class
-                                                    {   @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
-                                                        {   return PortsCliUtil.cliApplyMarks( vAdminPassword, isSimulated, map, listener );
-                                                        }
-                                                    }
-                                            , _RESULT_CODE_LISTENABLE
-                                            );
-                                    processDialog.add( new JLabel( cliCmd ), BorderLayout.NORTH );
-                                    processDialog.setVisible( true );
-                                }
-                                // else cancelled
-                            }
-                        }
-                );
-        passwordDialog.setVisible( true );
+        new ProcessCommand_ApplyMarks( isSimulated, mark_to_PortSet_Map ).passwordedExecute();
     }
 
     /**
@@ -205,32 +161,7 @@ public class Commander
      */
     public void updateMacPortsItself()
     {
-        final String cliCmd = "sudo port -v selfupdate";
-        final JDialog passwordDialog = new JDialog_PasswordPlease
-                ( cliCmd
-                , vAdminPassword
-                , new Targetable<String>() // anonymous class
-                        {   @Override public void target( String obj )
-                            {   vAdminPassword = obj;
-                                if( vAdminPassword.isEmpty() == false )
-                                {
-                                    TheUiHolder.INSTANCE.goDark();
-                                    final JDialog processDialog = new JDialog_ProcessStream
-                                            ( cliCmd
-                                            , new Cliable() // anonymous class
-                                                    {   @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
-                                                        {   return PortsCliUtil.cliUpdateMacPortsItself( vAdminPassword, listener );
-                                                        }
-                                                    }
-                                            , _RESULT_CODE_LISTENABLE
-                                            );
-                                    processDialog.setVisible( true );
-                                }
-                                // else cancelled
-                            }
-                        }
-                );
-        passwordDialog.setVisible( true );
+        new ProcessCommand_UpdateMacPortsItself().passwordedExecute();
     }
 
     /**
@@ -238,65 +169,165 @@ public class Commander
      */
     public void syncPorts()
     {
-        final String cliCmd = "sudo port -v sync";
-        final JDialog passwordDialog = new JDialog_PasswordPlease
-                ( cliCmd
-                , vAdminPassword
-                , new Targetable<String>() // anonymous class
-                        {   @Override public void target( String obj )
-                            {   vAdminPassword = obj;
-                                if( vAdminPassword.isEmpty() == false )
-                                {
-                                    TheUiHolder.INSTANCE.goDark();
-                                    final JDialog processDialog = new JDialog_ProcessStream
-                                            ( cliCmd
-                                            , new Cliable() // anonymous class
-                                                    {   @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
-                                                        {   return PortsCliUtil.cliSyncUpdate( vAdminPassword, listener );
-                                                        }
-                                                    }
-                                            , _RESULT_CODE_LISTENABLE
-                                            );
-                                    processDialog.setVisible( true );
-                                }
-                                // else cancelled
-                            }
-                        }
-                );
-        passwordDialog.setVisible( true );
+        new ProcessCommand_Sync().passwordedExecute();
     }
 
     /**
      * Cleans all installed Ports of distribution files, working files, and logs.
-     * Supposed to also Removes all inactive Ports.
+     * Was supposed to also Removes all inactive Ports.
      */
-    public void cleanInstalledRemoveInactivePorts()
+    public void cleanInstalled()
     {
-        final String cliCmd = "sudo port -u -p clean --all installed";
-        final JDialog passwordDialog = new JDialog_PasswordPlease
-                ( cliCmd
-                , vAdminPassword
-                , new Targetable<String>() // anonymous class
-                        {   @Override public void target( String obj )
-                            {   vAdminPassword = obj;
-                                if( vAdminPassword.isEmpty() == false )
-                                {
-                                    TheUiHolder.INSTANCE.goDark();
-                                    final JDialog processDialog = new JDialog_ProcessStream
-                                            ( cliCmd
-                                            , new Cliable() // anonymous class
-                                                    {   @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
-                                                        {   return PortsCliUtil.cliCleanInstalledRemoveInactive( vAdminPassword, listener );
-                                                        }
-                                                    }
-                                            , _RESULT_CODE_LISTENABLE
-                                            );
-                                    processDialog.setVisible( true );
-                                }
-                                // else cancelled
+        new ProcessCommand_Clean().passwordedExecute();
+    }
+
+    // ================================================================================
+    private class ProcessCommand_ApplyMarks extends AProcessCommand
+    {
+        final private boolean fIsSimulated;
+        final private Map<EPortMark,? extends Set<Portable>> fMark_to_PortSet_Map;
+
+        ProcessCommand_ApplyMarks( final boolean isSimulated, final Map<EPortMark,? extends Set<Portable>> mark_to_PortSet_Map )
+        {
+            super( "Apply Marks", "<HTML>"+ PortsCliUtil.getApplyMarksCli( isSimulated, mark_to_PortSet_Map ).replace( " ; ", " ; <BR>" ) );
+
+            fIsSimulated = isSimulated;
+            fMark_to_PortSet_Map = mark_to_PortSet_Map;
+        }
+
+        @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
+        {
+            return PortsCliUtil.cliApplyMarks
+                    ( Commander.this.vAdminPassword
+                    , fIsSimulated
+                    , fMark_to_PortSet_Map
+                    , listener
+                    );
+        }
+    }
+
+    // ================================================================================
+    private class ProcessCommand_UpdateMacPortsItself extends AProcessCommand
+    {
+        ProcessCommand_UpdateMacPortsItself()
+        {
+            super( "Update MacPorts Tool", "sudo port -v selfupdate" );
+        }
+
+        @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
+        {
+            return PortsCliUtil.cliUpdateMacPortsItself( Commander.this.vAdminPassword, listener );
+        }
+    }
+
+    // ================================================================================
+    private class ProcessCommand_Sync extends AProcessCommand
+    {
+        ProcessCommand_Sync()
+        {
+            super( "Update Port Info", "sudo port -v sync" );
+        }
+
+        @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
+        {
+            return PortsCliUtil.cliSyncUpdate( Commander.this.vAdminPassword, listener );
+        }
+    }
+
+    // ================================================================================
+    private class ProcessCommand_Clean extends AProcessCommand
+    {
+        ProcessCommand_Clean()
+        {
+            super( "Clean Installed Ports", "sudo port -u -p clean --all installed" );
+        }
+
+        @Override public Thread provideExecutingCommandLineInterfaceThread( final Listener listener )
+        {
+            return PortsCliUtil.cliCleanInstalled( Commander.this.vAdminPassword, listener );
+        }
+    }
+
+    // ================================================================================
+    /**
+     * Base class for a password driven command line Port command.
+     */
+    private abstract class AProcessCommand
+        implements
+              Cliable
+            , Targetable<String>
+            , OneArgumentListenable<Integer>
+    {
+        final private String fTitle;
+        final private String fCommandText;
+
+        AProcessCommand( final String title )
+        {
+            fTitle = title;
+            fCommandText = title;
+        }
+
+        AProcessCommand( final String title, final String commandText )
+        {
+            fTitle = title;
+            fCommandText = commandText;
+        }
+
+        /**
+         *
+         * @param obj password fired at the command from the password dialog
+         */
+        @Override public void target( String obj )
+        {
+            Commander.this.vAdminPassword = obj;
+            if( obj.isEmpty() == false )
+            {
+                TheUiHolder.INSTANCE.goDark();
+                final JDialog processDialog = new JDialog_ProcessStream
+                        ( fTitle
+                        , (Cliable)this
+                        , (OneArgumentListenable<Integer>)this
+                        );
+
+                // superimposed to the right of the NORTH border error label, kinda strange that
+                final JLabel jLabel_cmd = new JLabel( fCommandText );
+                jLabel_cmd.setHorizontalAlignment( JLabel.RIGHT );
+
+                processDialog.add( jLabel_cmd, BorderLayout.NORTH );
+                processDialog.setVisible( true );
+            }
+            // else cancelled
+        }
+
+        /**
+         *
+         * @param resultCode returned from Cliable process
+         */
+        @Override public void listen( final Integer resultCode )
+        {
+            if( resultCode == 0 )
+            {   // implies a Port command ran successfully
+                TheApplication.INSTANCE.probeUpdate(); // *BLOCKS*
+            }
+            else
+            {   // recover from CLI error but don't reset UI. For ex. Wifi is off, but clearing the user's marks would be antisocial.
+                SwingUtilities.invokeLater( new Runnable()
+                        {   @Override public void run()
+                            {   TheApplication.INSTANCE.deprang();
                             }
-                        }
-                );
-        passwordDialog.setVisible( true );
+                        } );
+            }
+        }
+
+        void passwordedExecute()
+        {
+            final JDialog passwordDialog = new JDialog_PasswordPlease
+                    ( fTitle
+                    , fCommandText
+                    , Commander.this.vAdminPassword
+                    , (Targetable<String>)this
+                    );
+            passwordDialog.setVisible( true );
+        }
     }
 }

@@ -199,7 +199,7 @@ public class PortFilterPredicates
 
         @Override public void reset()
         {
-            this.setText( "Using MacPorts "+ PortsCliUtil.cliPortVersion() );
+            this.setText( "Using MacPorts "+ PortsCliUtil.PORT_CLI_VERSION );
         }
     }
 }

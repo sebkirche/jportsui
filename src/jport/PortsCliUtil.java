@@ -41,10 +41,14 @@ public class PortsCliUtil
                     String _() { return this.name().toLowerCase(); }
             }
 
-    static final private Thread DEAD_THREAD = new Thread( new Runnable() { @Override public void run() {} }, "DEAD_THREAD" );
+    /** Non-running thread for Windows. */
+    static final private Thread DEAD_THREAD = new Thread( new Runnable() { @Override public void run() {} }, "NO_RUN_THREAD" );
 
     static final private String _PORT_BIN_PATH = "/opt/local/bin/port"; //... this is non-portable, use "which port" command instead
     static final public boolean HAS_PORT_CLI = new File( _PORT_BIN_PATH ).exists();
+
+    /** Note: Will be incorrect after a "port selfupdate" that actually gets a new version of the Port CLI tool. */
+    static final public String PORT_CLI_VERSION = PortsCliUtil.cliPortVersion();
 
     static
     {}
@@ -168,11 +172,11 @@ public class PortsCliUtil
             final String cliVersion = ( r != Util.INVALID_INDEX )
                     ? cliVersionRevision.substring( 0, r )
                     : cliVersionRevision;
-            
+
             final String cliRevision = ( r != Util.INVALID_INDEX )
                     ? cliVersionRevision.substring( r + 1 )
                     : "0";
-            
+
             final CliPortInfo cpi = new CliPortInfo
                     ( cliPortName.intern()
                     , cliVersion.intern()
@@ -283,13 +287,13 @@ public class PortsCliUtil
 
     /**
      * Cleans all installed Ports of distribution files, working files, and logs.
-     * Needs / Was supposed to Removes all inactive Ports also.
+     * Was supposed to Removes all inactive Ports also.
      *
      * @param password
      * @param listener
      * @return 'null' if no ports
      */
-    static synchronized public Thread cliCleanInstalledRemoveInactive( final String password, final CliUtil.Listener listener )
+    static synchronized public Thread cliCleanInstalled( final String password, final CliUtil.Listener listener )
     {
         if( HAS_PORT_CLI == false ) return DEAD_THREAD;
 

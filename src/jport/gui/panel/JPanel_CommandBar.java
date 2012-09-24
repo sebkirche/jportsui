@@ -52,7 +52,7 @@ public class JPanel_CommandBar extends JPanel
     // ignored on Mac-PLAF are .setBackground() and .setContentAreaFilled()
     final private AbstractButton ab_Sync              = new JButton( "\u21BB Sync" ); // unicode clockwise arrow
     final private AbstractButton ab_MarkOutdated      = new JButton( "Mark \u2192 All Upgrades" ); // unicode right arrow
-    final private AbstractButton ab_Apply             = new JButton( "\u221A Apply..." ); // unicode square root
+    final private AbstractButton ab_ApplyMarks        = new JButton( "\u221A Apply..." ); // unicode square root
     final private AbstractButton ab_MoreCommand       = new JButton( "More \u25BC" ); // unicode downward triangle, can not be HTML or will wreck BoxLayout
     final private AbstractButton ab_ClearSearch       = new JButton( "X" );
 
@@ -89,7 +89,7 @@ public class JPanel_CommandBar extends JPanel
                 +"the MacPorts rsync server.";
         ab_Sync             .setToolTipText( SYNC_TIP );
         ab_MarkOutdated     .setToolTipText( "Marks all outdated Ports for upgrading" );
-        ab_Apply            .setToolTipText( "Applies marked Port status change requests" );
+        ab_ApplyMarks       .setToolTipText( "Applies marked Port status change requests" );
         ab_MoreCommand      .setToolTipText( "Show other commands" );
         ab_ClearSearch      .setToolTipText( "Clear search text" );
         jItem_PortDetail    .setToolTipText( "Show Port details in a separate window" );
@@ -97,14 +97,14 @@ public class JPanel_CommandBar extends JPanel
         jItem_ResetFilter   .setToolTipText( "Show all Ports without any filtering" );
         jItem_ResetCache    .setToolTipText( "Remove JPortUI project logos from your computer" );
         jItem_MarkInactive  .setToolTipText("Marks all inactive Ports for removal" );
-        jItem_CleanInstalled.setToolTipText( "<HTML>Clean installed Ports of working, distribution and log files<BR>Remove inactive Ports" );
+        jItem_CleanInstalled.setToolTipText( "<HTML>Clean installed Ports of working,<BR>distribution and log files" );
         jItem_UpgradeCli    .setToolTipText( "Have MacPorts self-update itself" );
         jItem_AboutApp      .setToolTipText( "Credits" );
         jCombo_LookIn       .setToolTipText( "Choose what Port information to search" );
         jField_Search       .setToolTipText( "<HTML>Type [ENTER] or [CR] to begin search<BR>Use [+] to require each term" );
 
         ab_Sync         .setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
-        ab_Apply        .setEnabled( false );
+        ab_ApplyMarks   .setEnabled( false );
         jItem_PortDetail.setEnabled( false );
         jItem_UpgradeCli.setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
         // leaving ab_MarkOutdated enabled because if any Ports are outdated, then we wont know until later in the Notifier Elemental from CLI recon
@@ -112,7 +112,7 @@ public class JPanel_CommandBar extends JPanel
         for( final Component component : new Component[] // required for text field to gain focus at startup
                 { ab_Sync
                 , ab_MarkOutdated
-                , ab_Apply
+                , ab_ApplyMarks
                 , ab_MoreCommand
                 , ab_ClearSearch
                 , jCombo_LookIn
@@ -148,7 +148,7 @@ public class JPanel_CommandBar extends JPanel
 
         this.add( ab_Sync );
         this.add( ab_MarkOutdated );
-        this.add( ab_Apply );
+        this.add( ab_ApplyMarks );
         this.add( Box.createHorizontalStrut( 20 ) );
         this.add( ab_MoreCommand );
         this.add( Box.createHorizontalGlue() );
@@ -213,7 +213,7 @@ public class JPanel_CommandBar extends JPanel
 
             case UPDATED :
                     final boolean isMarked = TheApplication.INSTANCE.getPortsMarker().getMarkCount() > 0;
-                    ab_Apply.setEnabled( isMarked );
+                    ab_ApplyMarks.setEnabled( isMarked );
                     break;
         }
     }
@@ -232,9 +232,9 @@ public class JPanel_CommandBar extends JPanel
             {
                 fCommander.markOutdatedPorts();
             }
-            else if( ab == ab_Apply )
+            else if( ab == ab_ApplyMarks )
             {
-                fCommander.applyMarks();
+                fCommander.confirmApplyMarks();
             }
             else if( ab == ab_ClearSearch )
             {
@@ -267,7 +267,7 @@ public class JPanel_CommandBar extends JPanel
             }
             else if( ab == jItem_CleanInstalled )
             {
-                fCommander.cleanInstalledRemoveInactivePorts();
+                fCommander.cleanInstalled();
             }
             else if( ab == jItem_UpgradeCli )
             {

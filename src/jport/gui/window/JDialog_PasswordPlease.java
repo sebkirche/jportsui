@@ -37,40 +37,52 @@ public class JDialog_PasswordPlease extends JDialog
     {}
 
     final private AbstractButton ab_Cancel = new JButton( "Cancel" );
+
+    /** Default button. */
     final private AbstractButton ab_Ok     = FocusedButtonFactory.create( "OK", "Use the password" );
-    final private JPasswordField jPassword = new JPasswordField( 28 ); // char hiding when typing
+
+    /** Character hiding when typing, will accommodate more than 28 chars. */
+    final private JPasswordField jPassword = new JPasswordField( 28 );
 
     final private Targetable<String> fTargetable;
 
     /**
+     * Title of the password dialog is "Authentication"
      *
-     * @param cmd
+     * @param okTitle
+     * @param commandLabelText
      * @param adminPassword
      * @param targetable calls back with password
      */
     public JDialog_PasswordPlease
-            ( final String cmd
+            ( final String okTitle
+            , final String commandLabelText
             , final String adminPassword
             , final Targetable<String> targetable
             )
     {
         this
             ( TheUiHolder.INSTANCE.getMainFrame() // stay on top
-            , cmd
+            , okTitle
+            , commandLabelText
             , adminPassword
             , targetable
             );
     }
 
     /**
+     * Title of the password dialog is "Authentication"
+     *
      * @param owner parent window
-     * @param cmd
+     * @param okTitle
+     * @param commandLabelText
      * @param adminPassword
      * @param targetable calls back with password
      */
     private JDialog_PasswordPlease
             ( final Window owner
-            , final String cmd
+            , final String okTitle
+            , final String commandLabelText
             , final String adminPassword
             , final Targetable<String> targetable
             )
@@ -85,7 +97,7 @@ public class JDialog_PasswordPlease extends JDialog
         fTargetable = targetable;
 
         // inner north
-        final JLabel jLabel_Cmd = new JLabel( "<HTML><FONT size=+0><I>An admin or root password is required to</I><BR><B>"+ cmd );
+        final JLabel jLabel_Cmd = new JLabel( "<HTML><FONT size=+0><I>An admin or root password is required to</I><BR><B>"+ commandLabelText );
 
         // inner south
         jPassword.setText( adminPassword );
@@ -105,6 +117,11 @@ public class JDialog_PasswordPlease extends JDialog
         southPanel.add( ab_Cancel );
         southPanel.add( Box.createHorizontalStrut( 15 ) );
         southPanel.add( ab_Ok );
+
+        if( okTitle != null && okTitle.isEmpty() == false )
+        {
+            ab_Ok.setText( okTitle );
+        }
 
         // outer west
         final JPanel westPanel = new JPanel(); // moves icon to top of west constraint

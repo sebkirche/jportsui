@@ -15,6 +15,7 @@ import java.util.TreeSet;
 import jport.PortsConstants.EPortMark;
 import jport.PortsConstants.EPortStatus;
 import jport.common.Elemental.EElemental;
+import jport.common.Util;
 import jport.type.Portable;
 import jport.type.Portable.Predicatable;
 
@@ -55,20 +56,21 @@ public class PortsMarker
 
         final Set<Portable> unmarkableSet = new HashSet<Portable>( size );
 
-        // avoid concurrent modification exception when iterator.remove()
-        final Iterator<Entry<Portable,EPortMark>> iterator = fPort_to_MarkMap.entrySet().iterator();        
-        while( iterator.hasNext() )
+        // avoids concurrent modification exception
+        @SuppressWarnings("unchecked")
+        final Entry<Portable,EPortMark>[] entries = Util.createArray( Map.Entry.class, fPort_to_MarkMap.entrySet() );
+
+        for( Entry<Portable,EPortMark> entry : entries )
         {
-            final Entry<Portable,EPortMark> entry = iterator.next();
             final Portable prevPort = entry.getKey(); // alias
             final Portable refreshPort = refreshedPortsCatalog.getPortsInventory().equate( prevPort );
             if( refreshPort != null )
-            {
+            {   // found
                 final EPortMark mark = entry.getValue(); // alias
                 fPort_to_MarkMap.put( refreshPort, mark ); // replace with the new port instance
 
                 if( DEBUG )
-                { 
+                {
                     System.out.print( refreshPort.getName() +'=' );
                     for( EPortStatus ps : EPortStatus.VALUES )
                         { if( refreshPort.hasStatus( ps ) ) { System.out.print( ps.toString() +',' ); } }
@@ -99,8 +101,8 @@ public class PortsMarker
                 }
             }
             else
-            {   // may have been removed from PortsIndex when Obsoleted
-                iterator.remove();
+            {   // may have been removed from PortsIndex when Obsoleted (or Upgraded from a revision?)
+                unmarkableSet.add( refreshPort );
             }
         }
 

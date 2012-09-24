@@ -15,6 +15,13 @@ public class FocusedButtonFactory
 {
     private FocusedButtonFactory() {}
 
+    /**
+     * Highlighted as default action when [Enter] key typed.
+     *
+     * @param text
+     * @param tip
+     * @return
+     */
     static public AbstractButton create( final String text, final String tip )
     {
         final JButton jb = new JButton( text );

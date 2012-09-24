@@ -37,8 +37,7 @@ public class CliUtil
         {
             final ProcessBuilder pb = new ProcessBuilder( "ls".split( " " ) ); // need an object ref to get at .environment()
             final Map<String,String> env = pb.environment();
-            final Set<String> set = env.keySet();
-            final String[] keys = StringsUtil_.toStrings( set );
+            final String[] keys = StringsUtil_.toStrings( env.keySet() );
 
             for( final String key : StringsUtil_.sort( keys ) )
             {

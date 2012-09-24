@@ -12,7 +12,11 @@ import jport.common.Notification.NotificationListenable;
  */
 public class Reset
 {
-    static final private Resetable NO_OP = new Resetable() { @Override public void reset() {} };
+    /** No Operation Listener para-lambda. */
+    static final private Resetable _NO_OP = new Resetable() 
+            {   @Override public void reset() // anonymous class
+                {}
+            };
 
     private Reset() {}
 
@@ -37,7 +41,7 @@ public class Reset
     {
         public Reseter()
         {
-            super( NO_OP );
+            super( _NO_OP );
         }
 
         /**

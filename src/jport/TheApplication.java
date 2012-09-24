@@ -19,7 +19,7 @@ import jport.type.Portable;
 public class TheApplication
 {
     /** Static because doesn't require the INSTANCE to be finished constructing. */
-    static final private Reseter RESET_CATALOG_NOTIFIER = new Reseter();
+    static final private Reseter _RESET_CATALOG_NOTIFIER = new Reseter();
 
     /** Manages the current PortsCatalog collection and mutable information as a singleton. */
     static final public TheApplication INSTANCE = new TheApplication();
@@ -103,7 +103,7 @@ public class TheApplication
      *
      * @return just the listener .add() & .remove() aspect of the interface
      */
-    static public Notifiable<Resetable> getResetNotifier() { return RESET_CATALOG_NOTIFIER; }
+    static public Notifiable<Resetable> getResetNotifier() { return _RESET_CATALOG_NOTIFIER; }
 
     /**
      * Subscribe to Port elemental notifications.
@@ -125,6 +125,6 @@ public class TheApplication
 
     public void causeReset()
     {
-        RESET_CATALOG_NOTIFIER.causeReset();
+        _RESET_CATALOG_NOTIFIER.causeReset();
     }
 }

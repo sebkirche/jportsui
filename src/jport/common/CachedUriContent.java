@@ -29,6 +29,8 @@ class CachedUriContent
     }
 
     /**
+     * Static factory method.
+     *
      * @param isNonVolatile 'true' for on disk persistence
      * @return
      */

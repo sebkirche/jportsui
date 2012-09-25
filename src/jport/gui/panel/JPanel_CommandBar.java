@@ -279,7 +279,7 @@ public class JPanel_CommandBar extends JPanel
                         ( EConfirmationChoices.OK
                         , TheUiHolder.INSTANCE.getMainFrame()
                         , PortsConstants.APP_NAME +" Credits"
-                        , "<HTML>UI designed and coded by Stephen Baber<BR><SMALL>MacPorts availble @ http://www.macports.org/"
+                        , "<HTML>UI designed and coded by Stephen Baber<BR><SMALL><BR>MacPorts availble @ http://www.macports.org/"
                         );
             }
         }

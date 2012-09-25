@@ -117,10 +117,10 @@ public class JPanel_CommonInfo extends JPanel
                     ? "<FONT color=blue>Installed & Active"+ FONT_OFF
                     : "<FONT color=purple>Installed & Inactive"+ FONT_OFF;
 
-            final String installedVerRev = port.getVersionInstalled() + ( "0".equals( port.getRevisionInstalled() ) 
+            final String installedVerRev = port.getVersionInstalled() + ( "0".equals( port.getRevisionInstalled() )
                     ? ""
                     : " <U>"+ FONT_GRAY + port.getRevisionInstalled() + FONT_OFF +"</U>" );
-            final String latestVerRev    = port.getLatestVersion()    + ( "0".equals( port.getLatestRevision() )    
+            final String latestVerRev    = port.getLatestVersion()    + ( "0".equals( port.getLatestRevision() )
                     ? ""
                     : " <SMALL><U>"+ port.getLatestRevision() +"</U></SMALL>" );
 
@@ -175,27 +175,31 @@ public class JPanel_CommonInfo extends JPanel
      */
     private String getVariantText( final Portable port )
     {
-        if( port.getVariants().length != 0 )
-        {   // has variants
-            String modVariants = StringsUtil_.concatenate( ", ", StringsUtil_.sort( port.getVariants() ) );
+        final String[] variants = port.getVariants(); // alias
 
-            if( port.hasStatus( EPortStatus.INSTALLED ) == false )
-            {   // NOT installed
-                return FONT_GRAY +"Variants"+ FONT_OFF +" \t "+ modVariants +'\n';
+        if( variants.length == 0 ) return " \t \n"; // no variants
+
+        String modVariants = " "+ StringsUtil_.concatenate( ", ", StringsUtil_.sort( port.getVariants() ) ); // .replace() required special casing first char
+
+        if( port.hasStatus( EPortStatus.INSTALLED ) == false || ( variants.length == 1 && port.getVariantsInstalled().length == 0 ) )
+        {   // port NOT installed or installed but the one variant is not active
+            return FONT_GRAY +"Variants"+ FONT_OFF +" \t "+ modVariants +'\n';
+        }
+        else
+        {   // IS installed
+            if( variants.length == 1 )
+            {   // has only one variant and it must be installed because of the above check
+                return FONT_GRAY +"Variants"+ FONT_OFF +" \t <FONT color=green><B> <U>"+ variants[ 0 ] +"</U></B>,"+ FONT_OFF +" \n";
             }
             else
-            {   // IS installed
-                for( final String installedVariants : StringsUtil_.sort( port.getVariantsInstalled() ) )
-                {   // hilite installed
-                    modVariants = modVariants.replace( installedVariants, "<FONT color=green><B><U>"+ installedVariants +"</U></B>"+ FONT_OFF );
+            {   // has many variants
+                for( final String installedVariants : port.getVariantsInstalled() )
+                {   // hilite installed, the prefix space + postfix comma avoids the partial match bug, ex. "x11" vs "no_x11"
+                    modVariants = modVariants.replace( " "+ installedVariants +',', "<FONT color=green><B> <U>"+ installedVariants +"</U></B>,"+ FONT_OFF );
                 }
 
                 return FONT_GRAY +"Variants"+ FONT_OFF +" \t "+ modVariants +'\n';
             }
-        }
-        else
-        {
-            return " \t \n";
         }
     }
 

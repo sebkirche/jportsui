@@ -30,7 +30,7 @@ public class JPanel_Histogram extends JPanel
           ActionListener
         , AncestorListener
 {
-    static final boolean NEED_BREAK_OUT_CATEGORIES = false;
+    static final boolean NEED_TO_BREAK_OUT_CATEGORIES = false;
 
     static
     {}
@@ -49,11 +49,11 @@ public class JPanel_Histogram extends JPanel
 
         jCombo_Histo.setToolTipText( "Choose a different Histogram" );
 
-        ab_Any.setToolTipText( "Clears selection filtering" );
+        ab_Any.setToolTipText( "Clears selected histogram's filter" );
         ab_Any.setEnabled( false );
 
         jCombo_Histo.setSelectedIndex( -1 ); // no selection
-        if( NEED_BREAK_OUT_CATEGORIES ) jCombo_Histo.removeItem( EHistogram.Categories );
+        if( NEED_TO_BREAK_OUT_CATEGORIES ) jCombo_Histo.removeItem( EHistogram.Categories );
 
         this.add( jPanel_center, BorderLayout.CENTER );
         this.add( jCombo_Histo , BorderLayout.NORTH );

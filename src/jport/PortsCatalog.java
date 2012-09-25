@@ -25,12 +25,15 @@ import jport.type.Portable;
  */
 public class PortsCatalog
 {
+    static final private boolean _FIRST_MAP_REASSIGN = false;
+
     /** This file created by MacPorts. */
     static final private String _PORTS_FILE_NAME = "PortIndex";
 
     /** As of 2012-09-01, ~15,500 port entries. */
     static final private int _FORECAST_COUNT = 20000;
 
+    /** Last Catalog generated Identification # */
     static final private AtomicInteger _ID = new AtomicInteger();
 
     static final PortsCatalog NONE = new PortsCatalog();
@@ -48,6 +51,7 @@ public class PortsCatalog
     final private Map<String,Portable> fCiName_to_PortMap;
     final private PortsInventory       fPortsInventory;
 
+    /** Lazily instantiated in a different I/O bound thread. */
     volatile private PortsDate vPortsDate = null;
 
     /**
@@ -66,7 +70,7 @@ public class PortsCatalog
      */
     PortsCatalog( final PortsCatalog prevCatalog )
     {
-        final Map<String,Portable> ciName_to_PortMap = ( true )
+        final Map<String,Portable> ciName_to_PortMap = ( _FIRST_MAP_REASSIGN == false )
                 ? _parsePortIndex( PortsConstants.PORTS_PATH + _PORTS_FILE_NAME ) // *BLOCKS* for disk I/O
                 : prevCatalog.fCiName_to_PortMap;
 
@@ -305,7 +309,7 @@ public class PortsCatalog
      */
     void scanDates()
     {
-        vPortsDate = new PortsDate( this );
+        vPortsDate = new PortsDate( this ); // atomic assignment
     }
 
     public long getLastSyncEpoch()
@@ -315,7 +319,7 @@ public class PortsCatalog
             return vPortsDate.getLastSyncEpoch();
         }
         else
-        {
+        {   // still scanning or no Port tool
             return -1L;
         }
     }
@@ -329,7 +333,7 @@ public class PortsCatalog
     {
         // test
         final long startMillisec = System.currentTimeMillis();
-        final PortsCatalog portsCatalog = new PortsCatalog();
+        final PortsCatalog portsCatalog = new PortsCatalog( null );
 //        final Portable[] dependPorts = portsCatalog.getDeps().getFullDependenciesOf( portsCatalog.parse( "graphviz" ) );
         // OR -> portsCatalog.parse( "graphviz" ).buildFullDependencies()
         System.out.println( PortsCatalog.class.getSimpleName() +".main() ms="+ ( System.currentTimeMillis() - startMillisec ) );

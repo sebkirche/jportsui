@@ -1,20 +1,20 @@
-// Ico.java
+package ca.mb.javajeff;
 
-// Handles 2-color, 16-color, 256-color, and 32-bit color images of any width
-// and height.
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import javax.imageio.ImageIO;
 
-// Handles .ico files with either BITMAPHEADERs or PNGs.
-
-package ca.mb.javajeff.ico;
-
-import java.awt.image.*;
-
-import java.io.*;
-
-import java.net.*;
-
-import javax.imageio.*;
-
+/**
+ * Handles .ico files with either BITMAPHEADERs or PNGs.
+ * Handles 2-color, 16-color, 256-color, and 32-bit color images of any width and height.
+ *
+ * @author Java Jeff
+ */
 public class Ico
 {
    private final static int FDE_OFFSET = 6; // first directory entry offset
@@ -432,4 +432,12 @@ public class Ico
        return b & 0x000000FF;
 //      return (b < 0) ? 256+b : b; // Convert byte to unsigned byte.
    }
+
+    static public class BadIcoResException extends Exception
+    {
+       public BadIcoResException (String message)
+       {
+          super (message);
+       }
+    }
 }

@@ -82,26 +82,26 @@ public class JPanel_CommandBar extends JPanel
         this.setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) ); // btw- will not compress in FlowLayout -> .createHorizontalStrut( 2560 )
         this.setBorder( BorderFactory.createEmptyBorder( 10, 10, 10, 10 ) );
 
-        final String SYNC_TIP = "<HTML>Refresh all loaded Ports information.<BR>"
-                +"<I>Performs a sync operation only on the ports tree<BR>"
-                +"of a MacPorts installation, pulling in the<BR>"
-                +"latest revision available of the Portfiles from<BR>"
-                +"the MacPorts rsync server.";
-        ab_Sync             .setToolTipText( SYNC_TIP );
+        final String AB_SYNC_TIP = "<HTML>Refresh all loaded Ports information.<HR>"
+                +"<I>Performs a sync operation only on the ports <BR>"
+                +"tree of a MacPorts installation, pulling <BR>"
+                +"in the latest revision available of the Portfiles <BR>"
+                +"from the MacPorts rsync server.";
+        ab_Sync             .setToolTipText( AB_SYNC_TIP );
         ab_MarkOutdated     .setToolTipText( "Marks all outdated Ports for upgrading" );
         ab_ApplyMarks       .setToolTipText( "Applies marked Port status change requests" );
         ab_MoreCommand      .setToolTipText( "Show other commands" );
         ab_ClearSearch      .setToolTipText( "Clear search text" );
         jItem_PortDetail    .setToolTipText( "Show Port details in a separate window" );
-        jItem_ResetMark     .setToolTipText( "Remove all Port marks" );
+        jItem_ResetMark     .setToolTipText( "Remove all Port status change request marks" );
         jItem_ResetFilter   .setToolTipText( "Show all Ports without any filtering" );
         jItem_ResetCache    .setToolTipText( "Remove JPortUI project logos from your computer" );
-        jItem_MarkInactive  .setToolTipText("Marks all inactive Ports for removal" );
-        jItem_CleanInstalled.setToolTipText( "<HTML>Clean installed Ports of working,<BR>distribution and log files" );
-        jItem_UpgradeCli    .setToolTipText( "Have MacPorts self-update itself" );
+        jItem_MarkInactive  .setToolTipText( "Marks all inactive Ports for removal" );
+        jItem_CleanInstalled.setToolTipText( "<HTML>Clean installed Ports of any working,<BR>distribution, and log files" );
+        jItem_UpgradeCli    .setToolTipText( "Have MacPorts self-update its CLI tools" );
         jItem_AboutApp      .setToolTipText( "Credits" );
         jCombo_LookIn       .setToolTipText( "Choose what Port information to search" );
-        jField_Search       .setToolTipText( "<HTML>Type [ENTER] or [CR] to begin search<BR>Use [+] to require each term" );
+        jField_Search       .setToolTipText( "<HTML>Type [ENTER] or [CR] to begin search.<BR>Use [+] to require each search term be present" );
 
         ab_Sync         .setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
         ab_ApplyMarks   .setEnabled( false );

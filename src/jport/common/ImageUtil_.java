@@ -1,7 +1,6 @@
 package jport.common;
 
-import ca.mb.javajeff.ico.BadIcoResException;
-import ca.mb.javajeff.ico.Ico;
+import ca.mb.javajeff.Ico;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.ByteArrayInputStream;
@@ -10,25 +9,29 @@ import javax.imageio.ImageIO;
 
 
 /**
- * Handle the weird special casing for Web based images.
+ * Handle the weird, special casing for Web based "favorite icon" images.
+ * <H3><I><FONT color="#770000">Subset of original source.</FONT></I></H3>
  *
  * @author sbaber
  */
-public class ImageUtil
+public class ImageUtil_
 {
+    static final private String _DOT_ICO_EXTENSION = ".ico";
+
     static
     {
+//        In informal testing, "nl.ikarus.nxt" code resulted in better performance but more parse errors.
 //        System.setProperty("nl.ikarus.nxt.priv.imageio.icoreader.autoselect.icon","true");
 //        nl.ikarus.nxt.priv.imageio.icoreader.lib.ICOReaderSpi.registerIcoReader();
     }
 
-    private ImageUtil() {}
+    private ImageUtil_() {}
 
     static Image _parseImage( final String resourceName, final byte[] bytes )
     {
         if( bytes.length == 0 ) return null;
 
-        if( resourceName.toLowerCase().endsWith( ".ico" ) == false )
+        if( resourceName.toLowerCase().endsWith( _DOT_ICO_EXTENSION ) == false )
         {   // Java can make a good show of JPEG, GIF, PNG, etc.
             return Toolkit.getDefaultToolkit().createImage( bytes );
         }
@@ -57,7 +60,7 @@ public class ImageUtil
     {
         if( bytes.length == 0 ) return null;
 
-        if( resourceName.toLowerCase().endsWith( ".ico" ) == false )
+        if( resourceName.toLowerCase().endsWith( _DOT_ICO_EXTENSION ) == false )
         {   // Java can make a good show of JPEG, GIF, PNG, etc.
             return Toolkit.getDefaultToolkit().createImage( bytes );
         }
@@ -85,7 +88,7 @@ public class ImageUtil
             {   // this exception won't happen as the byte[] is simply wrapped, see Guava for a solution
                 return null;
             }
-            catch( BadIcoResException ex )
+            catch( Ico.BadIcoResException ex )
             {   // Web sites generally, but not always serve up an actual Microsoft .ICO, however, sometimes
                 // it is a ".jpeg" or ".png" under the ".ico" extension, ex. "http://www.gnu.org/favicon.ico"
                 return Toolkit.getDefaultToolkit().createImage( bytes );

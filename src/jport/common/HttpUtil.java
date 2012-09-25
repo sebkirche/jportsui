@@ -129,7 +129,7 @@ public class HttpUtil
         final URI uri = URI.create( imageLocation );
         final UriContent uriContent = retrieve( uri );
         return ( uriContent.fIs404 == false  )
-                ? ImageUtil.parseImage( imageLocation, uriContent.fContentBytes )
+                ? ImageUtil_.parseImage( imageLocation, uriContent.fContentBytes )
                 : null;
     }
 

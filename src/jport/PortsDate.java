@@ -27,7 +27,8 @@ class PortsDate
     {}
 
     /**
-     * Generally, a slow operation.
+     * Generally, a slow operation but only exposed through an atomic assignment
+     * so no need for concurrent Map.
      *
      * @param portCatalog 
      */

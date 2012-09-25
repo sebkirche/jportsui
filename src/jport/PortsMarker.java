@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -56,11 +55,8 @@ public class PortsMarker
 
         final Set<Portable> unmarkableSet = new HashSet<Portable>( size );
 
-        // avoids concurrent modification exception
-        @SuppressWarnings("unchecked")
-        final Entry<Portable,EPortMark>[] entries = Util.createArray( Map.Entry.class, fPort_to_MarkMap.entrySet() );
-
-        for( Entry<Portable,EPortMark> entry : entries )
+        // avoids Iterator concurrent modification exception when .put(k,v)
+        for( Map.Entry<Portable,EPortMark> entry : Util.createMapEntryArray( fPort_to_MarkMap ) )
         {
             final Portable prevPort = entry.getKey(); // alias
             final Portable refreshPort = refreshedPortsCatalog.getPortsInventory().equate( prevPort );

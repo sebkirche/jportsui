@@ -245,6 +245,29 @@ public class Util
         }
     }
 
+    //ENHANCE
+    /**
+     * Convenience factory.
+     *
+     * @param <K> keys of class type
+     * @param <V> values of class type
+     * @param fromMap
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    static public <K,V> Map.Entry<K,V>[] createMapEntryArray( final Map<K,V> fromMap )
+    {
+        final int size = fromMap.size();
+        switch( size )
+        {
+            case 0  : return EmptyArrayFactory_.get( Map.Entry.class );
+            case 1  : return new Map.Entry[] { fromMap.entrySet().iterator().next() };
+            default :
+                    final Map.Entry<K,V>[] entries = new Map.Entry[ size ]; // nulls
+                    return fromMap.entrySet().toArray( entries );
+        }
+    }
+
     //ENHANCE -> ObjUtil
     /**
      * Reflection based, non-static field values dump for debug.
@@ -363,7 +386,7 @@ public class Util
     //ENHANCE CollectionsUtil
     static private <K,V> Map<V,Set<K>> createInverseMultiMapping
             ( final boolean inverseNeedsOrderedKeys
-            , final Map<K,Set<V>> kvMap
+            , final Map<K,Set<V>> kvSet_Map
             )
     {
         final Map<V,Set<K>> invMap = ( inverseNeedsOrderedKeys == true )
@@ -371,7 +394,7 @@ public class Util
                 : new HashMap<V, Set<K>>();
 
         // invert keys - values
-        for( final Map.Entry<K,Set<V>> entry : kvMap.entrySet() )
+        for( final Map.Entry<K,Set<V>> entry : kvSet_Map.entrySet() )
         {
             final Set<V> invKeySet = entry.getValue(); // alias
             final K invValue = entry.getKey(); // alias

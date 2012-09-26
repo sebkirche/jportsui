@@ -22,10 +22,13 @@ public class TheOsBinaries
 
     final Set<String> fOsBinNameSet = new HashSet<String>();
 
+    /**
+     * Note: no X11 on Mountain Lion.
+     */
     private TheOsBinaries()
     {
         final String[] dirPathNames = ( Util.isOnWindows() == false )
-                ? new String[] { "/bin", "/sbin", "/usr/bin", "/usr/sbin" }
+                ? new String[] { "/bin", "/sbin", "/usr/bin", "/usr/sbin", "/usr/lib",  "/usr/X11/bin", "/usr/X11/lib", "/Developer/usr/bin/" }
                 : new String[] { "C:\\cygwin\\bin" };
         
         for( final String dirPathName : dirPathNames )

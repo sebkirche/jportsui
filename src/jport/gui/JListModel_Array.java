@@ -5,8 +5,9 @@ import javax.swing.AbstractListModel;
 
 /**
  * Read-only array for facilitating +100K row JList models.
+ * Note: In addition to rows, a JList can also appear as a matrix or columns.
  *
- * @param <E>
+ * @param <E> element of class type
  * @author sbaber
  */
 @SuppressWarnings("serial")

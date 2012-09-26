@@ -24,8 +24,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import jport.common.Interfacing_.Equatable;
-import jport.common.gui.JScrollPaneFactory_.EHorizontalScroller;
-import jport.common.gui.JScrollPaneFactory_.EVerticalScroller;
 import jport.common.Providers_.BackColorProvidable;
 import jport.common.Providers_.ClassProvidable;
 import jport.common.Providers_.ColorProvidable;
@@ -43,6 +41,8 @@ import jport.common.gui.CellRenderers_.CellRenderer_AlternatingBar;
 import jport.common.gui.CellRenderers_.CellRenderer_BackColor;
 import jport.common.gui.CellRenderers_.CellRenderer_Color;
 import jport.common.gui.CellRenderers_.CellRenderer_ForeColor;
+import jport.common.gui.JScrollPaneFactory_.EHorizontalScroller;
+import jport.common.gui.JScrollPaneFactory_.EVerticalScroller;
 
 
 /**
@@ -82,7 +82,7 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
     /** Feature only available with Java6+. */
     static public enum EAutoSorter { ENABLE, DISABLE }
 
-    /** Via Row Object and ColorProvidable. */
+    /** Via Row Object and ColorProvidable. ALT_BARs alternate ever X rows to another back color. */
     static public enum EColorize   { ENABLE, DISABLE, ALT_BAR_1, ALT_BAR_2, ALT_BAR_3 }
 
     /** Do -NOT- change ordering as .ordinal() used for first three with JTable.setSelectionMode(). */
@@ -719,7 +719,7 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
     }
 
     /**
-     * Override if editable.
+     * Override if editable, otherwise leave as a NO-OP
      *
      * @param value to update model with
      * @param row
@@ -734,23 +734,6 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
      * @return placed in table
      */
     abstract public Object getValueOf( final R row, final C columnEnum );
-
-//    @Override public void mousePressed ( MouseEvent e ) {}
-//    @Override public void mouseReleased( MouseEvent e ) {}
-//    @Override public void mouseEntered ( MouseEvent e ) {}
-//    @Override public void mouseExited  ( MouseEvent e ) {}
-
-
-    // ================================================================================
-    /* *
-     * Part of the mechanism for extracting tooltips out of a JTable's row.
-     *
-     * @param <E>
-     */
-//    static public interface TableModel_RowProvider<E> extends
-//          Providers.RowProvidable<E>
-//        , TableModel
-//    {}
 
 
     // ================================================================================

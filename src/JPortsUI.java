@@ -13,7 +13,7 @@ import jport.gui.TheUiHolder;
  *<P>
  * Call it JPortsUI if this project is to also support FreeBSD or NetBSD.
  * Call it MacNaptic if it can integrate with HomeBrew package manager for the Mac.
- * JMacPortUI? PortExplorer?
+ * JMacPortUI? PortExplorer? PortSnort?
  *
  * @author sbaber
  */
@@ -41,7 +41,7 @@ public class JPortsUI
                 } );
 
         // if only one Processor Core, wait until GUI finishes constructing
-        if( Runtime.getRuntime().availableProcessors() < 2 )
+        if( Runtime.getRuntime().availableProcessors() == 1 )
         {
             try
             {
@@ -68,8 +68,3 @@ public class JPortsUI
                 } );
     }
 }
-
-
-// common libs needs a new project name
-// zomg
-//  * http://en.wikipedia.org/wiki/Chippewa

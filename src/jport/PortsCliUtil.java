@@ -50,6 +50,8 @@ public class PortsCliUtil
     /** Note: Will be incorrect after a "port selfupdate" that actually gets a new version of the Port CLI tool. */
     static final public String PORT_CLI_VERSION = PortsCliUtil.cliPortVersion();
 
+//...    static final private Notification.Notifier<EPortStatus> _STATUS_NOTIFIER = new Notification.Notifier<EPortStatus>
+
     static
     {}
 
@@ -116,14 +118,16 @@ public class PortsCliUtil
         {
             switch( statusEnum )
             {
-                case ALL : // fall-thru
-                case UNINSTALLED : // do not run CLI on these
-                    {   final Set<CliPortInfo> emptySet = Collections.emptySet();
+                case ALL         : // fall-thru
+                case UNINSTALLED : 
+                    {   // do not run CLI on these, too large/slow for a sanity check
+                        final Set<CliPortInfo> emptySet = Collections.emptySet();
                         status_to_InfoSet_Map.put( statusEnum, emptySet );
                     }   break;
 
                 default :
                     {   status_to_InfoSet_Map.put( statusEnum, cliEcho( statusEnum ) );
+//...                        _STATUS_NOTIFIER.causeNotification( statusEnum );
                         break;
                     }
             }

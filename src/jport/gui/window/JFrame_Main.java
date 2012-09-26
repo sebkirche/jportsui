@@ -8,18 +8,21 @@ import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import jport.PortsConstants;
+import jport.PortsConstants.EPortStatus;
 import jport.TheApplication;
 import jport.common.HttpUtil;
 import jport.common.Reset.Resetable;
 import jport.common.Util;
 import jport.common.gui.FocusedButtonFactory;
 import jport.gui.Commander;
+import jport.gui.JProgress_Enum;
 import jport.gui.JTabPane_Detail;
 import jport.gui.JTabPane_Filter;
 import jport.gui.PortFilterPredicates;
@@ -49,10 +52,12 @@ public class JFrame_Main extends JFrame
     {
         super( PortsConstants.APP_NAME +"  --  "+ PortsConstants.VERSION  );
 
+        final JProgress_Enum<EPortStatus> jProgress = new JProgress_Enum<EPortStatus>( true, EPortStatus.VALUES );
+
         final JTabbedPane jTab_Filter = new JTabPane_Filter();
         final JTabbedPane jTab_Detail = new JTabPane_Detail();
 
-        final JPanel actionPanel = new JPanel_Mark();
+        final JPanel actionPanel = new JPanel_Mark( jProgress );
 
         final JPanel detailPanel = new JPanel( new BorderLayout() );
         detailPanel.add( jTab_Detail, BorderLayout.CENTER );
@@ -113,7 +118,6 @@ public class JFrame_Main extends JFrame
         // listener
         jTab_Filter.addChangeListener( this ); // user changed tabs
 
-        // listener
         TheApplication.getResetNotifier().addListener( new Resetable() // anonymous class
                 {   @Override public void reset()
                     {   // note: closing all Port Detail dialogs is automatic as they register themselves
@@ -129,6 +133,8 @@ public class JFrame_Main extends JFrame
                         jSplit_inventory_detail.setDividerLocation( 0.66F ); // needed the rows first
                     }
                 } );
+
+//... PortsCliUtil.addPortStatusListener( jProgress );
     }
 
     /**

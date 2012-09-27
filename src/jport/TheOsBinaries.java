@@ -29,7 +29,7 @@ public class TheOsBinaries
     {
         final String[] dirPathNames = ( Util.isOnWindows() == false )
                 ? new String[] { "/bin", "/sbin", "/usr/bin", "/usr/sbin", "/usr/lib",  "/usr/X11/bin", "/usr/X11/lib", "/Developer/usr/bin/" }
-                : new String[] { "C:\\cygwin\\bin" };
+                : new String[] { "C:\\cygwin\\bin", "C:\\cygwin\\lib" };
         
         for( final String dirPathName : dirPathNames )
         {
@@ -45,14 +45,16 @@ public class TheOsBinaries
                 for( final File file : files )
                 {
                     final String fileName = file.getName();
-                    final int p = fileName.indexOf( '.' ); // remove ".exe" from Cygwin bins
-                    final String trimmed = ( p == Util.INVALID_INDEX )
-                            ? fileName.intern() // expected
-                            : fileName.substring( 0, p ).intern();
+                    fOsBinNameSet.add( fileName.intern() );
 
-                    if( trimmed.isEmpty() == false )
+                    final int p = fileName.indexOf( '.' ); // remove ".exe" and ".dll" from Cygwin distro
+                    if( p != Util.INVALID_INDEX )
                     {
-                        fOsBinNameSet.add( trimmed );
+                        final String trimmed = fileName.substring( 0, p ).intern();
+                        if( trimmed.isEmpty() == false )
+                        {
+                            fOsBinNameSet.add( trimmed );
+                        }
                     }
                 }
             }

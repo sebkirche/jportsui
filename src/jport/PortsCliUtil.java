@@ -5,6 +5,7 @@ import static jport.common.CliUtil.UNIX_BIN_BASH;
 //
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +49,9 @@ public class PortsCliUtil
     /** Note: Will be incorrect after the "port selfupdate" that actually gets a new version of the Port CLI tool. */
     static final public String PORT_CLI_VERSION = PortsCliUtil.cliPortVersion();
 
+    /** For a non-Ports environment, needs to be installed. */
+    static final private int _NO_PORT_DELAY_MILLISEC = 350;
+
     static
     {}
 
@@ -67,7 +71,7 @@ public class PortsCliUtil
 
     static public String cliPortVersion()
     {
-        if( HAS_PORT_CLI == false ) return "NOT AVAILABLE";
+        if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return "NOT AVAILABLE"; }
 
         return _first( CliUtil.executeCommand( _PORT_BIN_PATH, ECmd.VERSION._() ) );
     }
@@ -84,7 +88,7 @@ public class PortsCliUtil
      */
     static synchronized public String[] cliFileContents( final Portable port )
     {
-        if( HAS_PORT_CLI == false ) return StringsUtil_.NO_STRINGS;
+        if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return StringsUtil_.NO_STRINGS; }
 
         return CliUtil.executeCommand( _PORT_BIN_PATH, ECmd.CONTENTS._(), port.getName() );
     }
@@ -97,6 +101,8 @@ public class PortsCliUtil
      */
     static Set<CliPortInfo> cliEcho( final EPortStatus statusEnum )
     {
+        if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return Collections.emptySet(); }
+
         final Set<CliPortInfo> set = new HashSet<CliPortInfo>();
 
         final String portStatus = statusEnum.name().toLowerCase(); // a psuedo-name
@@ -149,6 +155,7 @@ public class PortsCliUtil
     }
 
     /**
+     * Creates the command line argument representing all the Port status change request marks.
      *
      * @param <S>
      * @param isSimulated 'true' for dry-run testing
@@ -203,7 +210,7 @@ public class PortsCliUtil
             , final CliUtil.Listener listener
             )
     {
-        if( HAS_PORT_CLI == false ) return DEAD_THREAD;
+        if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return DEAD_THREAD; }
 
         final String cliCmd = getApplyMarksCli( isSimulated, map );
         final String bashIt = cliCmd.replace( "sudo port", "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH );
@@ -219,7 +226,7 @@ public class PortsCliUtil
      */
     static synchronized public Thread cliUpdateMacPortsItself( final String password, final CliUtil.Listener listener )
     {
-        if( HAS_PORT_CLI == false ) return DEAD_THREAD;
+        if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return DEAD_THREAD; }
 
         final String portCmd = "-v "+ ECmd.SELFUPDATE._();
         final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd + " ; ";
@@ -235,7 +242,7 @@ public class PortsCliUtil
      */
     static synchronized public Thread cliSyncUpdate( final String password, final CliUtil.Listener listener )
     {
-        if( HAS_PORT_CLI == false ) return DEAD_THREAD;
+        if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return DEAD_THREAD; }
 
         final String portCmd = "-v "+ ECmd.SYNC._();
         final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd + " ; ";
@@ -252,7 +259,7 @@ public class PortsCliUtil
      */
     static synchronized public Thread cliCleanInstalled( final String password, final CliUtil.Listener listener )
     {
-        if( HAS_PORT_CLI == false ) return DEAD_THREAD;
+        if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return DEAD_THREAD; }
 
         final String portCmd = "-u -p "+ ECmd.CLEAN._() +" --all "+ EPortStatus.INSTALLED.name().toLowerCase();
         final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd +" ; ";

@@ -269,7 +269,7 @@ class BsdPort //... refactor IndexPort?
             }
             else
             {   // unroll the unique deps add
-                final PortsCatalog portsCatalog = TheApplication.INSTANCE.getPortsCatalog();
+                final PortsCatalog portsCatalog = TheApplication.INSTANCE.getPortsCatalog(); // alias
                 _addDeps( portsCatalog, this.depends_lib );
                 _addDeps( portsCatalog, this.depends_build );
                 _addDeps( portsCatalog, this.depends_run );

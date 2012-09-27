@@ -42,7 +42,7 @@ public class JProgress_Enum<E extends Enum<E>> extends JProgressBar
 
         fEnums = enums;
         setStringPainted( isLabeled );
-setVisible(true || false ); //...
+        setVisible( false );
     }
 
     /**
@@ -54,13 +54,12 @@ setVisible(true || false ); //...
     {
         if( SwingUtilities.isEventDispatchThread() == true )
         {
-System.out.println( here ); //...
             final int index = Util.indexOfIdentity( here, fEnums );
             if( index == Util.INVALID_INDEX ) throw new IllegalArgumentException();
 
             setString( here.toString() );
             setValue( index );
-setVisible(true || index != fEnums.length - 1 ); //...
+            setVisible( index != fEnums.length - 1 );
         }
         else
         {

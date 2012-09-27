@@ -26,6 +26,8 @@ public class JPortsUI
 
     public static void main( String[] args )
     {
+        System.out.println( "Maining "+ TheApplication.INSTANCE );
+
         final Object MONITOR = JPortsUI.class;
 
         // fork GUI building into Event Dispatch thread as required by Swing guidelines

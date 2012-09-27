@@ -17,6 +17,7 @@ import javax.swing.event.ChangeListener;
 import jport.PortsConstants;
 import jport.PortsConstants.EPortStatus;
 import jport.TheApplication;
+import jport.ThePortsEchoer;
 import jport.common.HttpUtil;
 import jport.common.Reset.Resetable;
 import jport.common.Util;
@@ -52,7 +53,7 @@ public class JFrame_Main extends JFrame
     {
         super( PortsConstants.APP_NAME +"  --  "+ PortsConstants.VERSION  );
 
-        final JProgress_Enum<EPortStatus> jProgress = new JProgress_Enum<EPortStatus>( true, EPortStatus.VALUES );
+        final JProgress_Enum<EPortStatus> jProgress = new JProgress_Enum<EPortStatus>( false, EPortStatus.VALUES );
 
         final JTabbedPane jTab_Filter = new JTabPane_Filter();
         final JTabbedPane jTab_Detail = new JTabPane_Detail();
@@ -134,7 +135,7 @@ public class JFrame_Main extends JFrame
                     }
                 } );
 
-//... PortsCliUtil.addPortStatusListener( jProgress );
+        ThePortsEchoer.INSTANCE.addPortsEchoListener( jProgress );
     }
 
     /**

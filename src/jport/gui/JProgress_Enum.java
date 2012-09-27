@@ -1,6 +1,7 @@
 package jport.gui;
 
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 import jport.common.Notification.OneArgumentListenable;
 import jport.common.Util;
 
@@ -41,16 +42,33 @@ public class JProgress_Enum<E extends Enum<E>> extends JProgressBar
 
         fEnums = enums;
         setStringPainted( isLabeled );
-        setVisible( false );
+setVisible(true || false ); //...
     }
 
+    /**
+     * Swing EDT Safe.
+     *
+     * @param here
+     */
     @Override public void listen( final E here )
     {
-        final int index = Util.indexOfIdentity( here, fEnums );
-        if( index == Util.INVALID_INDEX ) throw new IllegalArgumentException();
+        if( SwingUtilities.isEventDispatchThread() == true )
+        {
+System.out.println( here ); //...
+            final int index = Util.indexOfIdentity( here, fEnums );
+            if( index == Util.INVALID_INDEX ) throw new IllegalArgumentException();
 
-        setString( here.toString() );
-        setValue( index );        
-        setVisible( index != fEnums.length - 1 );
+            setString( here.toString() );
+            setValue( index );
+setVisible(true || index != fEnums.length - 1 ); //...
+        }
+        else
+        {
+            SwingUtilities.invokeLater( new Runnable()
+                    {   @Override public void run()
+                        {   listen( here );
+                        }
+                    } );
+        }
     }
 }

@@ -42,6 +42,8 @@ public class JPanel_Mark extends JPanel
     transient private Portable mAssignedPort = null;
 
     /**
+     * Reflects the change request Mark of the big Ports table selection.
+     *
      * @param southComponent part to embed in BorderLayout.SOUTH
      */
     public JPanel_Mark( final Component southComponent )
@@ -69,11 +71,11 @@ public class JPanel_Mark extends JPanel
 
         if( assignedPort == null ) throw new NullPointerException();
 
+        this.setBorder( BorderFactory.createEmptyBorder( 0, ( Util.isOnMac() == true ) ? 0 : 5, 10, 5 ) ); // T L B R gets buttons off the window resize handle
+
         fIsAssignmentLocked = assignedPort != Portable.NONE;
 
         ab_Unmark.setToolTipText( "<HTML>Remove any pending Port status<BR>change requests for Apply" );
-
-        this.setBorder( BorderFactory.createEmptyBorder( 0, ( Util.isOnMac() == true ) ? 0 : 5, 10, 5 ) ); // T L B R gets buttons off the window resize handle
 
         final JPanel subPanel = new JPanel( new GridLayout( 0, 1, 0, 5 ) ); // row col hgap vgap
 

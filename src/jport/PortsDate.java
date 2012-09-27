@@ -62,7 +62,7 @@ class PortsDate
 //            if( filePath.exists() == false ) System.err.println( "FNF="+ filePath );
         }
 
-//        System.out.println( PortsDate.class.getSimpleName() +".init ms="+ ( System.currentTimeMillis() - startMillisec ) );
+        if( PortsConstants.DEBUG ) System.out.println( PortsDate.class.getSimpleName() +"<init> ms="+ ( System.currentTimeMillis() - startMillisec ) );
     }
 
     long getModificationEpoch( final Portable port )

@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -52,7 +53,7 @@ public class Notification
 
         static final private Enumeration<?> EMPTY_ENUMERATION = new Enumeration<Object>() // anonymous class
                 {   @Override public boolean hasMoreElements() { return false; }
-                    @Override public Object nextElement() { return null; }
+                    @Override public Object nextElement() { throw new NoSuchElementException(); }
                 };
 
         static
@@ -138,7 +139,7 @@ public class Notification
          * @param listenable removal happens automatically by Weak ref when no other Strongly reachable objects refer to it.
          */        
         @SuppressWarnings("unchecked")
-        synchronized public void removeListener( final L listenable )
+        @Override synchronized public void removeListener( final L listenable )
         {
             if( listenable.getClass().isAnonymousClass() == true )
             {
@@ -310,7 +311,7 @@ public class Notification
      *
      * @param <E> event of class type will be inferred
      */
-    static private class Notifier<E> extends ANotifier<OneArgumentListenable<E>>
+    static public class Notifier<E> extends ANotifier<OneArgumentListenable<E>>
     {
         static final private OneArgumentListenable<?> NO_OP = new OneArgumentListenable<Object>() { @Override public void listen( Object event ) {} };
 

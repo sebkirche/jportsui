@@ -1,12 +1,10 @@
 package jport;
 
-import static jport.common.CliUtil.UNIX_BIN_BASH;
 import static jport.common.CliUtil.BASH_OPT_C;
+import static jport.common.CliUtil.UNIX_BIN_BASH;
 //
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -47,10 +45,8 @@ public class PortsCliUtil
     static final private String _PORT_BIN_PATH = "/opt/local/bin/port"; //... this is non-portable, use "which port" command instead
     static final public boolean HAS_PORT_CLI = new File( _PORT_BIN_PATH ).exists();
 
-    /** Note: Will be incorrect after a "port selfupdate" that actually gets a new version of the Port CLI tool. */
+    /** Note: Will be incorrect after the "port selfupdate" that actually gets a new version of the Port CLI tool. */
     static final public String PORT_CLI_VERSION = PortsCliUtil.cliPortVersion();
-
-//...    static final private Notification.Notifier<EPortStatus> _STATUS_NOTIFIER = new Notification.Notifier<EPortStatus>
 
     static
     {}
@@ -94,55 +90,12 @@ public class PortsCliUtil
     }
 
     /**
-     * Full accounting avoids asking for All ports or Uninstalled ports as
-     * these are assumed from the "PortIndex" parsing.
-     * Note: Inefficient but I do not know a way to get all status attributes for each installed port, see "man port"
-     *
-     * @return as reported by the CLI "port echo installed" all of which are type CliPort
-     */
-    static Map<EPortStatus,Set<CliPortInfo>> cliAllStatus()
-    {
-        final Map<EPortStatus,Set<CliPortInfo>> status_to_InfoSet_Map = new EnumMap<EPortStatus, Set<CliPortInfo>>( EPortStatus.class );
-
-        if( HAS_PORT_CLI == false )
-        {   // non-Ports environment, needs to be installed
-            for( final EPortStatus statusEnum : EPortStatus.VALUES )
-            {
-                final Set<CliPortInfo> emptySet = Collections.emptySet();
-                status_to_InfoSet_Map.put( statusEnum, emptySet );
-            }
-            return status_to_InfoSet_Map;
-        }
-
-        for( final EPortStatus statusEnum : EPortStatus.VALUES )
-        {
-            switch( statusEnum )
-            {
-                case ALL         : // fall-thru
-                case UNINSTALLED : 
-                    {   // do not run CLI on these, too large/slow for a sanity check
-                        final Set<CliPortInfo> emptySet = Collections.emptySet();
-                        status_to_InfoSet_Map.put( statusEnum, emptySet );
-                    }   break;
-
-                default :
-                    {   status_to_InfoSet_Map.put( statusEnum, cliEcho( statusEnum ) );
-//...                        _STATUS_NOTIFIER.causeNotification( statusEnum );
-                        break;
-                    }
-            }
-        }
-
-        return status_to_InfoSet_Map;
-    }
-
-    /**
      * Requests package info from the Ports CLI.
      *
-     * @param statusEnum type of port name, version and variant information to echo
+     * @param statusEnum type of port pseudo-name, version and variant information to echo
      * @return as reported by the CLI
      */
-    static private Set<CliPortInfo> cliEcho( final EPortStatus statusEnum )
+    static Set<CliPortInfo> cliEcho( final EPortStatus statusEnum )
     {
         final Set<CliPortInfo> set = new HashSet<CliPortInfo>();
 

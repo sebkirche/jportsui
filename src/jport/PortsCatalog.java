@@ -79,10 +79,10 @@ public class PortsCatalog
         // interrogate the CLI for user's installed Ports status
         @SuppressWarnings("unchecked")
         final Map<EPortStatus,Set<CliPortInfo>> status_to_CpiSet_Map = ( true )
-                ? PortsCliUtil.cliAllStatus() // *BLOCKS* for CLI
+                ? ThePortsEchoer.INSTANCE.cliAllStatus() // *BLOCKS* for CLI
                 : Collections.EMPTY_MAP;
 
-        final Map<CliPortInfo,Set<EPortStatus>> cpi_to_StatusSet_Map = CliPortInfo.createInverseMultiMapping( status_to_CpiSet_Map );
+        final Map<CliPortInfo,Set<EPortStatus>> cpi_to_StatusSet_Map = ThePortsEchoer.createInverseMultiMapping( status_to_CpiSet_Map );
 
         for( final Map.Entry<CliPortInfo,Set<EPortStatus>> entry : cpi_to_StatusSet_Map.entrySet() )
         {
@@ -239,7 +239,7 @@ public class PortsCatalog
                 {}
             }
 
-            if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +"->constructor parse ms="+ ( System.currentTimeMillis() - startMillisec ) );
+            if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +"._parsePortIndex() ms="+ ( System.currentTimeMillis() - startMillisec ) );
         }
 
         return map;

@@ -42,6 +42,26 @@ public class Util
     }
 
     /**
+     * Sleep the current Thread and ignore the checked Exception.
+     *
+     * @param millisec up to, but no more than, this duration to sleep
+     * @return 'false' if was interrupted (the interrupt flag is also restored)
+     */
+    static public boolean sleep( final int millisec )
+    {
+        try
+        {
+            Thread.sleep( millisec );
+            return true;
+        }
+        catch( InterruptedException ex )
+        {
+            Thread.currentThread().interrupt(); // restore the flag
+            return false;
+        }
+    }
+
+    /**
      * Linear Search an array for an identity with '==' instead of
      * using Arrays.binarySearch() when the array can not be sort ordered
      * or when less than approx. 10 elements requiring the hashcode generation

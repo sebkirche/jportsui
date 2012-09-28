@@ -78,4 +78,41 @@ public class CliPortInfo
     {
         return fName +'@'+ fVersionInstalled +'_'+ fRevisionInstalled;
     }
+
+    /**
+     * Reverse the CLI Port status utility mapping to a more usable form.
+     *
+     * @param kvMap
+     * @return
+     */
+    static public Map<CliPortInfo,Set<EPortStatus>> createInverseMultiMapping( final Map<EPortStatus,Set<CliPortInfo>> kvMap )
+    {
+        final Map<CliPortInfo,Set<EPortStatus>> invMap = new HashMap<CliPortInfo, Set<EPortStatus>>();
+
+        for( final Map.Entry<EPortStatus,Set<CliPortInfo>> entry : kvMap.entrySet() )
+        {
+            final Set<CliPortInfo> cpiSet = entry.getValue(); // alias
+            final EPortStatus statusEnum = entry.getKey(); // alias
+
+            if( cpiSet != null )
+            {   // values maybe 'null' but keys can not be
+                for( final CliPortInfo cpiKey : cpiSet )
+                {
+                    if( invMap.containsKey( cpiKey ) == false )
+                    {   // new key
+                        final Set<EPortStatus> valueSet = EnumSet.of( statusEnum ); // mutable with single element
+                        invMap.put( cpiKey, valueSet );
+                    }
+                    else
+                    {   // seen the inverse key before
+                        final Set<EPortStatus> valueSet = invMap.get( cpiKey );
+                        valueSet.add( statusEnum );
+                    }
+                }
+            }
+        }
+
+        // replacing 'null' value Sets with Collections.emptySet() does not have to be done because 'null' keys are prohibited
+        return invMap;
+    }
 }

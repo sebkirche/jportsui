@@ -59,7 +59,7 @@ public class JFrame_Main extends JFrame
 
         // JPanel_Mark has no need to manage an unrelated progress bar but it does have a BorderLayout.SOUTH available
         final JProgress_Enum<EPortStatus> jProgress_EchoPortStatus = new JProgress_Enum<EPortStatus>( false, EPortStatus.VALUES );
-        jProgress_EchoPortStatus.setPreferredSize( new Dimension( 80, 15 ) ); // default width is 100+ pixels
+        jProgress_EchoPortStatus.setPreferredSize( new Dimension( 80, 10 ) ); // default width is 100+ pixels, too wide
         markPortPanel.add( jProgress_EchoPortStatus, BorderLayout.SOUTH ); // sneak a progress bar in here
 
         final JPanel detailPanel = new JPanel( new BorderLayout() );

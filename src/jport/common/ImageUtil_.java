@@ -27,7 +27,13 @@ public class ImageUtil_
 
     private ImageUtil_() {}
 
-    static Image _parseImage( final String resourceName, final byte[] bytes )
+    /**
+     *
+     * @param resourceName
+     * @param bytes
+     * @return "nl.ikarus.nxt" results
+     */
+    static private Image _parseImage( final String resourceName, final byte[] bytes )
     {
         if( bytes.length == 0 ) return null;
 
@@ -56,7 +62,7 @@ public class ImageUtil_
      * @param bytes content @ URI
      * @return 'null' if no image
      */
-    static Image parseImage( final String resourceName, final byte[] bytes )
+    static public Image parseImage( final String resourceName, final byte[] bytes )
     {
         if( bytes.length == 0 ) return null;
 

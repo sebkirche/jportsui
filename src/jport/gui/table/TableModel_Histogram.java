@@ -1,5 +1,6 @@
 package jport.gui.table;
 
+import java.awt.Color;
 import java.util.Map.Entry;
 import jport.common.Providers_.ClassProvidable;
 import jport.common.Providers_.WidthProvidable;
@@ -35,6 +36,10 @@ public class TableModel_Histogram extends AEnumTableModel_Array<Entry,TableModel
             , EColorize.ALT_BAR_2
             , EColumn.values()
             );
+
+        getJTable().setGridColor( Color.LIGHT_GRAY );
+        getJTable().setShowHorizontalLines( true );
+        getJTable().setShowVerticalLines( false );
     }
 
     /**

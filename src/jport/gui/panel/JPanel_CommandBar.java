@@ -32,6 +32,7 @@ import jport.common.gui.ModalDialogFactory;
 import jport.common.gui.ModalDialogFactory.EConfirmationChoices;
 import jport.gui.Commander;
 import jport.gui.TheUiHolder;
+import jport.gui.window.JDialog_AboutApp;
 import jport.type.Portable;
 
 
@@ -275,19 +276,26 @@ public class JPanel_CommandBar extends JPanel
             }
             else if( ab == jItem_AboutApp )
             {
-                ModalDialogFactory.showConfirmation
-                        ( EConfirmationChoices.OK
-                        , TheUiHolder.INSTANCE.getMainFrame()
-                        , PortsConstants.APP_NAME +" Credits"
-                        , "<HTML>UI designed and coded by Stephen Baber<BR><SMALL><BR>MacPorts availble @ http://www.macports.org/"
-                        );
+                if( true )
+                {
+                    new JDialog_AboutApp().setVisible( true );
+                }
+                else
+                {
+                    ModalDialogFactory.showConfirmation
+                            ( EConfirmationChoices.OK
+                            , TheUiHolder.INSTANCE.getMainFrame()
+                            , PortsConstants.APP_NAME +" Credits"
+                            , "<HTML>UI designed and coded by Stephen Baber<BR><SMALL><BR>MacPorts availble @ http://www.macports.org/"
+                            );
+                }
             }
         }
-        else if ( obj instanceof JComboBox )
+        else if( obj instanceof JComboBox )
         {
             doDirectedTextSearch();
         }
-        else if ( obj instanceof JTextField )
+        else if( obj instanceof JTextField )
         {
             doDirectedTextSearch();
         }

@@ -8,11 +8,11 @@ import java.net.URI;
  *
  * @author sbaber
  */
-class UriContent
+public class UriContent
 {
-    final URI     fUri;
-    final byte[]  fContentBytes;
-    final boolean fIs404;
+    final public URI     fUri;
+    final public byte[]  fContentBytes;
+    final public boolean fIs404;
     //... HeaderFields map and MIME types
 
     /**

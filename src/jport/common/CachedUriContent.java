@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -15,7 +18,7 @@ import java.util.Map;
  *
  * @author sbaber
  */
-class CachedUriContent
+public class CachedUriContent
 {
     /** Singleton-esque as not using a real Service Registry */
     static volatile private UriContentCacheable sUriCacheable = null;
@@ -25,7 +28,7 @@ class CachedUriContent
      */
     static UriContentCacheable getInstance()
     {
-        return new NoCache();
+        return( sUriCacheable = new NoCache() );
     }
 
     /**
@@ -44,6 +47,30 @@ class CachedUriContent
         }
 
         return sUriCacheable;
+    }
+
+    /**
+     * @return non-404 and non-GC'd contents of the cache
+     */
+    static public UriContent[] dumpContent()
+    {
+        return ( sUriCacheable != null )
+                ? sUriCacheable.dump( true )
+                : new UriContent[ 0 ];
+    }
+
+    static private UriContent[] _toArray( final boolean isContentOnly, final Collection<UriContent> collection )
+    {
+        final List<UriContent> list = new ArrayList<UriContent>( collection.size() );
+        for( final UriContent uc : collection )
+        {
+            if( isContentOnly == false || ( uc.fContentBytes != null && uc.fContentBytes.length > 0 ) )
+            {
+                list.add( uc );
+            }
+        }
+
+        return Util.createArray( UriContent.class, list );
     }
 
     static
@@ -76,7 +103,14 @@ class CachedUriContent
          * @param uriContent to put into the cache, can be 'null' for 404
          */
         abstract void put( UriContent uriContent );
+
+        /**
+         * @param isContentOnly 'true' excludes 404 URL Not Found
+         * @return current cache
+         */
+        abstract UriContent[] dump( final boolean isContentOnly );
     }
+
 
     // ================================================================================
     /**
@@ -85,10 +119,11 @@ class CachedUriContent
     static private class NoCache
         implements UriContentCacheable
     {
-        @Override public void       clearAll() {}
-        @Override public boolean    has( URI uri ) { return false; }
-        @Override public UriContent get( URI uri ) { return null; }
-        @Override public void       put( UriContent uriContent ) {}
+        @Override public void         clearAll() {}
+        @Override public boolean      has( URI uri ) { return false; }
+        @Override public UriContent   get( URI uri ) { return null; }
+        @Override public void         put( UriContent uriContent ) {}
+        @Override public UriContent[] dump( final boolean isContentOnly ) { return new UriContent[ 0 ]; }
     }
 
 
@@ -120,6 +155,11 @@ class CachedUriContent
         @Override synchronized public void put( final UriContent uriContent )
         {
             fUriToContentMap.put( uriContent.fUri, uriContent );
+        }
+
+        @Override synchronized public UriContent[] dump( final boolean isContentOnly )
+        {
+            return _toArray( isContentOnly, fUriToContentMap.values() );
         }
     }
 
@@ -174,7 +214,7 @@ class CachedUriContent
          * @param uri
          * @return compatible with Unix/Windows file names
          */
-        static private String sanitizeUri( final URI uri )
+        static private String _sanitizeUri( final URI uri )
         {
             return uri.toString().replace( '/', '.' ).replace( ':', '-' ); // File.separatorChar
         }
@@ -203,7 +243,7 @@ class CachedUriContent
             {
                 if( fUriToContentRefMap.containsKey( uri ) == false || fUriToContentRefMap.get( uri ).get() == null )
                 {   // check local disk
-                    final File filepath = new File( fCacheDirPath, sanitizeUri( uri ) );
+                    final File filepath = new File( fCacheDirPath, _sanitizeUri( uri ) );
                     if( filepath.exists() == true )
                     {   // read contents
                         try
@@ -250,7 +290,7 @@ class CachedUriContent
                 {
                     _FILE_WORKER_THREAD.offer( new Runnable() // anonymous class
                             {   @Override public void run() // maintains a hard ref to uriContent
-                                {   File filePath = new File( fCacheDirPath, sanitizeUri( uri ) );
+                                {   File filePath = new File( fCacheDirPath, _sanitizeUri( uri ) );
 
                                     if( filePath.exists() == true )
                                     {   // tried again
@@ -282,6 +322,18 @@ class CachedUriContent
                             } );
                 }
             }
+        }
+        
+        @Override synchronized public UriContent[] dump( final boolean isContentOnly )
+        {
+            final List<UriContent> hardRefList = new ArrayList<UriContent>( fUriToContentRefMap.size() );
+            for( final Reference<UriContent> ref : fUriToContentRefMap.values() )
+            {   // break out soft/weak refs
+                final UriContent uc = ref.get(); // hold as hardreference
+                if( uc != null ) { hardRefList.add( uc ); }
+            }
+
+            return _toArray( isContentOnly, hardRefList );
         }
     }
 }

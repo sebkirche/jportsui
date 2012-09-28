@@ -19,6 +19,7 @@ public class JProgress_Enum<E extends Enum<E>> extends JProgressBar
     static
     {}
 
+    /** Can be a smaller subset of the entire enumeration or follow a non-ordinal sequence. */
     final private E[] fEnums;
 
     /**

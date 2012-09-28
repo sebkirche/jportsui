@@ -63,6 +63,7 @@ public class JDialog_AboutApp extends JDialog
         }
 
         this.pack();
+        this.setLocationByPlatform( true );
     }
 
 //... animate icons from logo cache

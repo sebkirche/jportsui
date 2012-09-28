@@ -184,7 +184,7 @@ public class PortFilterPredicates
             this.setForeground( Color.GRAY );
 
             // listener
-            TheApplication.getResetNotifier().addListener( this );
+            TheApplication.INSTANCE.getResetNotifier().addListener( this );
         }
 
         int setHit( final int hitTotal )

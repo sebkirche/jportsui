@@ -53,7 +53,7 @@ public class JDialog_PortDetail extends JDialog
         this.setLocationByPlatform( true ); // cascades
 
         // listener
-        TheApplication.getResetNotifier().addListener( this );
+        TheApplication.INSTANCE.getResetNotifier().addListener( this );
         
         if( Util.isOnMac() == true )
         {   // register [CMD-W] as close window
@@ -70,7 +70,8 @@ public class JDialog_PortDetail extends JDialog
 
     @Override public void reset()
     {
-        TheApplication.getResetNotifier().removeListener( this );
+        TheApplication.INSTANCE.getResetNotifier().removeListener( this );
+        
         this.dispose();
     }
 

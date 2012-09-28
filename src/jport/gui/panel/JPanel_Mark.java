@@ -1,7 +1,6 @@
 package jport.gui.panel;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,29 +42,17 @@ public class JPanel_Mark extends JPanel
 
     /**
      * Reflects the change request Mark of the big Ports table selection.
-     *
-     * @param southComponent part to embed in BorderLayout.SOUTH
      */
-    public JPanel_Mark( final Component southComponent )
+    public JPanel_Mark()
     {
         this( Portable.NONE );
     }
 
     /**
      *
-     * @param assignedPort is the target Mark model.  Use Portable.NONE to signal driven by user's table selection.
+     * @param assignedPort is the target Mark model.  Use Portable.NONE to signal that the Mark is driven by user's table selection.
      */
     public JPanel_Mark( final Portable assignedPort )
-    {
-        this( null, assignedPort );
-    }
-
-    /**
-     *
-     * @param southComponent 'null' for no part
-     * @param assignedPort Portable.NONE makes it driven by the user's table selection.
-     */
-    private JPanel_Mark( final Component southComponent, final Portable assignedPort )
     {
         super( new BorderLayout() );
 
@@ -98,11 +85,6 @@ public class JPanel_Mark extends JPanel
         subPanel.add( ab_Unmark, 0 ); // put [Unmark] at top
 
         this.add( subPanel, BorderLayout.NORTH ); // using CENTER makes them not the expected rounded buttons of the Mac-PLAF
-
-        if( southComponent != null )
-        {   // sneak a progress bar in here
-            this.add( southComponent, BorderLayout.SOUTH );
-        }
 
         // listener
         ab_Unmark.addActionListener( this );

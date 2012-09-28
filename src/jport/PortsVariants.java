@@ -33,7 +33,7 @@ public class PortsVariants
     {
         if( TheApplication.INSTANCE != null )
         {
-            TheApplication.getResetNotifier().addListener( new Resetable() // anonymous class
+            TheApplication.INSTANCE.getResetNotifier().addListener( new Resetable() // anonymous class
                     {   @Override public void reset()
                         {   fPort_to_ApplyVariantSet_Map.clear();
                         }

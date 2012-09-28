@@ -46,7 +46,7 @@ public class PortsCatalog
 
     final private PortsDep             fPortsDep = new PortsDep( this );
     final private PortsVariants        fPortsVariants = new PortsVariants();
-    
+
     /** Key is the case-insensitive port name. */
     final private Map<String,Portable> fCiName_to_PortMap;
     final private PortsInventory       fPortsInventory;
@@ -65,7 +65,7 @@ public class PortsCatalog
 
     /**
      * Reread and parse the "PortsIndex" file into a new Map.
-     * 
+     *
      * @param prevCatalog was Initial
      */
     PortsCatalog( final PortsCatalog prevCatalog )
@@ -79,10 +79,10 @@ public class PortsCatalog
         // interrogate the CLI for user's installed Ports status
         @SuppressWarnings("unchecked")
         final Map<EPortStatus,Set<CliPortInfo>> status_to_CpiSet_Map = ( true )
-                ? ThePortsEchoer.INSTANCE.cliAllStatus() // *BLOCKS* for CLI
+                ? TheApplication.INSTANCE.cliEchoAllStatus() // *BLOCKS* for CLI
                 : Collections.EMPTY_MAP;
 
-        final Map<CliPortInfo,Set<EPortStatus>> cpi_to_StatusSet_Map = ThePortsEchoer.createInverseMultiMapping( status_to_CpiSet_Map );
+        final Map<CliPortInfo,Set<EPortStatus>> cpi_to_StatusSet_Map = CliPortInfo.createInverseMultiMapping( status_to_CpiSet_Map );
 
         for( final Map.Entry<CliPortInfo,Set<EPortStatus>> entry : cpi_to_StatusSet_Map.entrySet() )
         {
@@ -290,12 +290,6 @@ public class PortsCatalog
 //
 //        return fromCliChangeSet;
 //    }
-
-    /* *
-     *
-     * @return in alphabetical order, all ports described in the "PortIndex" file
-     */
-//    synchronized public Portable[] getAllPorts() { return fAllPorts; }
 
     public long getModificationEpoch( final Portable port )
     {

@@ -2,13 +2,13 @@ package jport.gui.window;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -17,7 +17,6 @@ import javax.swing.event.ChangeListener;
 import jport.PortsConstants;
 import jport.PortsConstants.EPortStatus;
 import jport.TheApplication;
-import jport.ThePortsEchoer;
 import jport.common.HttpUtil;
 import jport.common.Reset.Resetable;
 import jport.common.Util;
@@ -53,16 +52,19 @@ public class JFrame_Main extends JFrame
     {
         super( PortsConstants.APP_NAME +"  --  "+ PortsConstants.VERSION  );
 
-        final JProgress_Enum<EPortStatus> jProgress = new JProgress_Enum<EPortStatus>( false, EPortStatus.VALUES );
-
         final JTabbedPane jTab_Filter = new JTabPane_Filter();
         final JTabbedPane jTab_Detail = new JTabPane_Detail();
 
-        final JPanel actionPanel = new JPanel_Mark( jProgress );
+        final JPanel markPortPanel = new JPanel_Mark();
+
+        // JPanel_Mark has no need to manage an unrelated progress bar but it does have a BorderLayout.SOUTH available
+        final JProgress_Enum<EPortStatus> jProgress_EchoPortStatus = new JProgress_Enum<EPortStatus>( false, EPortStatus.VALUES );
+        jProgress_EchoPortStatus.setPreferredSize( new Dimension( 80, 15 ) ); // default width is 100+ pixels
+        markPortPanel.add( jProgress_EchoPortStatus, BorderLayout.SOUTH ); // sneak a progress bar in here
 
         final JPanel detailPanel = new JPanel( new BorderLayout() );
         detailPanel.add( jTab_Detail, BorderLayout.CENTER );
-        detailPanel.add( actionPanel, BorderLayout.EAST );
+        detailPanel.add( markPortPanel, BorderLayout.EAST );
 
         final JSplitPane jSplit_inventory_detail = new JSplitPane( JSplitPane.VERTICAL_SPLIT, true, portsTable.getJScrollPane(), detailPanel );
         final JSplitPane jSplit_view_inv_detail  = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, false, jTab_Filter, jSplit_inventory_detail );
@@ -119,7 +121,7 @@ public class JFrame_Main extends JFrame
         // listener
         jTab_Filter.addChangeListener( this ); // user changed tabs
 
-        TheApplication.getResetNotifier().addListener( new Resetable() // anonymous class
+        TheApplication.INSTANCE.getResetNotifier().addListener( new Resetable() // anonymous class
                 {   @Override public void reset()
                     {   // note: closing all Port Detail dialogs is automatic as they register themselves
                         jTab_Filter.setSelectedIndex( 0 );
@@ -135,7 +137,7 @@ public class JFrame_Main extends JFrame
                     }
                 } );
 
-        ThePortsEchoer.INSTANCE.addPortsEchoListener( jProgress );
+        TheApplication.INSTANCE.getEchoStatusNotifier().addListener( jProgress_EchoPortStatus );
     }
 
     /**

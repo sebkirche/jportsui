@@ -48,15 +48,7 @@ public abstract class AJLabel_PortInfo extends JLabel
         this.setHorizontalAlignment( SwingConstants.LEFT );
 
         // listener
-//        if( assignedPort == Portable.NONE )
-//        {
-            TheApplication.INSTANCE.getCrudNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
-//        }
-//        else
-//        {   // conform the non-dynamic view
-//            mAssignedPort = assignedPort;
-//            this.notify( EElemental.RETRIEVED, assignedPort );
-//        }
+        TheApplication.INSTANCE.getCrudNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
     }
 
     /**
@@ -84,8 +76,6 @@ public abstract class AJLabel_PortInfo extends JLabel
                         setPort( port ); break; // something may have changed
                     }
                 }   break;
-
-//            case RETRIEVED : setPort( port ); break;
         }
     }
 

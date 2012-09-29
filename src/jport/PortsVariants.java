@@ -201,22 +201,4 @@ public class PortsVariants
 
         TheApplication.INSTANCE.causeCrudNotification( EElemental.UPDATED, onPort );
     }
-
-//    private String[] getApplyVariants( final Portable ofPort )
-//    {
-//        final Set<String> applyVariantSet = fPort_to_ApplyVariantSet_Map.get( ofPort );
-//        if( applyVariantSet != null )
-//        {   // variants have been user edited
-//            return StringsUtil_.toStrings( applyVariantSet );
-//        }
-//        else if( ofPort instanceof CliPort )
-//        {   // Port is installed
-//            final CliPort cliPort = (CliPort)ofPort;
-//            return cliPort.getVariantsInstalled();
-//        }
-//        else
-//        {   // Port not installed
-//            return StringsUtil_.NO_STRINGS;
-//        }
-//    }
 }

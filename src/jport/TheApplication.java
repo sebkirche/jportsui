@@ -152,7 +152,7 @@ public class TheApplication
      * these are assumed from the "PortIndex" parsing.
      * Note: Inefficient but I do not know a way to get all status attributes for each installed port, see "man port"
      *
-     * @return as reported by the CLI "port echo installed" all of which are type CliPort
+     * @return as reported by the CLI "port echo installed" all of which are type InstalledPort
      */
     Map<EPortStatus,Set<CliPortInfo>> cliEchoAllStatus()
     {

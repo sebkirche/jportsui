@@ -192,7 +192,7 @@ class BsdPort //... refactor IndexPort?
     /**
      * The current, actual, on disk, status of the Port.
      * Not the user's "marked" action for the Port CLI.
-     * Overridden by CliPort.
+     * Overridden by InstalledPort.
      *
      * @param statusEnum
      * @return 'true' if in the bloom filter
@@ -394,6 +394,11 @@ class BsdPort //... refactor IndexPort?
                                                     : Color.YELLOW.darker(); // ?
     }
 
+    /**
+     *
+     * @param obj
+     * @return works equally well with InstalledPort
+     */
     @Override final public boolean equals( final Object obj )
     {
         if( obj == this ) return true;

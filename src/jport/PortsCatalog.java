@@ -269,7 +269,7 @@ public class PortsCatalog
 //     * Compares old port entries to freshly CLI interrogated ports.
 //     * Called after "port echo $PSEUDO_NAME".
 //     *
-//     * @param fromCliChangeSet updated information from CLI is a CliPort
+//     * @param fromCliChangeSet updated information from CLI is a InstalledPort
 //     */
 //    synchronized private Set<Portable> inform( final Set<Portable> fromCliChangeSet )
 //    {

@@ -85,13 +85,10 @@ public class Commander
      */
     public void markOutdatedPorts()
     {
-        final Portable[] allPorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts();
-        for( final Portable port : allPorts )
+        final Portable[] outdatedPorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().filter( EPortStatus.OUTDATED );
+        for( final Portable port : outdatedPorts )
         {
-            if( port.hasStatus( EPortStatus.OUTDATED ) == true )
-            {
-                port.setMark( EPortMark.Upgrade );
-            }
+            port.setMark( EPortMark.Upgrade );
         }
 
         TheUiHolder.INSTANCE.setTableSortByMark();
@@ -99,13 +96,10 @@ public class Commander
 
     public void markInactivePorts()
     {
-        final Portable[] allPorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts();
-        for( final Portable port : allPorts )
+        final Portable[] inactivePorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().filter( EPortStatus.INACTIVE );
+        for( final Portable port : inactivePorts )
         {
-            if( port.hasStatus( EPortStatus.INACTIVE ) == true )
-            {
-                port.setMark( EPortMark.Uninstall );
-            }
+            port.setMark( EPortMark.Uninstall );
         }
 
         TheUiHolder.INSTANCE.setTableSortByMark();

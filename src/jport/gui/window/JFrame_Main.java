@@ -131,8 +131,8 @@ public class JFrame_Main extends JFrame
 
                         // THUNK, can't set table rows until port snapshot parsing completes
                         portsTable.setRows( PortsConstants.NO_PORTS );
-                        final Portable[] allPorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts().clone();
-                        portsTable.setRows( allPorts );
+                        final Portable[] begunHaveTheCloneWars = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts().clone();
+                        portsTable.setRows( begunHaveTheCloneWars );
                         jSplit_inventory_detail.setDividerLocation( 0.66F ); // needed the rows first
                     }
                 } );

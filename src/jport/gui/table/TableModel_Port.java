@@ -85,6 +85,7 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
                 , new SortKey( EColumn.NAME.ordinal(), SortOrder.ASCENDING )
                 );
         this.getJTable().getRowSorter().setSortKeys( list );
+//... scroll to top of table
     }
 
     public void setTableSortByName()

@@ -1,8 +1,13 @@
 package jport;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
+import jport.PortsConstants.EPortStatus;
+import jport.common.Util;
 import jport.type.Portable;
+import jport.type.Portable.Predicatable;
 
 
 /**
@@ -39,6 +44,39 @@ public class PortsInventory
      * @return in ascending alphabetical order with descending version number tie-breakers
      */
     public Portable[] getAllPorts() { return fAllPorts; }
+
+    /**
+     *
+     * @param byStatus
+     * @return in ascending alphabetical order with descending version number tie-breakers
+     */
+    public Portable[] filter( final EPortStatus byStatus )
+    {
+        return filter( new Predicatable() // anonymous class
+                {   @Override public boolean evaluate( final Portable port )
+                    {   return port.hasStatus( byStatus );
+                    }
+                } );
+    }
+
+    /**
+     *
+     * @param byPredicate
+     * @return is reduced and in ascending alphabetical order with descending version number tie-breakers
+     */
+    public Portable[] filter( final Predicatable byPredicate )
+    {
+        final List<Portable> list = new ArrayList<Portable>( 32 );
+        for( final Portable port : fAllPorts )
+        {
+            if( byPredicate.evaluate( port ) == true )
+            {
+                list.add( port );
+            }
+        }
+
+        return Util.createArray( Portable.class, list );
+    }
     
     /**
      * Look up a matching new port by case-insensitive name and version.

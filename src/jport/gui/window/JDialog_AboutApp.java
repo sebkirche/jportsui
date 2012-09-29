@@ -28,6 +28,7 @@ import jport.common.Interfacing_.Targetable;
 import jport.common.StringsUtil_;
 import jport.gui.TheUiHolder;
 import jport.type.Portable;
+import jport.type.Portable.Predicatable;
 
 
 /**
@@ -66,19 +67,23 @@ public class JDialog_AboutApp extends JDialog
         // determine unique domains
         final Map<String,Set<Portable>> orderedDomain_to_PortSet_Map = new TreeMap<String,Set<Portable>>();
 
-        for( final Portable port : TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts() )
-        {
-            if( port.hasStatus( EPortStatus.INSTALLED ) == true || TheOsBinaries.INSTANCE.has( port.getName() ) == true )
-            {   // installed or Native
-                final String domain = port.getDomain();
-                if( orderedDomain_to_PortSet_Map.containsKey( domain ) == false )
-                {
-                    orderedDomain_to_PortSet_Map.put( domain, new TreeSet<Portable>() );
-                }
+        final Predicatable predicate = new Predicatable() // para-lambda expression
+                {   @Override public boolean evaluate( final Portable port )
+                    {   return port.hasStatus( EPortStatus.INSTALLED ) == true || TheOsBinaries.INSTANCE.has( port.getName() ) == true;
+                    }
+                };
 
-                final Set<Portable> orderedSet = orderedDomain_to_PortSet_Map.get( domain );
-                orderedSet.add( port );
+        final Portable[] ports = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().filter( predicate );
+        for( final Portable port : ports )
+        {   // installed or Native
+            final String domain = port.getDomain();
+            if( orderedDomain_to_PortSet_Map.containsKey( domain ) == false )
+            {
+                orderedDomain_to_PortSet_Map.put( domain, new TreeSet<Portable>() );
             }
+
+            final Set<Portable> orderedSet = orderedDomain_to_PortSet_Map.get( domain );
+            orderedSet.add( port );
         }
 
         orderedDomain_to_PortSet_Map.remove( "" ); // sometimes the domain is unknown

@@ -22,7 +22,7 @@ import jport.common.Interfacing_.Targetable;
 public class HttpUtil
 {
     static final private boolean             _IS_LOGO_SPEC_W3C = true;
-    static final private int                 _CONNECTION_TIME_OUT_MILLISEC = 15 * 1000; // 15 secs.
+    static final private int                 _CONNECTION_TIME_OUT_MILLISEC = 9 * 1000; // 9 secs.
     static final private Thread_Worker       _HTTP_WORKER_THREAD = new Thread_Worker( HttpUtil.class.getSimpleName() );
     static final private UriContentCacheable _URI_CONTENT_CACHE = CachedUriContent.getInstance( true );
 

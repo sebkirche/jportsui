@@ -252,31 +252,31 @@ public class StringsUtil_
      * Columnizes a linear list via .toString().
      *
      * @param columnCount
-     * @param prepend can be ""
-     * @param append can be ""
-     * @param list
-     * @return
+     * @param prepend to table data, can be ""
+     * @param append to table data, can be ""
+     * @param collection
+     * @return starts with <code> [HTML] </code> and ends with <code> [/TABLE] </code>
      */
     static public String htmlTabularize
             ( final int columnCount
             , final String prepend
             , final String append
-            , final List<?> list
+            , final Collection<?> collection
             )
     {
-        if( list.isEmpty() ) return "";
+        if( collection.isEmpty() ) return "";
 
         final StringBuilder sb = new StringBuilder( "<HTML><TABLE><TR>" );
 
         int i = 1; // don't start with a <BR>
-        for( final Object obj : list )
+        for( final Object obj : collection )
         {
             sb.append( "<TD>" ).append( prepend ).append( obj.toString() ).append( append ).append( "</TD>" );
             sb.append( ( ( i % columnCount ) == 0 ) ? "</TR><BR>" : "" );
             i++;
         }
 
-        sb.append( "</TR></TABLE><BR>" );
+        sb.append( "</TR></TABLE>" );
         return sb.toString();
     }
 

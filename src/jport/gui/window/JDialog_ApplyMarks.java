@@ -88,7 +88,7 @@ public class JDialog_ApplyMarks extends JDialog
                     i++;
                 }
 
-                sb.append( StringsUtil_.htmlTabularize( 6, "<FONT color=gray>\u2192</FONT>", "", portVariantName ) );
+                sb.append( StringsUtil_.htmlTabularize( 6, "<FONT color=gray>\u2192</FONT>", "", portVariantName ) ).append( "<BR>" );
             }
         }
 

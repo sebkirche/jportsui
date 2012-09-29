@@ -214,6 +214,8 @@ public class Ico
                int colorTableOffset = imageOffset+BMIH_LENGTH;
 
                // sgb ->
+               try
+               {
                if( colorCount[ i ] == 16777216 )
                {    // 24 bit color @ "http://opensource.apple.com/favicon.ico"
                    for( int k = i; k < colorCount.length; k++ ) { colorCount[ k ] = 16777216; } //?
@@ -385,6 +387,9 @@ public class Ico
                              mBufferedImages [i].setRGB (col, height-1-row, rgb);
                         }
                }
+               }
+               catch( ArrayIndexOutOfBoundsException ex )
+               {} // this happens in the 16 color decode
            }
            else
            if (mIcoBytes [imageOffset] == (byte)0x89 &&

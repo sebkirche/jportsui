@@ -76,7 +76,7 @@ public class JPanel_StatusFilter extends JPanel
 
         jSpin_Day  .setToolTipText( "<HTML>Show Ports that have had their<BR>information updated within <I>X</I> days" );
         ab_WhatsNew.setToolTipText( "<HTML>Show Ports that have had their<BR>information updated within <I>X</I> days" );
-        ab_Native  .setToolTipText( "<HTML>Show set of binaries that are provided by your OS" );
+        ab_Native  .setToolTipText( "<HTML>Show set of binaries that are<BR>also provided by your OS" );
         ab_Marked  .setToolTipText( "<HTML>Show Ports that have a pending<BR>status change request mark" );
 
         final int BUTTON_HEIGHT_PIX = 34; // needs to be big enough so that the square button Mac-PLAF

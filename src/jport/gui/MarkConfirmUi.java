@@ -56,7 +56,7 @@ public class MarkConfirmUi
                     ( EConfirmationChoices.OK_CANCEL
                     , TheUiHolder.INSTANCE.getMainFrame()
                     , title
-                    , StringsUtil_.htmlTabularize( 6, "<FONT color=gray>\u2192</FONT>", "", portDeps ) // right arrow
+                    , StringsUtil_.htmlTabularize( 6, "<FONT color=gray>\u2192</FONT>", "", portDeps ) +"<BR>" // right arrow
                     );
 
             if( response == EUserResponse.CANCEL || response == EUserResponse.CLOSED )

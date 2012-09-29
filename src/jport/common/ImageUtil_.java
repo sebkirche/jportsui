@@ -1,8 +1,10 @@
 package jport.common;
 
 import ca.mb.javajeff.Ico;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -99,6 +101,27 @@ public class ImageUtil_
                 // it is a ".jpeg" or ".png" under the ".ico" extension, ex. "http://www.gnu.org/favicon.ico"
                 return Toolkit.getDefaultToolkit().createImage( bytes );
             }
+        }
+    }
+
+    //ENHANCE?
+    /**
+     * @param maxWidthHeight
+     * @param image
+     * @return original if smaller than max pixels
+     */
+    static public Image reduceImage( final Image image, final int maxWidthHeight )
+    {
+        if( image.getHeight( null ) <= maxWidthHeight && image.getWidth( null ) <= maxWidthHeight )
+        {
+            return image;
+        }
+        else
+        {
+            final BufferedImage scaledBi = new BufferedImage( maxWidthHeight, maxWidthHeight, BufferedImage.TYPE_INT_ARGB );
+            final Graphics2D g2d = scaledBi.createGraphics();
+            g2d.drawImage( image, 0, 0, maxWidthHeight, maxWidthHeight, null ); //... might not be a square
+            return scaledBi;
         }
     }
 }

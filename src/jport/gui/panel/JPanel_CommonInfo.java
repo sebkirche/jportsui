@@ -20,6 +20,7 @@ import jport.common.Elemental;
 import jport.common.Elemental.EElemental;
 import jport.common.GuiUtil_;
 import jport.common.HttpUtil;
+import jport.common.ImageUtil_;
 import jport.common.Interfacing_.Targetable;
 import jport.common.StringsUtil_;
 import jport.gui.AJLabel_PortInfo;
@@ -269,7 +270,7 @@ public class JPanel_CommonInfo extends JPanel
         if( SwingUtilities.isEventDispatchThread() == true )
         {   // Mac-PLAF not happy, changes to square button -> abHomepage.setIcon( new ImageIcon( image ) )
             final ImageIcon imageIcon = ( image != null )
-                    ? new ImageIcon( image )
+                    ? new ImageIcon( ImageUtil_.reduceImage( image, 96 ) )
                     : null;
             jLabels[ 0 ].setIcon( imageIcon );
         }

@@ -107,12 +107,12 @@ public class ImageUtil_
     //ENHANCE?
     /**
      * @param maxWidthHeight
-     * @param image
+     * @param image can be 'null'
      * @return original if smaller than max pixels
      */
     static public Image reduceImage( final Image image, final int maxWidthHeight )
     {
-        if( image.getHeight( null ) <= maxWidthHeight && image.getWidth( null ) <= maxWidthHeight )
+        if( image == null || ( image.getHeight( null ) <= maxWidthHeight && image.getWidth( null ) <= maxWidthHeight ) )
         {
             return image;
         }

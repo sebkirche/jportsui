@@ -164,7 +164,6 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
      * @param font GuiFactory.DO_NOT_SET_FONT or 'null' for default
      * @param columnEnums non-'null'
      */
-    @SuppressWarnings("unchecked")
     public AEnumTableModel
             ( final Class<R>      rowOfClassType
             , final Dimension     tableMaxPreferredDimension
@@ -186,6 +185,7 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
         // For example <code>enum EExamp { E {toString()}, F, G{hashcode()} } should not return EExamp$1</code>
         fColumnEnumType = columnEnums[ 0 ].getDeclaringClass(); // gets the Enum's correct type even if it is an anonymous Enum like EExamp$1
 
+        @SuppressWarnings("unchecked")
         final Class<C>[] columnClasses = new Class[ columnEnums.length ]; // nulls
         Arrays.fill( columnClasses, Object.class );
 
@@ -269,9 +269,9 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
                 if( pixelWidth != -1 ) // '-1' is flex-space
                 {   // lock column size
                     final TableColumn column = jTable.getColumnModel().getColumn( i );
-                    column.setPreferredWidth( pixelWidth );
                     column.setMinWidth( pixelWidth );
                     column.setMaxWidth( pixelWidth );
+                    column.setPreferredWidth( pixelWidth );
                 }
                 // else flex space
             }
@@ -355,12 +355,14 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
         jTable.setAutoCreateRowSorter( isAutoSorter ); // will call derived class's .getRowCount() so check against null fields there, watch for nulls here in super.ctor
         if( isAutoSorter == true )
         {
+            @SuppressWarnings("unchecked")
             final RowSorter<AEnumTableModel<R,C>> rowSorter = (RowSorter<AEnumTableModel<R,C>>)jTable.getRowSorter();
             rowSorter.toggleSortOrder( 0 ); // this appears to be the correct call to pick the sort column
 
             // visibility filter
             if( rowSorter instanceof DefaultRowSorter )
             {
+                @SuppressWarnings("unchecked")
                 final DefaultRowSorter<AEnumTableModel<R,C>,Integer> defaultRowSorter = (DefaultRowSorter<AEnumTableModel<R,C>,Integer>)rowSorter;
 
                 if( ContextualVisibilityProvidable.class.isAssignableFrom( rowOfClassType ) == true )

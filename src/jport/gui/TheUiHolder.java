@@ -126,6 +126,9 @@ public class TheUiHolder
         fCommander.selectPort( port );
     }
 
+    /**
+     * BUG: when row sorter conformed and table resync'd, seems to cause column pixel widths to get defaulted.
+     */
     void setTableSortByMark()
     {
         fTableModel_Port.setTableSortByMark();

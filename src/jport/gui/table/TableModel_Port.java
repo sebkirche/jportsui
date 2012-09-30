@@ -76,22 +76,30 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
     }
 
     /**
-     * Put Marks at top in Name order.
+     * Put Marks at top in Name + Version order.
      */
     public void setTableSortByMark()
     {
         final List<? extends SortKey> list = Arrays.asList
                 ( new SortKey( EColumn.MARK.ordinal(), SortOrder.DESCENDING )
                 , new SortKey( EColumn.NAME.ordinal(), SortOrder.ASCENDING )
+                , new SortKey( EColumn.INSTALLED.ordinal(), SortOrder.DESCENDING )
                 );
         this.getJTable().getRowSorter().setSortKeys( list );
 //... scroll to top of table
     }
 
+    /**
+     * Put in Name + Version order.
+     */
     public void setTableSortByName()
     {
-        final List<? extends SortKey> list = Arrays.asList( new SortKey( EColumn.NAME.ordinal(), SortOrder.ASCENDING ) );
+        final List<? extends SortKey> list = Arrays.asList
+                ( new SortKey( EColumn.NAME.ordinal(), SortOrder.ASCENDING )
+                , new SortKey( EColumn.INSTALLED.ordinal(), SortOrder.DESCENDING )
+                );
         this.getJTable().getRowSorter().setSortKeys( list );
+//... scroll to top of table
     }
 
     @Override public void notify( final EElemental elemental, final Portable obj )

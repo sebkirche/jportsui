@@ -164,6 +164,7 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
      * @param font GuiFactory.DO_NOT_SET_FONT or 'null' for default
      * @param columnEnums non-'null'
      */
+    @SuppressWarnings("unchecked")
     public AEnumTableModel
             ( final Class<R>      rowOfClassType
             , final Dimension     tableMaxPreferredDimension

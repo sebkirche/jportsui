@@ -438,6 +438,7 @@ public class Ico
 //      return (b < 0) ? 256+b : b; // Convert byte to unsigned byte.
    }
 
+    @SuppressWarnings("serial")
     static public class BadIcoResException extends Exception
     {
        public BadIcoResException (String message)

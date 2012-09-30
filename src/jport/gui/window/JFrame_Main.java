@@ -127,7 +127,7 @@ public class JFrame_Main extends JFrame
                         jTab_Filter.setSelectedIndex( 0 );
                         jTab_Detail.setSelectedIndex( 0 );
                         portsTable.clearSelection();
-                        portsTable.setTableSortByName();
+//                        portsTable.setTableSortByName();
 
                         // THUNK, can't set table rows until port snapshot parsing completes
                         portsTable.setRows( PortsConstants.NO_PORTS );

@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class CachedUriContent
 {
-    /** Singleton-esque as not using a real Service Registry */
+    /** Singleton-esque as not using a real Service Registry. */
     static volatile private UriContentCacheable sUriCacheable = null;
 
     /**
@@ -329,7 +329,7 @@ public class CachedUriContent
             final List<UriContent> hardRefList = new ArrayList<UriContent>( fUriToContentRefMap.size() );
             for( final Reference<UriContent> ref : fUriToContentRefMap.values() )
             {   // break out soft/weak refs
-                final UriContent uc = ref.get(); // hold as hardreference
+                final UriContent uc = ref.get(); // hold onto hard reference before GC'd
                 if( uc != null ) { hardRefList.add( uc ); }
             }
 

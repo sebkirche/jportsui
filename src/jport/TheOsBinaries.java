@@ -2,8 +2,10 @@ package jport;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import jport.common.StringsUtil_;
 import jport.common.Util;
 
 
@@ -27,45 +29,65 @@ public class TheOsBinaries
      */
     private TheOsBinaries()
     {
-        final String[] dirPathNames = ( Util.isOnWindows() == false )
-                ? new String[] 
-                        { "/bin"
-                        , "/sbin"
-                        , "/usr/bin"
-                        , "/usr/sbin"
-                        , "/usr/lib"
-                        , "/usr/X11/bin"
-                        , "/usr/X11/lib"
-                        , "/usr/libexec/apache2"
-                        , "/Developer/usr/bin/"
-                        }
-                : new String[] { "C:\\cygwin\\bin", "C:\\cygwin\\lib" };
-
         final long startMillisec = System.currentTimeMillis();
 
-        for( final String dirPathName : dirPathNames )
-        {
-            final File dirPath = new File( dirPathName );
-            if( dirPath.exists() == true )
+        if( Util.isOnMac() == true )
+        {   // 7 ms. vs 1800 ms. of Files.listFiles
+            String str = "";
+            try
             {
-                final File[] files = dirPath.listFiles( new FileFilter() // anonymous class
-                        {   @Override public boolean accept( final File path )
-                            {   return path.isFile() == true;
-                            }
-                        } );
+                final byte[] bytes = Util.retreiveResourceBytes( "/jport/mac-10-6-native-bin.txt" );
+                str = new String( bytes );
+            }
+            catch( IOException ex )
+            {}
 
-                for( final File file : files )
+            final String[] names = StringsUtil_.fastSplits( str, '\n', ' ' );
+            for( final String name : names )
+            {
+                fOsBinNameSet.add( name );
+            }
+        }
+        else
+        {
+            final String[] dirPathNames = ( Util.isOnWindows() == true )
+                    ? new String[] { "C:\\cygwin\\bin", "C:\\cygwin\\lib" }
+                    : new String[] // BSD
+                            { "/bin"
+                            , "/sbin"
+                            , "/usr/bin"
+                            , "/usr/sbin"
+                            , "/usr/lib"
+                            , "/usr/X11/bin"
+                            , "/usr/X11/lib"
+                            // , "/usr/libexec/apache2"
+                            // , "/Developer/usr/bin/"
+                            };
+
+            for( final String dirPathName : dirPathNames )
+            {
+                final File dirPath = new File( dirPathName );
+                if( dirPath.exists() == true )
                 {
-                    final String fileName = file.getName();
-                    fOsBinNameSet.add( fileName.intern() );
+                    final File[] files = dirPath.listFiles( new FileFilter() // anonymous class
+                            {   @Override public boolean accept( final File path )
+                                {   return path.isFile() == true;
+                                }
+                            } );
 
-                    final int p = fileName.indexOf( '.' ); // remove ".exe" and ".dll" from Cygwin distro
-                    if( p != Util.INVALID_INDEX )
+                    for( final File file : files )
                     {
-                        final String trimmed = fileName.substring( 0, p ).intern();
-                        if( trimmed.isEmpty() == false )
+                        final String fileName = file.getName();
+                        fOsBinNameSet.add( fileName );
+
+                        final int p = fileName.indexOf( '.' ); // remove ".exe" and ".dll" from Cygwin distro
+                        if( p != Util.INVALID_INDEX )
                         {
-                            fOsBinNameSet.add( trimmed );
+                            final String trimmed = fileName.substring( 0, p );
+                            if( trimmed.isEmpty() == false )
+                            {
+                                fOsBinNameSet.add( trimmed );
+                            }
                         }
                     }
                 }

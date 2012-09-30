@@ -181,9 +181,9 @@ public class PortsMarker
     {
         final boolean isPresent = fPort_to_MarkMap.containsKey( port );
 
-        if( isPresent == true && mark == null )
+        if( mark == null )
         {   // unmark will delete markings
-            dissolveDeps( port );
+            if( isPresent == true ) dissolveDeps( port );
             fPort_to_MarkMap.remove( port );
         }
         else if( isPresent == true && fPort_to_MarkMap.get( port ) == mark )

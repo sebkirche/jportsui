@@ -49,14 +49,21 @@ public class PortsConstants
             }
 
     /**
-     * Has revocation logic with mutually exclusive stati.
+     * Enum's <code>.isApplicable()</code> uses revocation logic with mutually exclusive stati.
+     *<P>
+     * <code>port</code> CLI options are generally
+     * <UL>
+     * <LI> <code>[-p]</code> Proceed to next port when a preceeding port has an error
+     * <LI> <code>[-u]</code> Uninstalls inactive ports
+     * <LI> <code>[-c]</code> Clean
+     * </UL>
      */
     static public enum EPortMark implements TipProvidable, VisibilityProvidable
-            { Uninstall  ( EPortStatus.INSTALLED  , "uninstalled", "-p -u -c" ) // [u]ninstalls inactive ports ; [c]lean ; [p]roceed to next port on error
-            , Deactivate ( EPortStatus.ACTIVE     , "deactivated", "-p" ) // [p]roceed to next port on error
-            , Activate   ( EPortStatus.INACTIVE   , "activated"  , "-p" ) // [p]roceed to next port on error
-            , Install    ( EPortStatus.UNINSTALLED, "installed"  , "-p" ) // [p]roceed to next port when a preceeding port has an error
-            , Upgrade    ( EPortStatus.OUTDATED   , "upgraded"   , "-p -u" ) // [p]roceed to next port on error ; [u]ninstalls inactive ports ;
+            { Uninstall  ( EPortStatus.INSTALLED  , "uninstalled", "-p -u -c" ) // [p]roceed to next port on error ; [u]ninstalls inactive ports ; [c]lean
+            , Deactivate ( EPortStatus.ACTIVE     , "deactivated", "-p" )       // [p]roceed to next port on error
+            , Activate   ( EPortStatus.INACTIVE   , "activated"  , "-p" )       // [p]roceed to next port on error
+            , Install    ( EPortStatus.UNINSTALLED, "installed"  , "-p -u" )    // [p]roceed to next port on error ; [u]ninstalls inactive ports ;
+            , Upgrade    ( EPortStatus.OUTDATED   , "upgraded"   , "-p -u" )    // [p]roceed to next port on error ; [u]ninstalls inactive ports ;
             , Dependency_Upgrade  ( Upgrade )
             , Dependency_Install  ( Install )
             , Dependant_Uninstall ( Uninstall )
@@ -75,6 +82,7 @@ public class PortsConstants
                         fOption = option;
                         fApplicableStatus = applicableStatus;
                     }
+                    //
                     final private String fTip, fText, fOption;
                     final private EPortStatus fApplicableStatus;
                     final private EPortMark fNonDepMark;

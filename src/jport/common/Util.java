@@ -1,10 +1,13 @@
 package jport.common;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -27,6 +30,8 @@ import java.util.TreeSet;
  */
 public class Util
 {
+    static final public byte[] NO_BYTES = new byte[ 0 ];
+
     static final public int INVALID_INDEX = -1;
 
     private Util() {}
@@ -471,6 +476,53 @@ public class Util
 
         dis.close();
         fis.close();        
+        return bytes;
+    }
+
+    /**
+     * Fully drain available stream to a byte[].
+     *
+     * @param localInputStream is not closed
+     * @return populated by InputStream read available
+     * @throws IOException
+     */
+    static public byte[] readFullyBytes( final InputStream localInputStream ) throws IOException
+    {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream( 0 ); // 0 as most likely will be copying 100% in one shot if stream is local
+        final DataInputStream dis = new DataInputStream( localInputStream );
+        byte[] inBytes = NO_BYTES; // length=0
+        int avail;
+
+        while( ( avail = localInputStream.available() ) > 0 ) // update with any more remaining without blocking
+        {
+            if( inBytes.length != avail ) inBytes = new byte[ avail ];
+            dis.readFully( inBytes ); // InputStream does not have a .readFully()
+            baos.write( inBytes ); // copy bytes
+        }
+
+        dis.close();
+        final byte[] outBytes = baos.toByteArray();
+        baos.close();
+        return outBytes;
+    }
+
+    //ENHANCE
+    /**
+     * Read complete byte[] content of a .JAR resource or file entity on the Class Path.
+     * i.e. path is in distro jar or the build class path.
+     * Note: ClassLoader understands that the beginning slash path == `pwd` of
+     * the .JAR not the root of the file system.
+     *
+     * @param internallyJarredResourceName should be prefixed with '/' to load from this jar / class files
+     * @return
+     * @throws IOException
+     */
+    static public byte[] retreiveResourceBytes( final String internallyJarredResourceName ) throws IOException
+    {
+        final InputStream resourceInputStream = Util.class.getResourceAsStream( internallyJarredResourceName );
+        if( resourceInputStream == null ) throw new FileNotFoundException( "ClassLoader can not find " + internallyJarredResourceName );
+        final byte[] bytes = readFullyBytes( resourceInputStream );
+        resourceInputStream.close();
         return bytes;
     }
 

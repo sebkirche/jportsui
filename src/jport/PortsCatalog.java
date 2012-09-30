@@ -42,7 +42,7 @@ public class PortsCatalog
     {}
 
     /** Time of "PortIndex" file parse. */
-    final private long fParse_EpochTimeMillisec = System.currentTimeMillis();
+    final private long fParse_Epoch = System.currentTimeMillis();
 
     final private PortsDep             fPortsDep = new PortsDep( this );
     final private PortsVariants        fPortsVariants = new PortsVariants();

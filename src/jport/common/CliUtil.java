@@ -195,7 +195,7 @@ public class CliUtil
                 final Thread inputDrainThread = new Thread_InputStreamDrain( fListener, inputStream, fOutputFromCliList );
                 inputDrainThread.start();
 
-                final long now = System.currentTimeMillis();
+                final long startMillisec = System.currentTimeMillis();
 
                 // @link "http://www.javamex.com/tutorials/threads/yield.shtml"
                 // required for proper fork staging, failed on Win/Mac as Linux robins -all- Threads, whereas Mac/Win does not
@@ -212,7 +212,7 @@ public class CliUtil
                     }
                 }
 
-                final long elapsedMillisec = System.currentTimeMillis() - now;
+                final long elapsedMillisec = System.currentTimeMillis() - startMillisec;
                 if( DEBUG ) System.out.println( CliProcess.class.getSimpleName() +".execute()= "+ elapsedMillisec +" ms <-"+ StringsUtil_.concatenate( " ", fProcessBuilder.command() ) );
 
                 // completed

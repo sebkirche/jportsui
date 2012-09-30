@@ -68,13 +68,13 @@ class Thread_Worker extends Thread
                     final Runnable runnable = fRunQueue.remove(); // from head
                     try
                     {
-                        final long nowEpoch = System.currentTimeMillis();
+                        final long startMillisec = System.currentTimeMillis();
                         runnable.run();
 
                         if( DEBUG ) 
                         {
                             final int backlog = fRunQueue.size();
-                            final long deltaMs = System.currentTimeMillis() - nowEpoch;
+                            final long deltaMs = System.currentTimeMillis() - startMillisec;
                             final String deltaStr   = ( deltaMs > 0 ) ? " time ms="+ deltaMs : "";
                             final String backlogStr = ( backlog > 0 ) ? " backlog="+ backlog : "";
                             System.out.println( this.getName() +" ran "+ runnable.toString() +" ->"+ deltaStr + backlogStr );

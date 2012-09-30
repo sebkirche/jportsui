@@ -28,9 +28,21 @@ public class TheOsBinaries
     private TheOsBinaries()
     {
         final String[] dirPathNames = ( Util.isOnWindows() == false )
-                ? new String[] { "/bin", "/sbin", "/usr/bin", "/usr/sbin", "/usr/lib",  "/usr/X11/bin", "/usr/X11/lib", "/Developer/usr/bin/" }
+                ? new String[] 
+                        { "/bin"
+                        , "/sbin"
+                        , "/usr/bin"
+                        , "/usr/sbin"
+                        , "/usr/lib"
+                        , "/usr/X11/bin"
+                        , "/usr/X11/lib"
+                        , "/usr/libexec/apache2"
+                        , "/Developer/usr/bin/"
+                        }
                 : new String[] { "C:\\cygwin\\bin", "C:\\cygwin\\lib" };
-        
+
+        final long startMillisec = System.currentTimeMillis();
+
         for( final String dirPathName : dirPathNames )
         {
             final File dirPath = new File( dirPathName );
@@ -59,6 +71,8 @@ public class TheOsBinaries
                 }
             }
         }
+
+        if( PortsConstants.DEBUG ) System.out.print( TheOsBinaries.class.getCanonicalName() +"<init> ms="+ ( System.currentTimeMillis() - startMillisec ) );
     }
 
     public boolean has( final String binaryName )

@@ -244,7 +244,7 @@ public class Commander
 
     // ================================================================================
     /**
-     * Base class for a password driven command line Port command.
+     * Abstract base class for an administrator password driven CLI Port command.
      */
     private abstract class AProcessCommand
         implements

@@ -94,7 +94,8 @@ public class PortsCliUtil
     }
 
     /**
-     * Requests package info from the Ports CLI.
+     * Requests package info from the Ports CLI. Ex.
+     * <code> git-core @1.7.12.1_0+credential_osxkeychain+doc+pcre+python27 </code>
      *
      * @param statusEnum type of port pseudo-name, version and variant information to echo
      * @return as reported by the CLI
@@ -111,35 +112,38 @@ public class PortsCliUtil
         for( final String untrimmedLine : lines )
         {   // CLI reported information
             final String line = untrimmedLine.trim(); // required
-            final int p = line.indexOf( '@' ); // installed version
-            final String cliPortName = line.substring( 0, p ).trim();
 
-            final int q = line.indexOf( '+' ); // installed variants
-            final String cliVersionRevision = ( q != -1 ) ? line.substring( p + 1, q ) : line.substring( p + 1 );
-            final String multiVariant = ( q != -1 ) ? line.substring( q + 1 ) : "";
+            final int versionStart  = line.indexOf( '@' ); // installed version
+            final int revisionStart = line.indexOf( '_', versionStart ); // installed revision
+            final int variantStart  = line.indexOf( '+', revisionStart ); // installed variants, '+' not present if NO variants installed
+
+            final String cliPortName = line.substring( 0, versionStart ).trim();
+
+            // extract installed version after '@' but before '_'
+            final String cliVersion = line.substring( versionStart + 1, revisionStart );
+
+            // extract installed revision number after '_' but before '\n' or '+'
+            final String cliRevision = ( variantStart != Util.INVALID_INDEX )
+                    ? line.substring( revisionStart + 1, variantStart )
+                    : line.substring( revisionStart + 1 );
+
+            // extract insalled variants after '+'
+            final String multiVariant = ( variantStart != Util.INVALID_INDEX )
+                    ? line.substring( variantStart + 1 )
+                    : "";
+
             final String[] variantSplits = multiVariant.split( "[+]" ); // on literal '+'
             final String[] cliVariants;
             if( variantSplits.length == 0 || variantSplits[ 0 ].isEmpty() == true )
-            {
+            {   // no variants
                 cliVariants = StringsUtil_.NO_STRINGS;
             }
             else
-            {
+            {   // has installed variants
                 cliVariants = variantSplits;
                 Arrays.sort( cliVariants ); // must sort for .deepEquals()
             }
-
-            // extract installed revision number after underscore char
-            final int r = cliVersionRevision.lastIndexOf( '_' );
-
-            final String cliVersion = ( r != Util.INVALID_INDEX )
-                    ? cliVersionRevision.substring( 0, r )
-                    : cliVersionRevision;
-
-            final String cliRevision = ( r != Util.INVALID_INDEX )
-                    ? cliVersionRevision.substring( r + 1 )
-                    : "0";
-
+            
             final CliPortInfo cpi = new CliPortInfo
                     ( cliPortName.intern()
                     , cliVersion.intern()
@@ -264,5 +268,18 @@ public class PortsCliUtil
         final String portCmd = "-u -p "+ ECmd.CLEAN._() +" --all "+ EPortStatus.INSTALLED.name().toLowerCase();
         final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd +" ; ";
         return CliUtil.forkCommand( listener, UNIX_BIN_BASH, BASH_OPT_C, bashIt );
+    }
+
+    static public void main(String... args)
+    {
+        final Set<CliPortInfo> set = cliEcho( EPortStatus.INSTALLED );
+        for( final CliPortInfo cpi : set )
+        {
+            System.out.println( cpi );
+            if( cpi.getVariants().length > 0 )
+            {
+                System.out.println( "\t variants="+ Arrays.toString( cpi.getVariants() ) );
+            }
+        }
     }
 }

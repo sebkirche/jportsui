@@ -40,7 +40,7 @@ import jport.type.Portable.Predicatable;
 @SuppressWarnings("serial")
 public class JDialog_AboutApp extends JDialog
 {
-    static final private int _MAX_PIXEL_SIZE = 64;
+    static final private int _MAX_PIXEL_SIZE = 48;
 
     static
     {}

@@ -112,16 +112,26 @@ public class ImageUtil_
      */
     static public Image reduceImage( final Image image, final int maxWidthHeight )
     {
-        if( image == null || ( image.getHeight( null ) <= maxWidthHeight && image.getWidth( null ) <= maxWidthHeight ) )
+        if( image == null ) return image;
+
+        final int width  = image.getWidth ( null );
+        final int height = image.getHeight( null );
+        if( width <= maxWidthHeight && height <= maxWidthHeight && width > 0 && height > 0 )
         {
             return image;
         }
         else
         {
-            final BufferedImage scaledBi = new BufferedImage( maxWidthHeight, maxWidthHeight, BufferedImage.TYPE_INT_ARGB );
-            final Graphics2D g2d = scaledBi.createGraphics();
-            g2d.drawImage( image, 0, 0, maxWidthHeight, maxWidthHeight, null ); //... might not be a square
-            return scaledBi;
+            return image.getScaledInstance //... might not be square (1x1) aspect-ratio
+                    ( Math.min( width,  maxWidthHeight )
+                    , Math.min( height, maxWidthHeight )
+                    , Image.SCALE_SMOOTH
+                    );
+
+//            final BufferedImage scaledBi = new BufferedImage( maxWidthHeight, maxWidthHeight, BufferedImage.TYPE_INT_ARGB );
+//            final Graphics2D g2d = scaledBi.createGraphics();
+//            g2d.drawImage( image, 0, 0, maxWidthHeight, maxWidthHeight, null );
+//            return scaledBi;
         }
     }
 }

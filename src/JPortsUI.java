@@ -1,6 +1,7 @@
 // default package
 
 import javax.swing.SwingUtilities;
+import jport.PortsConstants;
 import jport.TheApplication;
 import jport.TheOsBinaries;
 import jport.gui.TheUiHolder;
@@ -26,7 +27,7 @@ public class JPortsUI
 
     public static void main( String[] args )
     {
-        System.out.println( "Maining "+ TheApplication.INSTANCE );
+        final Object obj = TheApplication.INSTANCE; // agro-passo class loading
 
         final Object MONITOR = JPortsUI.class;
 

@@ -178,7 +178,7 @@ class PortBuilder
 
             int q = rawValue.length() - 1; // end
             while( q > p && rawValue.charAt( q ) == '}' )
-            {
+            {   // find last non-'}'
                 q--;
             }
 

@@ -1,10 +1,9 @@
 // default package
 
 import javax.swing.SwingUtilities;
-import jport.PortConstants;
-import jport.TheApplication;
-import jport.TheOsBinaries;
-import jport.gui.TheUiHolder;
+import oz.zomg.jport.TheApplication;
+import oz.zomg.jport.TheOsBinaries;
+import oz.zomg.jport.gui.TheUiHolder;
 
 
 /**

@@ -1,4 +1,4 @@
-package jport.gui;
+package jport.gui.component;
 
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;

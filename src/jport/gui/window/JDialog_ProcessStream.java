@@ -30,8 +30,8 @@ import jport.common.StringsUtil_;
 import jport.common.gui.FocusedButtonFactory;
 import jport.common.gui.JScrollPaneFactory_;
 import jport.common.gui.JScrollPaneFactory_.EScrollPolicy;
-import jport.gui.JListModel_Array;
 import jport.gui.TheUiHolder;
+import jport.gui.component.JListModel_Array;
 
 
 /**

@@ -22,7 +22,7 @@ import jport.common.HttpUtil;
 import jport.common.ImageUtil_;
 import jport.common.Interfacing_.Targetable;
 import jport.common.StringsUtil_;
-import jport.gui.AJLabel_PortInfo;
+import jport.gui.component.AJLabel_PortInfo;
 import jport.type.EPortStatus;
 import jport.type.Portable;
 

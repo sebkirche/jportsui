@@ -1,10 +1,10 @@
-package jport.gui;
+package jport.gui.component;
 
 import java.awt.Component;
 import javax.swing.JTabbedPane;
-import jport.common.gui.EmbeddedCreatorFactory_;
 import jport.common.Interfacing_.Creatable;
 import jport.common.Util;
+import jport.common.gui.EmbeddedCreatorFactory_;
 import jport.gui.panel.JPanel_Histogram;
 import jport.gui.panel.JPanel_StatusFilter;
 
@@ -28,7 +28,7 @@ public class JTabPane_Filter extends JTabbedPane
 //?        final SingleSelectionModel ssm = this.getModel(); // manages which tab
 
 //        final HistogramUiFactory histogramUi = new HistogramUiFactory();
-        
+
         this.addTab( "Status"        , EmbeddedCreatorFactory_.create( new Creatable<Component>() { @Override public Component create() { return new JPanel_StatusFilter(); } } ) );
         this.addTab( "Totals"        , EmbeddedCreatorFactory_.create( new Creatable<Component>() { @Override public Component create() { return new JPanel_Histogram(); } } ) );
 

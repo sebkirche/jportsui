@@ -11,8 +11,8 @@ import javax.swing.KeyStroke;
 import jport.TheApplication;
 import jport.common.Reset.Resetable;
 import jport.common.Util;
-import jport.gui.JTabPane_Detail;
 import jport.gui.TheUiHolder;
+import jport.gui.component.JTabPane_Detail;
 import jport.gui.panel.JPanel_Mark;
 import jport.type.Portable;
 
@@ -54,7 +54,7 @@ public class JDialog_PortDetail extends JDialog
 
         // listener
         TheApplication.INSTANCE.getResetNotifier().addListener( this );
-        
+
         if( Util.isOnMac() == true )
         {   // register [CMD-W] as close window
             final KeyStroke ks = KeyStroke.getKeyStroke( KeyEvent.VK_W, java.awt.event.InputEvent.META_DOWN_MASK );
@@ -71,7 +71,7 @@ public class JDialog_PortDetail extends JDialog
     @Override public void reset()
     {
         TheApplication.INSTANCE.getResetNotifier().removeListener( this );
-        
+
         this.dispose();
     }
 

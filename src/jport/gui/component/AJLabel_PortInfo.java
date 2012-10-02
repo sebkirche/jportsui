@@ -1,4 +1,4 @@
-package jport.gui;
+package jport.gui.component;
 
 import java.util.Arrays;
 import javax.swing.BorderFactory;

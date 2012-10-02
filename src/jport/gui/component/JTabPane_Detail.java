@@ -1,14 +1,14 @@
-package jport.gui;
+package jport.gui.component;
 
 import java.awt.Component;
 import javax.swing.JTabbedPane;
 import jport.common.Interfacing_.Creatable;
 import jport.common.gui.EmbeddedCreatorFactory_;
 import jport.common.gui.JScrollPaneFactory_.EScrollPolicy;
-import jport.gui.AJLabel_PortInfo.JLabel_Dependants;
-import jport.gui.AJLabel_PortInfo.JLabel_Dependencies;
-import jport.gui.AJLabel_PortInfo.JLabel_Description;
-import jport.gui.AJLabel_PortInfo.JLabel_FilesInstalled;
+import jport.gui.component.AJLabel_PortInfo.JLabel_Dependants;
+import jport.gui.component.AJLabel_PortInfo.JLabel_Dependencies;
+import jport.gui.component.AJLabel_PortInfo.JLabel_Description;
+import jport.gui.component.AJLabel_PortInfo.JLabel_FilesInstalled;
 import jport.gui.panel.JPanel_CommonInfo;
 import jport.gui.table.TableModel_Variants;
 import jport.type.Portable;

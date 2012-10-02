@@ -53,26 +53,15 @@ public class PortsMarker
         final int size = fPort_to_MarkMap.size();
         if( size == 0 ) return; // nothing to do
 
-        final Set<Portable> unmarkableSet = new HashSet<Portable>( size );
-
         // avoids Iterator concurrent modification exception when .put(k,v)
         for( Map.Entry<Portable,EPortMark> entry : Util.createMapEntryArray( fPort_to_MarkMap ) )
         {
             final Portable prevPort = entry.getKey(); // alias
+            final EPortMark mark = entry.getValue(); // alias
+
             final Portable refreshPort = refreshedPortsCatalog.getPortsInventory().equate( prevPort );
             if( refreshPort != null )
             {   // found
-                final EPortMark mark = entry.getValue(); // alias
-                fPort_to_MarkMap.put( refreshPort, mark ); // replace with the new port instance
-
-                if( DEBUG )
-                {
-                    System.out.print( refreshPort.getName() +'=' );
-                    for( EPortStatus ps : EPortStatus.VALUES )
-                        { if( refreshPort.hasStatus( ps ) ) { System.out.print( ps.toString() +',' ); } }
-                    System.out.println();
-                }
-
                 switch( mark )
                 {
                     case Conflicted           : // fall-thru
@@ -81,7 +70,8 @@ public class PortsMarker
                     case Dependency_Activate  : // fall-thru
                     case Dependency_Install   : // fall-thru
                     case Dependency_Upgrade   :
-                            unmarkableSet.add( refreshPort ); // auto-clear
+                            // machine marked
+                            fPort_to_MarkMap.remove( prevPort );
                             break;
 
                     case Activate   : // fall-thru
@@ -89,22 +79,21 @@ public class PortsMarker
                     case Install    : // fall-thru
                     case Uninstall  : // fall-thru
                     case Upgrade    :
-                            if( mark.isApplicable( refreshPort ) == false )
+                            if( mark.isApplicable( prevPort ) == false )
                             {   // the mark no longer applies
-                                unmarkableSet.add( refreshPort );
+                                fPort_to_MarkMap.remove( prevPort );
+                            }
+                            else
+                            {   // replace with the new port instance
+                                fPort_to_MarkMap.put( refreshPort, mark );
                             }
                             break;
                 }
             }
             else
             {   // may have been removed from PortsIndex when Obsoleted (or Upgraded from a revision?)
-                unmarkableSet.add( refreshPort );
+                fPort_to_MarkMap.remove( prevPort );
             }
-        }
-
-        for( final Portable port : unmarkableSet )
-        {   // port status change request was successfully applied
-            unmark( port );
         }
     }
 

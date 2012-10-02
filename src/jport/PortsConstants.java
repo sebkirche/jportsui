@@ -87,12 +87,13 @@ public class PortsConstants
                     final private EPortStatus fApplicableStatus;
                     final private EPortMark fNonDepMark;
                     public EPortMark         getNonDepMark() { return fNonDepMark; }
-                    public boolean           isApplicable( final Portable port ) { return port.hasStatus( fApplicableStatus ); }
                     public String            getCliCommand() { return this.name().toLowerCase(); }
                     public String            getCliOption() { return fOption; }
                     @Override public String  provideTipText() { return "<HTML>Marks the selected Port to be<BR><B>"+ fTip +"</B> after Apply is clicked"; }
                     @Override public boolean provideIsVisible() { return fTip.isEmpty() == false; } // hacky
                     @Override public String  toString() { return fText; }
+                    //
+                    public boolean           isApplicable( final Portable port ) { return port.hasStatus( fApplicableStatus ); }
 
                     /** Avoid array allocation as Java does not have immutable []s */
                     static final public EPortMark[] VALUES = EPortMark.values();

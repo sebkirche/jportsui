@@ -1,4 +1,4 @@
-package jport;
+package jport.ports;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,9 +11,11 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JOptionPane;
-import jport.PortsConstants.EPortStatus;
+import jport.PortConstants;
+import jport.TheApplication;
 import jport.common.Util;
 import jport.type.CliPortInfo;
+import jport.type.EPortStatus;
 import jport.type.PortFactory;
 import jport.type.Portable;
 
@@ -36,7 +38,7 @@ public class PortsCatalog
     /** Last Catalog generated Identification # */
     static final private AtomicInteger _ID = new AtomicInteger();
 
-    static final PortsCatalog NONE = new PortsCatalog();
+    static final public PortsCatalog NONE = new PortsCatalog();
 
     static
     {}
@@ -68,10 +70,10 @@ public class PortsCatalog
      *
      * @param prevCatalog was Initial
      */
-    PortsCatalog( final PortsCatalog prevCatalog )
+    public PortsCatalog( final PortsCatalog prevCatalog )
     {
         final Map<String,Portable> ciName_to_PortMap = ( _FIRST_MAP_REASSIGN == false )
-                ? _parsePortIndex( PortsConstants.PORTS_PATH + _PORTS_FILE_NAME ) // *BLOCKS* for disk I/O
+                ? _parsePortIndex( PortConstants.PORTS_PATH + _PORTS_FILE_NAME ) // *BLOCKS* for disk I/O
                 : prevCatalog.fCiName_to_PortMap;
 
         final Set<Portable> allPortSet = new HashSet<Portable>( _FORECAST_COUNT );
@@ -128,7 +130,7 @@ public class PortsCatalog
     {
         final Map<String,Portable> map = new HashMap<String,Portable>( _FORECAST_COUNT );
 
-        final File filePath = ( PortsConstants.HAS_MAC_PORTS == true )
+        final File filePath = ( PortConstants.HAS_MAC_PORTS == true )
                 ? new File( filePathName )
                 : new File( _PORTS_FILE_NAME ); // fall back to project folder for dev work
 
@@ -139,10 +141,10 @@ public class PortsCatalog
         }
         else
         {   // found Port index
-            if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +" OPTIMIZATION="+ PortsConstants.OPTIMIZATION );
+            if( PortConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +" OPTIMIZATION="+ PortConstants.OPTIMIZATION );
             final long startMillisec = System.currentTimeMillis();
 
-            if( PortsConstants.OPTIMIZATION )
+            if( PortConstants.OPTIMIZATION )
             {   // Scanner uses regex, this is 2x faster on startup -AND- accommodates multi-line port info
                 try
                 {
@@ -195,7 +197,7 @@ public class PortsCatalog
                             final String ci_portName = port.getCaseInsensitiveName();
 
                             // no name collisions occurred, this means we only get the lastest version from the file
-                            if( PortsConstants.DEBUG && map.containsKey( ci_portName ) ) { System.out.println( port ); }
+                            if( PortConstants.DEBUG && map.containsKey( ci_portName ) ) { System.out.println( port ); }
 
                             map.put( ci_portName, port );
                         }
@@ -223,7 +225,7 @@ public class PortsCatalog
                                 final String ci_portName = port.getCaseInsensitiveName();
 
                                 // no name collisions occur, this means we only get the lastest version from the file
-                                if( PortsConstants.DEBUG && map.containsKey( ci_portName ) ) { System.out.println( port ); }
+                                if( PortConstants.DEBUG && map.containsKey( ci_portName ) ) { System.out.println( port ); }
 
                                 map.put( ci_portName, port );
                             }
@@ -239,7 +241,7 @@ public class PortsCatalog
                 {}
             }
 
-            if( PortsConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +"._parsePortIndex() ms="+ ( System.currentTimeMillis() - startMillisec ) );
+            if( PortConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +"._parsePortIndex() ms="+ ( System.currentTimeMillis() - startMillisec ) );
         }
 
         return map;
@@ -299,9 +301,9 @@ public class PortsCatalog
     }
 
     /**
-     * Lengthy operation.
+     * Lengthy constructor operation only called from TheApplication.
      */
-    void scanDates()
+    public void scanDates()
     {
         vPortsDate = new PortsDate( this ); // atomic assignment
     }

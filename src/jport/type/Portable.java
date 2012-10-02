@@ -1,7 +1,5 @@
 package jport.type;
 
-import jport.PortsConstants.EPortMark;
-import jport.PortsConstants.EPortStatus;
 import jport.common.Providers_.ForeColorProvidable;
 import jport.common.Providers_.TipProvidable;
 

@@ -14,8 +14,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import jport.PortsConstants;
-import jport.PortsConstants.EPortStatus;
+import jport.PortConstants;
 import jport.TheApplication;
 import jport.common.HttpUtil;
 import jport.common.Reset.Resetable;
@@ -29,6 +28,7 @@ import jport.gui.PortFilterPredicates;
 import jport.gui.panel.JPanel_CommandBar;
 import jport.gui.panel.JPanel_Mark;
 import jport.gui.table.TableModel_Port;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 
 
@@ -50,7 +50,7 @@ public class JFrame_Main extends JFrame
             , final PortFilterPredicates compoundPredicate
             )
     {
-        super( PortsConstants.APP_NAME +"  --  "+ PortsConstants.VERSION  );
+        super( PortConstants.APP_NAME +"  --  "+ PortConstants.VERSION  );
 
         final JTabbedPane jTab_Filter = new JTabPane_Filter();
         final JTabbedPane jTab_Detail = new JTabPane_Detail();
@@ -78,7 +78,7 @@ public class JFrame_Main extends JFrame
 
         // center
         final Component centerComponent;
-        if( Util.isOnMac() == false || PortsConstants.HAS_MAC_PORTS == true )
+        if( Util.isOnMac() == false || PortConstants.HAS_MAC_PORTS == true )
         {   //... allows testing on Windows but should not always
             centerComponent = jSplit_view_inv_detail;
         }
@@ -130,7 +130,7 @@ public class JFrame_Main extends JFrame
 //                        portsTable.setTableSortByName();
 
                         // THUNK, can't set table rows until port snapshot parsing completes
-                        portsTable.setRows( PortsConstants.NO_PORTS );
+                        portsTable.setRows( PortConstants.NO_PORTS );
                         final Portable[] begunHaveTheCloneWars = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts().clone();
                         portsTable.setRows( begunHaveTheCloneWars );
                         jSplit_inventory_detail.setDividerLocation( 0.66F ); // needed the rows first

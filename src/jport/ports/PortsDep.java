@@ -1,10 +1,11 @@
-package jport;
+package jport.ports;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import jport.PortConstants;
 import jport.type.Portable;
 
 
@@ -113,7 +114,7 @@ public class PortsDep
 
         final Portable[] depPorts = ( _SCRATCH_DEP_SET.isEmpty() == false )
                 ? _SCRATCH_DEP_SET.toArray( new Portable[ _SCRATCH_DEP_SET.size() ] )
-                : PortsConstants.NO_PORTS;
+                : PortConstants.NO_PORTS;
         _SCRATCH_DEP_SET.clear(); // no leak and prepare for next time
         return depPorts;
     }
@@ -143,8 +144,8 @@ public class PortsDep
         dependantsSet.remove( ofPort ); // do not include self
         final Portable[] depPorts = ( dependantsSet.isEmpty() == false )
                 ? dependantsSet.toArray( new Portable[ dependantsSet.size() ] )
-                : PortsConstants.NO_PORTS;
-        
+                : PortConstants.NO_PORTS;
+
         _SCRATCH_DEP_SET.clear(); // no leak and prepare for next time
         return depPorts;
     }

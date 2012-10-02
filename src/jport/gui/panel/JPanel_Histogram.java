@@ -12,10 +12,10 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
-import jport.PortsHistogramFactory.EHistogram;
 import jport.common.Reset.Resetable;
 import jport.gui.HistogramUiFactory;
 import jport.gui.TheUiHolder;
+import jport.ports.PortsHistogramFactory.EHistogram;
 import jport.type.Portable.Predicatable;
 
 

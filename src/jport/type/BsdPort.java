@@ -3,13 +3,11 @@ package jport.type;
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
-import jport.PortsCatalog;
-import jport.PortsConstants;
-import jport.PortsConstants.EPortMark;
-import jport.PortsConstants.EPortStatus;
+import jport.PortConstants;
 import jport.TheApplication;
 import jport.common.HttpUtil;
 import jport.common.StringsUtil_;
+import jport.ports.PortsCatalog;
 
 
 /**
@@ -265,7 +263,7 @@ class BsdPort //... refactor IndexPort?
                 && this.depends_extract.length == 0
               )
             {   // no dependencies
-                mUniqueDependencies = PortsConstants.NO_PORTS;
+                mUniqueDependencies = PortConstants.NO_PORTS;
             }
             else
             {   // unroll the unique deps add
@@ -442,7 +440,7 @@ class BsdPort //... refactor IndexPort?
     @Override final public int compareTo( final Portable another )
     {
         if( another == this ) return 0;
-        
+
         final int comparedCiNameCode = this.ci_name.compareTo( another.getCaseInsensitiveName() );
         if( comparedCiNameCode != 0 )
         {   // name differs
@@ -450,7 +448,7 @@ class BsdPort //... refactor IndexPort?
         }
         else
         {   // reverse order of version numbers
-            final int comparedVersionCode = -1 * this.getVersionInstalled().compareTo( another.getVersionInstalled() ); 
+            final int comparedVersionCode = -1 * this.getVersionInstalled().compareTo( another.getVersionInstalled() );
             if( comparedVersionCode != 0 )
             {
                 return comparedVersionCode;

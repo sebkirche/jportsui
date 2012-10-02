@@ -1,12 +1,12 @@
 package jport.gui;
 
 import java.util.Arrays;
-import jport.PortsConstants.EPortMark;
-import jport.PortsMarker;
 import jport.common.StringsUtil_;
 import jport.common.gui.ModalDialogFactory;
 import jport.common.gui.ModalDialogFactory.EConfirmationChoices;
 import jport.common.gui.ModalDialogFactory.EUserResponse;
+import jport.ports.PortsMarker;
+import jport.type.EPortMark;
 import jport.type.Portable;
 
 

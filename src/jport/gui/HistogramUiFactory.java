@@ -9,11 +9,11 @@ import javax.swing.JButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import jport.PortsHistogramFactory;
-import jport.PortsHistogramFactory.EHistogram;
 import jport.TheApplication;
 import jport.common.Histogram_;
 import jport.gui.table.TableModel_Histogram;
+import jport.ports.PortsHistogramFactory;
+import jport.ports.PortsHistogramFactory.EHistogram;
 import jport.type.Portable;
 import jport.type.Portable.Predicatable;
 

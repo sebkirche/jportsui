@@ -9,12 +9,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import jport.PortsConstants.EPortMark;
 import jport.TheApplication;
 import jport.common.Elemental;
 import jport.common.Elemental.EElemental;
 import jport.common.Util;
 import jport.gui.MarkConfirmUi;
+import jport.type.EPortMark;
 import jport.type.Portable;
 
 

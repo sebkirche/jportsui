@@ -1,6 +1,5 @@
 package jport.gui.table;
 
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -15,8 +14,6 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTable;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
-import jport.PortsConstants.EPortMark;
-import jport.PortsConstants.EPortStatus;
 import jport.TheApplication;
 import jport.common.Elemental;
 import jport.common.Elemental.EElemental;
@@ -26,6 +23,8 @@ import jport.common.Util;
 import jport.common.gui.AEnumTableModel_Array;
 import jport.gui.MarkConfirmUi;
 import jport.gui.TheUiHolder;
+import jport.type.EPortMark;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 
 

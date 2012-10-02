@@ -1,6 +1,5 @@
 package jport.gui.table;
 
-import jport.PortsVariants;
 import jport.TheApplication;
 import jport.common.Elemental;
 import jport.common.Elemental.EElemental;
@@ -9,8 +8,8 @@ import jport.common.Providers_.EnabledProvidable;
 import jport.common.Providers_.WidthProvidable;
 import jport.common.StringsUtil_;
 import jport.common.gui.AEnumTableModel_Array;
+import jport.ports.PortsVariants;
 import jport.type.Portable;
-
 
 
 /**

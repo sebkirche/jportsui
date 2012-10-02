@@ -17,13 +17,13 @@ import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import jport.PortsConstants;
-import jport.PortsConstants.EPortStatus;
+import jport.PortConstants;
 import jport.TheApplication;
 import jport.TheOsBinaries;
 import jport.common.GuiUtil_;
 import jport.common.Reset.Resetable;
 import jport.gui.TheUiHolder;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 import jport.type.Portable.Predicatable;
 
@@ -142,7 +142,7 @@ public class JPanel_StatusFilter extends JPanel
         // south
         final JPanel southPanel = new JPanel( new GridLayout( 0, 1, 0, GuiUtil_.GAP_PIXEL ) );
         southPanel.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening
-        ab_WhatsNew.setEnabled( PortsConstants.HAS_MAC_PORTS );
+        ab_WhatsNew.setEnabled( PortConstants.HAS_MAC_PORTS );
         jCombo_Duration.setEnabled( false );
         jSpin_Day.setEnabled( false );
 

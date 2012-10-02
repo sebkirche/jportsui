@@ -1,7 +1,7 @@
 // default package
 
 import javax.swing.SwingUtilities;
-import jport.PortsConstants;
+import jport.PortConstants;
 import jport.TheApplication;
 import jport.TheOsBinaries;
 import jport.gui.TheUiHolder;

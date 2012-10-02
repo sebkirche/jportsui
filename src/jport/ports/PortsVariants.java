@@ -1,4 +1,4 @@
-package jport;
+package jport.ports;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,11 +7,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import jport.PortsConstants.EPortMark;
-import jport.PortsConstants.EPortStatus;
+import jport.TheApplication;
 import jport.common.Elemental.EElemental;
 import jport.common.Reset.Resetable;
 import jport.common.StringsUtil_;
+import jport.type.EPortMark;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 
 
@@ -140,7 +141,7 @@ public class PortsVariants
             {   // mutable set
                 return new HashSet<String>();
             }
-                   
+
             //... need default variants from each port?
             // also man page sez "Global variants used when a port is installed ->  ${prefix}/etc/macports/variants.conf"
         }

@@ -6,10 +6,6 @@ import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-import jport.PortsCliUtil;
-import jport.PortsConstants.EPortMark;
-import jport.PortsConstants.EPortStatus;
-import jport.PortsConstants.ESearchWhere;
 import jport.TheApplication;
 import jport.common.CliUtil.Listener;
 import jport.common.Elemental.EElemental;
@@ -21,6 +17,9 @@ import jport.gui.window.JDialog_PasswordPlease;
 import jport.gui.window.JDialog_PortDetail;
 import jport.gui.window.JDialog_ProcessStream;
 import jport.gui.window.JDialog_ProcessStream.Cliable;
+import jport.ports.PortsCliUtil;
+import jport.type.EPortMark;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 import jport.type.Portable.Predicatable;
 
@@ -32,6 +31,23 @@ import jport.type.Portable.Predicatable;
  */
 public class Commander
 {
+    /**
+     * For Search JComboBox or Check boxes.
+     */
+    @SuppressWarnings("unchecked")
+    static public enum ESearchWhere
+            { Name         { @Override public boolean doesMatch( final SearchTerm2 searchTerm, final Portable port ) { return searchTerm.doesMatch( port.getName() ); } }
+            , Descr_Name   { @Override public boolean doesMatch( final SearchTerm2 searchTerm, final Portable port ) { return searchTerm.doesMatch( port.getName() +' '+ port.getShortDescription() +' '+ port.getLongDescription() ); }
+                             @Override public String toString() { return "Description & Name"; } }
+            , Category     { @Override public boolean doesMatch( final SearchTerm2 searchTerm, final Portable port ) { return searchTerm.doesMatch( port.getCategories() ); } }
+            , Maintainer   { @Override public boolean doesMatch( final SearchTerm2 searchTerm, final Portable port ) { return searchTerm.doesMatch( port.getMaintainers() ); } }
+            , Dependencies { @Override public boolean doesMatch( final SearchTerm2 searchTerm, final Portable port ) { return searchTerm.doesMatch( port.getFullDependencies() ); } }
+            , Licenses     { @Override public boolean doesMatch( final SearchTerm2 searchTerm, final Portable port ) { return searchTerm.doesMatch( port.getLicenses() ); } }
+            , Variants     { @Override public boolean doesMatch( final SearchTerm2 searchTerm, final Portable port ) { return searchTerm.doesMatch( port.getVariants() ); } }
+            ;
+                    abstract public boolean doesMatch( final SearchTerm2<?> searchTerm, final Portable port );
+            }
+
     static
     {}
 

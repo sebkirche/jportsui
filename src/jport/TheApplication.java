@@ -5,7 +5,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.SwingUtilities;
-import jport.PortsConstants.EPortStatus;
 import jport.common.Elemental;
 import jport.common.Elemental.EElemental;
 import jport.common.Elemental.Listenable;
@@ -15,7 +14,11 @@ import jport.common.Notification.OneArgumentListenable;
 import jport.common.Reset.Resetable;
 import jport.common.Reset.Reseter;
 import jport.gui.TheUiHolder;
+import jport.ports.PortsCatalog;
+import jport.ports.PortsCliUtil;
+import jport.ports.PortsMarker;
 import jport.type.CliPortInfo;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 
 
@@ -154,7 +157,7 @@ public class TheApplication
      *
      * @return as reported by the CLI "port echo installed" all of which are type InstalledPort
      */
-    Map<EPortStatus,Set<CliPortInfo>> cliEchoAllStatus()
+    public Map<EPortStatus,Set<CliPortInfo>> cliEchoAllStatus()
     {
         final Map<EPortStatus,Set<CliPortInfo>> status_to_InfoSet_Map = new EnumMap<EPortStatus, Set<CliPortInfo>>( EPortStatus.class );
 

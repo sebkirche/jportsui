@@ -3,8 +3,6 @@ package jport.type;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
-import jport.PortsConstants.EPortStatus;
-
 
 
 /**
@@ -36,7 +34,7 @@ class InstalledPort extends BsdPort
         fVersionInstalled  = versionInstalled;
         fRevisionInstalled = revisionInstalled;
         fVariantsInstalled = variantsInstalled;
-        
+
         Arrays.sort( variantsInstalled );
 
 //.. did talk to the CLI

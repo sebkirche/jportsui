@@ -15,16 +15,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import jport.PortsConstants.EPortMark;
-import jport.PortsVariants;
 import jport.TheApplication;
-import jport.common.gui.JScrollPaneFactory_;
-import jport.common.gui.JScrollPaneFactory_.EScrollPolicy;
 import jport.common.StringsUtil_;
 import jport.common.gui.FocusedButtonFactory;
+import jport.common.gui.JScrollPaneFactory_;
+import jport.common.gui.JScrollPaneFactory_.EScrollPolicy;
 import jport.gui.TheUiHolder;
+import jport.ports.PortsVariants;
+import jport.type.EPortMark;
 import jport.type.Portable;
-
 
 
 /**

@@ -94,7 +94,7 @@ public class TheOsBinaries
             }
         }
 
-        if( PortsConstants.DEBUG ) System.out.print( TheOsBinaries.class.getCanonicalName() +"<init> ms="+ ( System.currentTimeMillis() - startMillisec ) );
+        if( PortConstants.DEBUG ) System.out.print( TheOsBinaries.class.getCanonicalName() +"<init> ms="+ ( System.currentTimeMillis() - startMillisec ) );
     }
 
     public boolean has( final String binaryName )

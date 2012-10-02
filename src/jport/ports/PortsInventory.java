@@ -1,11 +1,12 @@
-package jport;
+package jport.ports;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import jport.PortsConstants.EPortStatus;
+import jport.PortConstants;
 import jport.common.Util;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 import jport.type.Portable.Predicatable;
 
@@ -26,7 +27,7 @@ public class PortsInventory
 
     PortsInventory()
     {
-        fAllPorts = PortsConstants.NO_PORTS;
+        fAllPorts = PortConstants.NO_PORTS;
     }
 
     /**
@@ -77,7 +78,7 @@ public class PortsInventory
 
         return Util.createArray( Portable.class, list );
     }
-    
+
     /**
      * Look up a matching new port by case-insensitive name and version.
      *

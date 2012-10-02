@@ -1,4 +1,4 @@
-package jport;
+package jport.ports;
 
 import static jport.common.CliUtil.BASH_OPT_C;
 import static jport.common.CliUtil.UNIX_BIN_BASH;
@@ -9,11 +9,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import jport.PortsConstants.EPortMark;
-import jport.PortsConstants.EPortStatus;
+import jport.PortConstants;
+import jport.TheApplication;
 import jport.common.CliUtil;
 import jport.common.StringsUtil_;
 import jport.common.Util;
+import jport.type.EPortMark;
+import jport.type.EPortStatus;
 import jport.type.CliPortInfo;
 import jport.type.Portable;
 
@@ -100,7 +102,7 @@ public class PortsCliUtil
      * @param statusEnum type of port pseudo-name, version and variant information to echo
      * @return as reported by the CLI
      */
-    static Set<CliPortInfo> cliEcho( final EPortStatus statusEnum )
+    static synchronized public Set<CliPortInfo> cliEcho( final EPortStatus statusEnum )
     {
         if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return Collections.emptySet(); }
 
@@ -143,7 +145,7 @@ public class PortsCliUtil
                 cliVariants = variantSplits;
                 Arrays.sort( cliVariants ); // must sort for .deepEquals()
             }
-            
+
             final CliPortInfo cpi = new CliPortInfo
                     ( cliPortName.intern()
                     , cliVersion.intern()
@@ -153,7 +155,7 @@ public class PortsCliUtil
             set.add( cpi );
         }
 
-        if( PortsConstants.DEBUG ) { System.out.println( statusEnum.name() +'='+ set.size() ); }
+        if( PortConstants.DEBUG ) { System.out.println( statusEnum.name() +'='+ set.size() ); }
 
         return set;
     }

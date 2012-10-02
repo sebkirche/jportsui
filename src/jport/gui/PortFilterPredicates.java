@@ -9,10 +9,10 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
-import jport.PortsCliUtil;
 import jport.TheApplication;
 import jport.common.Reset.Resetable;
 import jport.gui.table.TableModel_Port;
+import jport.ports.PortsCliUtil;
 import jport.type.Portable;
 import jport.type.Portable.Predicatable;
 

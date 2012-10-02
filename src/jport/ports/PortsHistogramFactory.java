@@ -1,7 +1,8 @@
-package jport;
+package jport.ports;
 
 import java.util.HashSet;
 import java.util.Set;
+import jport.TheApplication;
 import jport.common.StringsUtil_;
 import jport.type.Portable;
 import jport.type.Portable.Predicatable;
@@ -113,7 +114,7 @@ public class PortsHistogramFactory
                         }
                     }
                 };
-        
+
 // made for messy code -> return ofHistogram.create( search );
     }
 }

@@ -1,6 +1,6 @@
-package jport;
+package jport.ports;
 
-import static jport.PortsConstants.EPortMark.*;
+import static jport.type.EPortMark.*;
 //
 import java.util.Collections;
 import java.util.EnumMap;
@@ -11,10 +11,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import jport.PortsConstants.EPortMark;
-import jport.PortsConstants.EPortStatus;
+import jport.PortConstants;
+import jport.TheApplication;
 import jport.common.Elemental.EElemental;
 import jport.common.Util;
+import jport.type.EPortMark;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 import jport.type.Portable.Predicatable;
 
@@ -38,8 +40,7 @@ public class PortsMarker
      */
     final private Map<Portable,EPortMark> fPort_to_MarkMap = new HashMap<Portable,EPortMark>();
 
-    PortsMarker()
-    {}
+    public PortsMarker() {}
 
     /**
      * Used after Post status change request command to clear any actually applied Marks.
@@ -48,7 +49,7 @@ public class PortsMarker
      *
      * @param refreshedPortsCatalog from a newly loaded index which also references non-equitable, status updated ports
      */
-    synchronized void exchangeAudit( final PortsCatalog refreshedPortsCatalog )
+    synchronized public void exchangeAudit( final PortsCatalog refreshedPortsCatalog )
     {
         final int size = fPort_to_MarkMap.size();
         if( size == 0 ) return; // nothing to do
@@ -355,7 +356,7 @@ public class PortsMarker
                                     }
                             );
 
-            default: return PortsConstants.NO_PORTS; // unexpected
+            default: return PortConstants.NO_PORTS; // unexpected
         }
     }
 
@@ -374,7 +375,7 @@ public class PortsMarker
 
         return ( portSet.isEmpty() == false )
                 ? portSet.toArray( new Portable[ portSet.size() ] )
-                : PortsConstants.NO_PORTS;
+                : PortConstants.NO_PORTS;
     }
 
     /**

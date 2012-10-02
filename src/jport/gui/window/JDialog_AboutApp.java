@@ -18,8 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import jport.PortsConstants;
-import jport.PortsConstants.EPortStatus;
+import jport.PortConstants;
 import jport.TheApplication;
 import jport.TheOsBinaries;
 import jport.common.HttpUtil;
@@ -27,6 +26,7 @@ import jport.common.ImageUtil_;
 import jport.common.Interfacing_.Targetable;
 import jport.common.StringsUtil_;
 import jport.gui.TheUiHolder;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 import jport.type.Portable.Predicatable;
 
@@ -52,7 +52,7 @@ public class JDialog_AboutApp extends JDialog
     {
         super
             ( TheUiHolder.INSTANCE.getMainFrame() // stay on top
-            , PortsConstants.APP_NAME +" designed and coded by Stephen Baber"
+            , PortConstants.APP_NAME +" designed and coded by Stephen Baber"
             , ModalityType.APPLICATION_MODAL
             );
 

@@ -4,13 +4,13 @@ import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import jport.PortsCliUtil;
-import jport.PortsConstants.EPortStatus;
 import jport.TheApplication;
 import jport.common.Elemental;
 import jport.common.Elemental.EElemental;
 import jport.common.StringsUtil_;
 import jport.common.Util;
+import jport.ports.PortsCliUtil;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 
 

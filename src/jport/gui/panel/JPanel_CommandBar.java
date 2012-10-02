@@ -20,9 +20,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
-import jport.PortsCliUtil;
-import jport.PortsConstants;
-import jport.PortsConstants.ESearchWhere;
+import jport.PortConstants;
 import jport.TheApplication;
 import jport.common.Elemental;
 import jport.common.Elemental.EElemental;
@@ -31,8 +29,10 @@ import jport.common.HttpUtil;
 import jport.common.gui.ModalDialogFactory;
 import jport.common.gui.ModalDialogFactory.EConfirmationChoices;
 import jport.gui.Commander;
+import jport.gui.Commander.ESearchWhere;
 import jport.gui.TheUiHolder;
 import jport.gui.window.JDialog_AboutApp;
+import jport.ports.PortsCliUtil;
 import jport.type.Portable;
 
 
@@ -64,7 +64,7 @@ public class JPanel_CommandBar extends JPanel
     final private JMenuItem      jItem_MarkInactive   = new JMenuItem( "Mark \u2192 All Inactive" );
     final private JMenuItem      jItem_CleanInstalled = new JMenuItem( "Clean Ports..." );
     final private JMenuItem      jItem_UpgradeCli     = new JMenuItem( "Update MacPorts..." );
-    final private JMenuItem      jItem_AboutApp       = new JMenuItem( "About "+ PortsConstants.APP_NAME +"..." );
+    final private JMenuItem      jItem_AboutApp       = new JMenuItem( "About "+ PortConstants.APP_NAME +"..." );
 
     final private JPopupMenu     jPop_MoreCmd         = new JPopupMenu();
 
@@ -162,7 +162,6 @@ public class JPanel_CommandBar extends JPanel
         {   // popup menu items and panel's other ABs
             ab.addActionListener( this );
         }
-
 //        ab_Sync.addActionListener( this );
 //        ab_MarkOutdated.addActionListener( this );
 //        ab_Apply.addActionListener( this );
@@ -285,7 +284,7 @@ public class JPanel_CommandBar extends JPanel
                     ModalDialogFactory.showConfirmation
                             ( EConfirmationChoices.OK
                             , TheUiHolder.INSTANCE.getMainFrame()
-                            , PortsConstants.APP_NAME +" Credits"
+                            , PortConstants.APP_NAME +" Credits"
                             , "<HTML>UI designed and coded by Stephen Baber<BR><SMALL><BR>MacPorts availble @ http://www.macports.org/"
                             );
                 }

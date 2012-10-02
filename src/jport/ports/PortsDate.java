@@ -1,10 +1,11 @@
-package jport;
+package jport.ports;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Set;
+import jport.PortConstants;
 import jport.common.StringsUtil_;
 import jport.common.Util;
 import jport.type.Portable;
@@ -30,14 +31,14 @@ class PortsDate
      * Generally, a slow operation but only exposed through an atomic assignment
      * so no need for concurrent Map.
      *
-     * @param portCatalog 
+     * @param portCatalog
      */
     PortsDate( final PortsCatalog portCatalog )
     {
-        if( PortsConstants.HAS_MAC_PORTS == false ) return; // devel
+        if( PortConstants.HAS_MAC_PORTS == false ) return; // devel
 
         final long startMillisec = System.currentTimeMillis();
-        final File portsPath = new File( PortsConstants.PORTS_PATH );
+        final File portsPath = new File( PortConstants.PORTS_PATH );
 
 // putting ports array in directory order only 20ms (10%) faster but array sorting takes 100ms making it 25% slower overall
 //            final Portable[] copy = ports.clone();
@@ -62,7 +63,7 @@ class PortsDate
 //            if( filePath.exists() == false ) System.err.println( "FNF="+ filePath );
         }
 
-        if( PortsConstants.DEBUG ) System.out.println( PortsDate.class.getSimpleName() +"<init> ms="+ ( System.currentTimeMillis() - startMillisec ) );
+        if( PortConstants.DEBUG ) System.out.println( PortsDate.class.getSimpleName() +"<init> ms="+ ( System.currentTimeMillis() - startMillisec ) );
     }
 
     long getModificationEpoch( final Portable port )

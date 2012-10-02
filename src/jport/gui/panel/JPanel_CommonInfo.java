@@ -13,8 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import jport.PortsConstants;
-import jport.PortsConstants.EPortStatus;
+import jport.PortConstants;
 import jport.TheApplication;
 import jport.common.Elemental;
 import jport.common.Elemental.EElemental;
@@ -24,6 +23,7 @@ import jport.common.ImageUtil_;
 import jport.common.Interfacing_.Targetable;
 import jport.common.StringsUtil_;
 import jport.gui.AJLabel_PortInfo;
+import jport.type.EPortStatus;
 import jport.type.Portable;
 
 
@@ -239,7 +239,7 @@ public class JPanel_CommonInfo extends JPanel
         abHomepage.setVisible( hasHomepage );
         abHomepage.setIcon( null );
 
-        if( PortsConstants.IS_SHOWING_FAVICON == true )
+        if( PortConstants.IS_SHOWING_FAVICON == true )
         {
             jLabels[ 0 ].setIcon( null );
 

@@ -55,6 +55,53 @@ public class TheApplication
     private TheApplication() {}
 
     /**
+     * Constructor needed to be fast as many Threads were waiting on TheApplication.INSTANCE being non-null!
+     */
+    public void init()
+    {
+        final Object MONITOR = new Object();
+
+        // fork GUI building into Event Dispatch thread as required by Swing guidelines
+        SwingUtilities.invokeLater( new Runnable() // anonymous class
+                {   @Override public void run()
+                    {   synchronized( MONITOR )
+                        {
+                            TheOsBinaries.INSTANCE.has( "?" ); // hey lazy Swing thread, do some work!
+                            TheUiHolder.INSTANCE.init(); // start Swing in EDT thread
+                            MONITOR.notifyAll();
+                        }
+                    }
+                } );
+
+        // if only one Processor Core, wait until GUI finishes constructing
+        if( Runtime.getRuntime().availableProcessors() == 1 )
+        {
+            try
+            {
+                synchronized( MONITOR )
+                {
+                    while( TheUiHolder.isReady() == false )
+                    {
+                        MONITOR.wait( 2000 ); // *BLOCKS*
+                    }
+                }
+            }
+            catch( InterruptedException ex )
+            {}
+        }
+
+        // but start parsing "PortsIndex" in this thread
+        TheApplication.INSTANCE.probeUpdate(); // *BLOCKS*
+
+        // enable ports table in EDT even if GUI reported not ready
+        SwingUtilities.invokeLater( new Runnable() // anonymous class
+                {   @Override public void run()
+                    {   TheUiHolder.INSTANCE.goLive();
+                    }
+                } );
+    }
+
+    /**
      *
      * @return facility for letting the user indicate desired port status change requests
      */

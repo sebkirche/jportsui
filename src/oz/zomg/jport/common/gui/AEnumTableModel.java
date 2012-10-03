@@ -57,7 +57,11 @@ import oz.zomg.jport.common.gui.JScrollPaneFactory_.EVerticalScroller;
  * @param <C> column of same Enum class type
  * @param <R> row of class type will be inferred
  *
- * @author sbaber
+ * @author <SMALL>Copyright 2012 by Stephen Baber
+ * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/80x15.png" /></a><br />
+ * This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.</SMALL>
  */
 @SuppressWarnings("serial")
 abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTableModel
@@ -222,7 +226,7 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
                         tableCellRenderer = null;
                     }
                 }   break;
-        
+
             case ALT_BAR_1 :
             case ALT_BAR_2 :
             case ALT_BAR_3 :
@@ -250,11 +254,11 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
             {
                 final Class<?> columnClassType = ((ClassProvidable)columnEnum).provideClass();
                 fColumnClasses[ i ] = columnClassType;
-                
+
                 if( tableCellRenderer != null
                     && columnClassType != Boolean.class
-                    && columnClassType != Integer.class 
-                    && columnClassType != Double.class 
+                    && columnClassType != Integer.class
+                    && columnClassType != Double.class
                     && columnClassType != Float.class
                     && columnClassType != Icon.class
                   )

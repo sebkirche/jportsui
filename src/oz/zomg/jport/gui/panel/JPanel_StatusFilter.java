@@ -31,11 +31,15 @@ import oz.zomg.jport.type.Portable.Predicatable;
 /**
  * Filter by Port status.
  *
- * @author sbaber
+ * @author <SMALL>Copyright 2012 by Stephen Baber
+ * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/80x15.png" /></a><br />
+ * This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.</SMALL>
  */
 @SuppressWarnings("serial")
 public class JPanel_StatusFilter extends JPanel
-    implements 
+    implements
           ActionListener
         , ChangeListener
 {
@@ -109,7 +113,7 @@ public class JPanel_StatusFilter extends JPanel
                         ab.setText( "<HTML><FONT size=+0><B>"+ e.toString() );
                         break;
             }
-            
+
             switch( e )
             {
                 case ALL :
@@ -119,7 +123,7 @@ public class JPanel_StatusFilter extends JPanel
                 case OBSOLETE :
                         northPanel.add( ab_Native );
                         break;
-                    
+
                 case OUTDATED : // case Obsolete :
                       northPanel.add( ab_Marked ); // 0=first, -1=last
                       northPanel.add( Box.createVerticalStrut( BUTTON_HEIGHT_PIX ) );
@@ -153,7 +157,7 @@ public class JPanel_StatusFilter extends JPanel
         fButtonGroup.add( ab_Marked );
         fButtonGroup.add( ab_Native );
         fButtonGroup.add( ab_WhatsNew );
-        
+
         southPanel.add( Box.createVerticalStrut( BUTTON_HEIGHT_PIX ) );
 //        southPanel.add( ab_Marked ); // 0=first, -1=last
         southPanel.add( ab_WhatsNew );
@@ -189,7 +193,7 @@ public class JPanel_StatusFilter extends JPanel
         if( obj instanceof AbstractButton )
         {
             final AbstractButton ab = (AbstractButton)obj;
-            
+
             final Predicatable predicate; // para-lambda
             if( ab == ab_WhatsNew )
             {
@@ -235,7 +239,7 @@ public class JPanel_StatusFilter extends JPanel
 
             jCombo_Duration.setEnabled( false );
             jSpin_Day.setEnabled( false );
-            
+
             TheUiHolder.INSTANCE.getPortFilterPredicate().setStatusFilter( predicate );
         }
         else if( obj instanceof JComboBox )

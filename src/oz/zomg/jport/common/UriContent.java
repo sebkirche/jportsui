@@ -4,15 +4,19 @@ import java.net.URI;
 
 
 /**
- * Content wrapper.
+ * Uniform Resource Identifier content holder.
  *
- * @author sbaber
+ * @author <SMALL>Copyright 2012 by Stephen Baber
+ * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/80x15.png" /></a><br />
+ * This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.</SMALL>
  */
 public class UriContent
 {
     final public URI     fUri;
     final public byte[]  fContentBytes;
-    final public boolean fIs404;
+    final public boolean fIs404; //... general 'wget' error code
     //... HeaderFields map and MIME types
 
     /**

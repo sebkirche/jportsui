@@ -16,7 +16,11 @@ import oz.zomg.jport.common.gui.AEnumTableModel.EColorize;
  * Colors the entire row of cells in a JTable or JList.
  * <H3><I><FONT color="#770000">Subset of original source.</FONT></I></H3>
  *
- * @author sbaber
+ * @author <SMALL>Copyright 2012 by Stephen Baber
+ * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/80x15.png" /></a><br />
+ * This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.</SMALL>
  */
 public class CellRenderers_
 {
@@ -32,7 +36,7 @@ public class CellRenderers_
 
     private CellRenderers_() {}
 
-    
+
     // ================================================================================
     /**
      * Provides a color via an index.  The index could be a JList index, JTable modelRowIndex,
@@ -116,7 +120,7 @@ public class CellRenderers_
         }
     }
 
-    
+
     // ================================================================================
     /**
      *

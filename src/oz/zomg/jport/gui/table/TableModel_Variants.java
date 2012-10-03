@@ -15,7 +15,11 @@ import oz.zomg.jport.type.Portable;
 /**
  * UI for changing desired variants.
  *
- * @author sbaber
+ * @author <SMALL>Copyright 2012 by Stephen Baber
+ * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/80x15.png" /></a><br />
+ * This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.</SMALL>
  */
 @SuppressWarnings("serial")
 public class TableModel_Variants extends AEnumTableModel_Array<String,TableModel_Variants.EColumn>
@@ -116,7 +120,7 @@ public class TableModel_Variants extends AEnumTableModel_Array<String,TableModel
     @Override public Object getValueOf( final String variant, final EColumn columnEnum )
     {
         switch( columnEnum )
-        {   
+        {
             case _       : return fPortsVariants.isApplicableVariant( mAssignedPort, variant );
             case VARIANT : return variant;
 

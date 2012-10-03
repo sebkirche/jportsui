@@ -10,6 +10,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Single thread that sequentializes a work queue as first in, first out
  * on one-shot Runnable tasks and catches all their exceptions.
  * Lazier than an Executor pool.
+ *
+ * @author <SMALL>Copyright 2012 by Stephen Baber
+ * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/80x15.png" /></a><br />
+ * This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.</SMALL>
  */
 class Thread_Worker extends Thread
 {
@@ -71,7 +77,7 @@ class Thread_Worker extends Thread
                         final long startMillisec = System.currentTimeMillis();
                         runnable.run();
 
-                        if( DEBUG ) 
+                        if( DEBUG )
                         {
                             final int backlog = fRunQueue.size();
                             final long deltaMs = System.currentTimeMillis() - startMillisec;

@@ -12,7 +12,11 @@ import java.util.NoSuchElementException;
  * Name space class for
  * mostly awesome Notifications.
  *
- * @author sbaber
+ * @author <SMALL>Copyright 2012 by Stephen Baber
+ * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/80x15.png" /></a><br />
+ * This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US">
+ * Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.</SMALL>
  */
 public class Notification
 {
@@ -32,7 +36,7 @@ public class Notification
         abstract void removeListener( final L listenable );
     }
 
-    
+
     // ================================================================================
     /**
      * Abstract base class that manages Listeners but does not cause notifications.
@@ -137,7 +141,7 @@ public class Notification
          * Unsubscribe from notifications.
          *
          * @param listenable removal happens automatically by Weak ref when no other Strongly reachable objects refer to it.
-         */        
+         */
         @SuppressWarnings("unchecked")
         @Override synchronized public void removeListener( final L listenable )
         {
@@ -184,7 +188,7 @@ public class Notification
                                 refList.add( ref );
                             }
                         }
-                        
+
                         vWeakListeners = ( refList.isEmpty() == false )
                                 ? refList.toArray( new Reference[ refList.size() ] )
                                 : null;

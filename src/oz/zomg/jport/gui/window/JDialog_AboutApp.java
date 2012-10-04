@@ -1,5 +1,6 @@
 package oz.zomg.jport.gui.window;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
@@ -10,12 +11,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import oz.zomg.jport.PortConstants;
@@ -25,6 +26,7 @@ import oz.zomg.jport.common.HttpUtil;
 import oz.zomg.jport.common.ImageUtil_;
 import oz.zomg.jport.common.Interfacing_.Targetable;
 import oz.zomg.jport.common.StringsUtil_;
+import oz.zomg.jport.common.gui.FocusedButtonFactory;
 import oz.zomg.jport.gui.TheUiHolder;
 import oz.zomg.jport.type.EPortStatus;
 import oz.zomg.jport.type.Portable;
@@ -43,14 +45,20 @@ import oz.zomg.jport.type.Portable.Predicatable;
  */
 @SuppressWarnings("serial")
 public class JDialog_AboutApp extends JDialog
+    implements ActionListener
 {
     static final private int _MAX_PIXEL_SIZE = 48;
+
+    static final private String _COPYRIGHT_NOTICE = "<HTML><CENTER>"
+            +"<IMG src=\"http://i.creativecommons.org/l/by-nc-nd/3.0/80x15.png\"><BR>"
+            +"<SMALL>This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</SMALL>"
+            ;
 
     static
     {}
 
     final private Font fFont = new Font( Font.SANS_SERIF, Font.PLAIN, 9 );
-    final private JPanel fContentPanel;
+    final private JPanel fPopulatePanel = new JPanel( new FlowLayout() );
 
     public JDialog_AboutApp()
     {
@@ -61,12 +69,9 @@ public class JDialog_AboutApp extends JDialog
             );
 
         this.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
-        this.setLayout( new FlowLayout() );
-        this.setSize( 832, 624 );
+        this.setLayout( new BorderLayout( 20, 20 ) );
+        this.setSize( 1024, 624 );
         this.setLocationByPlatform( true );
-
-        fContentPanel = (JPanel)this.getContentPane();
-        fContentPanel.setBorder( BorderFactory.createEmptyBorder( 10, 10, 10, 10 ) );
 
         // determine unique domains
         final Map<String,Set<Portable>> orderedDomain_to_PortSet_Map = new TreeMap<String,Set<Portable>>();
@@ -91,6 +96,7 @@ public class JDialog_AboutApp extends JDialog
         }
 
         orderedDomain_to_PortSet_Map.remove( "" ); // sometimes the domain is unknown
+        orderedDomain_to_PortSet_Map.remove( "http://www.darwinsys.com" ); // natively installed
 
         // fetch images from cache or in another I/O thread
         for( final Map.Entry<String,Set<Portable>> entry : orderedDomain_to_PortSet_Map.entrySet() )
@@ -110,6 +116,23 @@ public class JDialog_AboutApp extends JDialog
                             }
                     );
         }
+
+        // north
+        final JLabel jLabel = new JLabel( _COPYRIGHT_NOTICE );
+        jLabel.setHorizontalAlignment( JLabel.CENTER );
+
+        // south
+        final AbstractButton ab = FocusedButtonFactory.create( "Copyright 2012 by Stephen Baber", null );
+        ab.addActionListener( this );
+
+        // sub-assemble
+        final JPanel jPanel = new JPanel( new BorderLayout() );
+        jPanel.add( jLabel, BorderLayout.NORTH );
+        jPanel.add( ab, BorderLayout.SOUTH );
+
+        // assemble
+        this.add( fPopulatePanel, BorderLayout.CENTER );
+        this.add( jPanel, BorderLayout.SOUTH );
     }
 
     /**
@@ -142,9 +165,9 @@ public class JDialog_AboutApp extends JDialog
                         }
                     } );
 
-            fContentPanel.add( ab );
-            fContentPanel.add( Box.createHorizontalStrut( 5 ) );
-            fContentPanel.validate();
+            fPopulatePanel.add( ab );
+            fPopulatePanel.add( Box.createHorizontalStrut( 5 ) );
+            fPopulatePanel.validate();
         }
         else
         {
@@ -157,4 +180,9 @@ public class JDialog_AboutApp extends JDialog
     }
 
 //... animate icons from logo cache
+
+    @Override public void actionPerformed( ActionEvent e )
+    {
+        this.dispose();
+    }
 }

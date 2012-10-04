@@ -467,7 +467,7 @@ public class Util
      * @return all content bytes for the file
      * @throws IOException
      */
-    static public byte[] retreiveFileBytes( final File filePath ) throws IOException
+    static public byte[] retrieveFileBytes( final File filePath ) throws IOException
     {
         final long size = filePath.length(); // file should not truncate before operation complete
         if( size > Integer.MAX_VALUE ) throw new IllegalArgumentException( "File contents too large to fit into a Java6 array " + filePath.getAbsolutePath() ); // Doh!
@@ -521,7 +521,7 @@ public class Util
      * @return
      * @throws IOException
      */
-    static public byte[] retreiveResourceBytes( final String internallyJarredResourceName ) throws IOException
+    static public byte[] retrieveResourceBytes( final String internallyJarredResourceName ) throws IOException
     {
         final InputStream resourceInputStream = Util.class.getResourceAsStream( internallyJarredResourceName );
         if( resourceInputStream == null ) throw new FileNotFoundException( "ClassLoader can not find " + internallyJarredResourceName );

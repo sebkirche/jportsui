@@ -252,7 +252,7 @@ public class CachedUriContent
                     {   // read contents
                         try
                         {
-                            byte[] contentBytes = Util.retreiveFileBytes( filepath );
+                            byte[] contentBytes = Util.retrieveFileBytes( filepath );
 
                             final UriContent uriContent = ( contentBytes.length != 0 )
                                     ? new UriContent( uri, contentBytes )

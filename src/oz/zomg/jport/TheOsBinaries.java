@@ -40,7 +40,7 @@ public class TheOsBinaries
             String str = "";
             try
             {
-                final byte[] bytes = Util.retreiveResourceBytes( "/oz/zomg/jport/mac-10-6-native-bin.txt" );
+                final byte[] bytes = Util.retrieveResourceBytes( "/oz/zomg/jport/mac-10-6-native-bin.txt" );
                 str = new String( bytes );
             }
             catch( IOException ex )

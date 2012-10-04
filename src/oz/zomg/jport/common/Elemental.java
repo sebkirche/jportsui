@@ -94,7 +94,7 @@ public class Elemental
     static public class Notifier<E> extends ANotifier<Listenable<E>>
     {
         /** for automatic catch-up of listener when it subscribes with .add() */
-        private E mLastRetreived;
+        private E mLastRetrieved;
 
         /**
          *
@@ -104,7 +104,7 @@ public class Elemental
         {   // no-op can not be 'static final' because Generic type <E>
             super( new Listenable<E>() { @Override public void notify( EElemental elemental, E obj ) {} } );
 
-            mLastRetreived = initialSelection;
+            mLastRetrieved = initialSelection;
         }
 
         /**
@@ -114,7 +114,7 @@ public class Elemental
          */
         @Override synchronized public void addListener( final Listenable<E> listenable )
         {
-            listenable.notify( EElemental.RETRIEVED, mLastRetreived );
+            listenable.notify( EElemental.RETRIEVED, mLastRetrieved );
 
             super.addListener( listenable );
         }
@@ -128,9 +128,9 @@ public class Elemental
         {
             if( elemental == EElemental.RETRIEVED )
             {   // remember for catching-up / cold-starting new listeners
-                if( obj != mLastRetreived )
+                if( obj != mLastRetrieved )
                 {
-                    mLastRetreived = obj; // continues below
+                    mLastRetrieved = obj; // continues below
                 }
                 else
                 {   // no change, so do not notify listeners
@@ -145,6 +145,6 @@ public class Elemental
             }
         }
 
-        synchronized E getLastRetrieved() { return mLastRetreived; }
+        synchronized E getLastRetrieved() { return mLastRetrieved; }
     }
 }

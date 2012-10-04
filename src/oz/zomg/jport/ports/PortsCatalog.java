@@ -152,7 +152,7 @@ public class PortsCatalog
             {   // Scanner uses regex, this is 2x faster on startup -AND- accommodates multi-line port info
                 try
                 {
-                    final byte[] bytes = Util.retreiveFileBytes( filePath ); //? assumes UTF-8 encoding when constructing the String from bytes?
+                    final byte[] bytes = Util.retrieveFileBytes( filePath ); //? assumes UTF-8 encoding when constructing the String from bytes?
                     int p = 0;
                     int q = 1;
                     while( q < bytes.length )

@@ -64,7 +64,7 @@ public class JDialog_AboutApp extends JDialog
     {
         super
             ( TheUiHolder.INSTANCE.getMainFrame() // stay on top
-            , PortConstants.APP_NAME +" designed and coded by Stephen Baber"
+            , PortConstants.APP_NAME +"  --  Java based, graphical user interface to MacPorts 2.0+"
             , ModalityType.APPLICATION_MODAL
             );
 
@@ -122,7 +122,7 @@ public class JDialog_AboutApp extends JDialog
         jLabel.setHorizontalAlignment( JLabel.CENTER );
 
         // south
-        final AbstractButton ab = FocusedButtonFactory.create( "Copyright 2012 by Stephen Baber", null );
+        final AbstractButton ab = FocusedButtonFactory.create( "Copyright 2012 by Stephen Baber", "Originally designed and coded in NetBeans IDE 7.2 on JDK 1.6.0_35" );
         ab.addActionListener( this );
 
         // sub-assemble

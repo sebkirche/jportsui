@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -50,6 +52,7 @@ public class JPanel_CommandBar extends JPanel
     implements
           ActionListener
         , FocusListener
+        , KeyListener
         , Elemental.Listenable<Portable>
 {
     final private Commander      fCommander;
@@ -74,7 +77,6 @@ public class JPanel_CommandBar extends JPanel
 
     final private JComboBox      jCombo_LookIn        = new JComboBox( ESearchWhere.values() );
     final private JTextField     jField_Search        = new JTextField( 16 );
-
 
     /**
      * @param commander
@@ -106,7 +108,7 @@ public class JPanel_CommandBar extends JPanel
         jItem_UpgradeCli    .setToolTipText( "Have MacPorts self-update its CLI tools" );
         jItem_AboutApp      .setToolTipText( "Credits" );
         jCombo_LookIn       .setToolTipText( "Choose what Port information to search" );
-        jField_Search       .setToolTipText( "<HTML>Type [ENTER] or [CR] to begin search.<BR>Use [+] to require each search term be present" );
+        jField_Search       .setToolTipText( "Use '+' to require each search term be present" );
 
         ab_Sync         .setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
         ab_ApplyMarks   .setEnabled( false );
@@ -183,6 +185,7 @@ public class JPanel_CommandBar extends JPanel
         jField_Search.addActionListener( this );
 
         jField_Search.addFocusListener( this );
+        jField_Search.addKeyListener( this );
 
         TheApplication.INSTANCE.getCrudNotifier().addListener( this );
     }
@@ -289,7 +292,7 @@ public class JPanel_CommandBar extends JPanel
                             ( EConfirmationChoices.OK
                             , TheUiHolder.INSTANCE.getMainFrame()
                             , PortConstants.APP_NAME +" Credits"
-                            , "<HTML>UI designed and coded by Stephen Baber<BR><SMALL><BR>MacPorts availble @ http://www.macports.org/"
+                            , "<HTML>UI designed and coded by Stephen Baber (c) 2012<BR><SMALL><BR>MacPorts availble @ http://www.macports.org/"
                             );
                 }
             }
@@ -312,5 +315,12 @@ public class JPanel_CommandBar extends JPanel
     @Override public void focusLost( FocusEvent e )
     {
         jField_Search.select( 9999, 9999 ); // deselect
+    }
+
+    @Override public void keyPressed( KeyEvent e ) {}
+    @Override public void keyReleased( KeyEvent e ) {}
+    @Override public void keyTyped( KeyEvent e )
+    {
+        doDirectedTextSearch();
     }
 }

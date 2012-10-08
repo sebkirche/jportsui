@@ -67,11 +67,12 @@ public class JPanel_CommandBar extends JPanel
     final private JMenuItem      jItem_PortDetail     = new JMenuItem( "Details..." );
     final private JMenuItem      jItem_ResetMark      = new JMenuItem( "Reset Marks" );
     final private JMenuItem      jItem_ResetFilter    = new JMenuItem( "Reset Filters" );
-    final private JMenuItem      jItem_ResetCache     = new JMenuItem( "Reset Logo Cache" );
-    final private JMenuItem      jItem_MarkInactive   = new JMenuItem( "Mark \u2192 All Inactive" );
-    final private JMenuItem      jItem_CleanInstalled = new JMenuItem( "Clean Ports..." );
+    final private JMenuItem      jItem_ResetCache     = new JMenuItem( "<HTML><SMALL>Reset Logo Cache" );
+    final private JMenuItem      jItem_MarkInactive   = new JMenuItem( "<HTML><SMALL>Mark \u2192 All Inactive" );
+    final private JMenuItem      jItem_CleanInstalled = new JMenuItem( "<HTML><SMALL>Clean Ports..." );
     final private JMenuItem      jItem_UpgradeCli     = new JMenuItem( "Update MacPorts..." );
-    final private JMenuItem      jItem_AboutApp       = new JMenuItem( "About "+ PortConstants.APP_NAME +"..." );
+    final private JMenuItem      jItem_AppUpdate      = new JMenuItem( "<HTML><SMALL>Check for Update..." );
+    final private JMenuItem      jItem_AppAbout       = new JMenuItem( "About "+ PortConstants.APP_NAME +"..." );
 
     final private JPopupMenu     jPop_MoreCmd         = new JPopupMenu();
 
@@ -87,7 +88,7 @@ public class JPanel_CommandBar extends JPanel
         fCommander = commander;
 
         this.setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) ); // btw- will not compress in FlowLayout -> .createHorizontalStrut( 2560 )
-        this.setBorder( BorderFactory.createEmptyBorder( 10, 10, 10, 10 ) );
+        this.setBorder( BorderFactory.createEmptyBorder( 10, 10, 10, 10 ) ); // T L B R
 
         final String AB_SYNC_TIP = "<HTML>Refresh all loaded Ports information.<HR>"
                 +"<I>Performs a sync operation only on the ports <BR>"
@@ -106,7 +107,8 @@ public class JPanel_CommandBar extends JPanel
         jItem_MarkInactive  .setToolTipText( "Marks all inactive Ports for removal" );
         jItem_CleanInstalled.setToolTipText( "<HTML>Clean installed Ports of any working,<BR>distribution, and log files" );
         jItem_UpgradeCli    .setToolTipText( "Have MacPorts self-update its CLI tools" );
-        jItem_AboutApp      .setToolTipText( "Credits" );
+        jItem_AppUpdate     .setToolTipText( "Browse to "+ PortConstants.PROJ_HOSTING );
+        jItem_AppAbout      .setToolTipText( "Credits" );
         jCombo_LookIn       .setToolTipText( "Choose what Port information to search" );
         jField_Search       .setToolTipText( "Use '+' to require each search term be present" );
 
@@ -151,7 +153,8 @@ public class JPanel_CommandBar extends JPanel
         jPop_MoreCmd.add( jItem_CleanInstalled );
         jPop_MoreCmd.add( jItem_UpgradeCli );
         jPop_MoreCmd.addSeparator();
-        jPop_MoreCmd.add( jItem_AboutApp );
+        jPop_MoreCmd.add( jItem_AppUpdate );
+        jPop_MoreCmd.add( jItem_AppAbout );
 
         this.add( ab_Sync );
         this.add( ab_MarkOutdated );
@@ -266,7 +269,7 @@ public class JPanel_CommandBar extends JPanel
             else if( ab == jItem_ResetFilter )
             {
                 clearTextSearch();
-                TheUiHolder.INSTANCE.causeReset();
+                TheUiHolder.causeReset();
             }
             else if( ab == jItem_ResetCache )
             {
@@ -280,7 +283,11 @@ public class JPanel_CommandBar extends JPanel
             {
                 fCommander.updateMacPortsItself();
             }
-            else if( ab == jItem_AboutApp )
+            else if( ab == jItem_AppUpdate )
+            {
+                HttpUtil.browseTo( PortConstants.PROJ_HOSTING );
+            }
+            else if( ab == jItem_AppAbout )
             {
                 if( true )
                 {
@@ -317,10 +324,19 @@ public class JPanel_CommandBar extends JPanel
         jField_Search.select( 9999, 9999 ); // deselect
     }
 
+    /**
+     * Looses some key strokes!
+     * 
+     * @param e
+     */
+    @Override public void keyTyped( KeyEvent e ) {}
     @Override public void keyPressed( KeyEvent e ) {}
-    @Override public void keyReleased( KeyEvent e ) {}
-    @Override public void keyTyped( KeyEvent e )
+    @Override public void keyReleased( KeyEvent e ) 
     {
-        doDirectedTextSearch();
+        if( jField_Search.getText().length() != 1 )
+        {   // Don't waste time with initial worse case of a single char.
+            // Though single char searches can be initiated by typing [ENTER] or [CR].
+            doDirectedTextSearch();
+        }
     }
 }

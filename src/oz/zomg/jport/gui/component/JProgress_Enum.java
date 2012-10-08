@@ -52,7 +52,7 @@ public class JProgress_Enum<E extends Enum<E>> extends JProgressBar
     }
 
     /**
-     * Swing EDT Safe.
+     * Swing thread safe.
      *
      * @param here
      */

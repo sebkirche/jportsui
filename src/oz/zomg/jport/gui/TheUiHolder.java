@@ -1,5 +1,6 @@
 package oz.zomg.jport.gui;
 
+import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,7 @@ import oz.zomg.jport.TheApplication;
 import oz.zomg.jport.common.Notification.Notifiable;
 import oz.zomg.jport.common.Reset.Resetable;
 import oz.zomg.jport.common.Reset.Reseter;
+import oz.zomg.jport.gui.panel.JPanel_CommandBar;
 import oz.zomg.jport.gui.table.TableModel_Port;
 import oz.zomg.jport.gui.window.JFrame_Main;
 import oz.zomg.jport.type.Portable;
@@ -59,10 +61,12 @@ public class TheUiHolder
     {
         mSelectionHoldingTimer.setRepeats( false );
 
+        final Component commandBarComponent = new JPanel_CommandBar( fCommander, fPortFilterPredicate.getHitTotalComponent() );
+
         jFrame_Main = new JFrame_Main
                 ( fCommander
                 , fTableModel_Port
-                , fPortFilterPredicate
+                , commandBarComponent
                 );
 
         // listener
@@ -94,14 +98,6 @@ public class TheUiHolder
     public void goLive()
     {
         fTableModel_Port.getJTable().setEnabled( true );
-    }
-
-    /**
-     * Clear status selector AND histogram totals AND close all details windows.
-     */
-    public void causeReset()
-    {
-        RESET_FILTER_NOTIFIER.causeReset();
     }
 
     public Commander getCommander() { return fCommander; }
@@ -167,6 +163,14 @@ public class TheUiHolder
      * @return 'true' if the UI is completely constructed
      */
     static public boolean isReady() { return INSTANCE != null && INSTANCE.jFrame_Main.isVisible(); }
+
+    /**
+     * Clear status selector AND histogram totals AND close all details windows.
+     */
+    static public void causeReset()
+    {
+        RESET_FILTER_NOTIFIER.causeReset();
+    }
 
     /**
      * Subscribe to Filter reset notifications.

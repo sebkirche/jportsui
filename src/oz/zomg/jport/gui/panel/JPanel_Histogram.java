@@ -48,7 +48,7 @@ public class JPanel_Histogram extends JPanel
     {
         super( new BorderLayout( 5, 5 ) );
 
-        this.setBorder( BorderFactory.createEmptyBorder( 5, 5, 5, 5 ) );
+        this.setBorder( BorderFactory.createEmptyBorder( 5, 5, 5, 5 ) ); // T L B R
         this.setOpaque( false ); // needed for tab embed on Mac-PLAF
 
         jCombo_Histo.setToolTipText( "Choose a different Histogram" );

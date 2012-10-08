@@ -21,11 +21,10 @@ import oz.zomg.jport.common.Reset.Resetable;
 import oz.zomg.jport.common.Util;
 import oz.zomg.jport.common.gui.FocusedButtonFactory;
 import oz.zomg.jport.gui.Commander;
-import oz.zomg.jport.gui.PortFilterPredicates;
+import oz.zomg.jport.gui.TheUiHolder;
 import oz.zomg.jport.gui.component.JProgress_Enum;
 import oz.zomg.jport.gui.component.JTabPane_Detail;
 import oz.zomg.jport.gui.component.JTabPane_Filter;
-import oz.zomg.jport.gui.panel.JPanel_CommandBar;
 import oz.zomg.jport.gui.panel.JPanel_Mark;
 import oz.zomg.jport.gui.table.TableModel_Port;
 import oz.zomg.jport.type.EPortStatus;
@@ -49,12 +48,12 @@ public class JFrame_Main extends JFrame
     {}
 
     public JFrame_Main
-            ( final Commander            commander
-            , final TableModel_Port      portsTable
-            , final PortFilterPredicates compoundPredicate
+            ( final Commander       commander
+            , final TableModel_Port portsTable
+            , final Component       commandBarComponent
             )
     {
-        super( PortConstants.APP_NAME +"  --  "+ PortConstants.VERSION  );
+        super( PortConstants.APP_NAME +"  -  "+ PortConstants.VERSION  );
 
         final JTabbedPane jTab_Filter = new JTabPane_Filter();
         final JTabbedPane jTab_Detail = new JTabPane_Detail();
@@ -78,7 +77,7 @@ public class JFrame_Main extends JFrame
         jSplit_inventory_detail.setBorder( null );
 
         // north
-        final Component northComponent = new JPanel_CommandBar( commander, compoundPredicate.getHitTotalComponent() );
+        final Component northComponent = commandBarComponent; // alias
 
         // center
         final Component centerComponent;
@@ -145,16 +144,12 @@ public class JFrame_Main extends JFrame
     }
 
     /**
-     * Clear search when filter tabs change.
+     * Reset filters like Synaptic does when top level tabs/views changed.
      *
      * @param e status filter tab changed
      */
     @Override public void stateChanged( final ChangeEvent e )
     {
-        //  reset filters like Synaptic does when tabs/views changed
-//        fCompoundPredicate.setStatusFilter( Predicatable.ALL );
-//        fCompoundPredicate.setHistoFilter( Predicatable.ALL );
-//... reset search text box to "", status buttons to All, and all category tables to no selection?
-//        fCompoundPredicate.setTextSearch( Predicatable.ALL );
+        TheUiHolder.causeReset();
     }
 }

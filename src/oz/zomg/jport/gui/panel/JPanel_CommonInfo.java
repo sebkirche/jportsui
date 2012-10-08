@@ -75,7 +75,7 @@ public class JPanel_CommonInfo extends JPanel
         for( int i = 0; i < jLabels.length; i++ )
         {   // init array, lambda expressions would be nicer
             final JLabel jLabel = new JLabel();
-            jLabel.setBorder( BorderFactory.createEmptyBorder( GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL ) );
+            jLabel.setBorder( BorderFactory.createEmptyBorder( GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL ) ); // T L B R
             jLabel.setVerticalAlignment( SwingConstants.TOP );
             jLabel.setHorizontalAlignment( SwingConstants.LEFT );
             jLabel.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening
@@ -266,6 +266,7 @@ public class JPanel_CommonInfo extends JPanel
 
     /**
      * EDT safe as may change parent container layout.
+     * Swing thread safe.
      *
      * @param image can be 'null'
      */

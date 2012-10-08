@@ -9,7 +9,6 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -18,7 +17,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import oz.zomg.jport.PortConstants;
-import oz.zomg.jport.TheApplication;
 import oz.zomg.jport.TheOsBinaries;
 import oz.zomg.jport.common.GuiUtil_;
 import oz.zomg.jport.common.Reset.Resetable;
@@ -43,30 +41,12 @@ public class JPanel_StatusFilter extends JPanel
           ActionListener
         , ChangeListener
 {
-    @Deprecated
-    static private enum EDuration
-            { SYNC     ( "Last Port Sync", -1L )
-            , DAY      ( "Day"     , 1000 * 60 * 60 * 36L ) // day.5
-            , WEEK_1   ( "Week"    , 1000 * 60 * 60 * 24 *  7L )
-            , WEEKS_2  ( "2 Weeks" , 1000 * 60 * 60 * 24 * 14L )
-            , MONTH_1  ( "Month"   , 1000 * 60 * 60 * 24 * 32L )
-            , MONTHS_2 ( "2 Months", 1000 * 60 * 60 * 24 * 31L * 2 )
-            , MONTHS_3 ( "3 Months", 1000 * 60 * 60 * 24 * 31L * 3 )
-            ;
-                    private EDuration( final String text, final long durationMillisec ) { fText = text; fDurationMillisec = durationMillisec; }
-                    final private String fText;
-                    final private long fDurationMillisec; // 'long' because month > 2 billion millisec
-                    long getDurationMillisec() { return fDurationMillisec; }
-                    @Override public String toString() { return fText; }
-            }
-
     static final private int DEFAULT_WHATS_NEW_DAY = 2;
 
     final private ButtonGroup    fButtonGroup    = new ButtonGroup(); // needed for prefs
     final private AbstractButton ab_Marked       = new JToggleButton( "<HTML><FONT size=+0><I>Marked" );
     final private AbstractButton ab_Native       = new JToggleButton( "<HTML><I>Native" );
     final private AbstractButton ab_WhatsNew     = new JToggleButton( "<HTML><I>What's new?" );
-    final private JComboBox      jCombo_Duration = new JComboBox( EDuration.values() );
     final private JSpinner       jSpin_Day       = new JSpinner( new SpinnerNumberModel( DEFAULT_WHATS_NEW_DAY, 1, 9999, 1 ) ); // val min max step
 
           private long mAgeMillisec =  ( 1000 * 60 * 60 * 24L * DEFAULT_WHATS_NEW_DAY );
@@ -75,7 +55,7 @@ public class JPanel_StatusFilter extends JPanel
     {
         super( new BorderLayout() );
 
-        this.setBorder( BorderFactory.createEmptyBorder( 10, GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL, 0 ) ); // t l b r
+        this.setBorder( BorderFactory.createEmptyBorder( 10, GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL, 0 ) ); // T L B R
         this.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening // this.setBackground( null ) <- copying in the JTabbedPane's background didn't work to darken as expected on Mac-PLAF
 
         jSpin_Day  .setToolTipText( "<HTML>Show Ports that have had their<BR>information updated within <I>X</I> days" );
@@ -147,7 +127,6 @@ public class JPanel_StatusFilter extends JPanel
         final JPanel southPanel = new JPanel( new GridLayout( 0, 1, 0, GuiUtil_.GAP_PIXEL ) );
         southPanel.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening
         ab_WhatsNew.setEnabled( PortConstants.HAS_MAC_PORTS );
-        jCombo_Duration.setEnabled( false );
         jSpin_Day.setEnabled( false );
 
         ab_Marked.setFocusable( false );
@@ -159,9 +138,7 @@ public class JPanel_StatusFilter extends JPanel
         fButtonGroup.add( ab_WhatsNew );
 
         southPanel.add( Box.createVerticalStrut( BUTTON_HEIGHT_PIX ) );
-//        southPanel.add( ab_Marked ); // 0=first, -1=last
         southPanel.add( ab_WhatsNew );
-//        southPanel.add( jCombo_Duration );
         southPanel.add( subPanel );
 
         this.add( northPanel, BorderLayout.NORTH );
@@ -172,7 +149,6 @@ public class JPanel_StatusFilter extends JPanel
         ab_Marked.addActionListener( this );
         ab_Native.addActionListener( this );
         ab_WhatsNew.addActionListener( this );
-        jCombo_Duration.addActionListener( this );
 
         jSpin_Day.addChangeListener( this );
 
@@ -181,7 +157,6 @@ public class JPanel_StatusFilter extends JPanel
                 {   @Override public void reset()
                     {   ab_All.doClick();
                         jSpin_Day.setValue( DEFAULT_WHATS_NEW_DAY ); // autobox
-//                        jCombo_Duration.setSelectedIndex( 0 );
                     }
                 } );
     }
@@ -197,7 +172,6 @@ public class JPanel_StatusFilter extends JPanel
             final Predicatable predicate; // para-lambda
             if( ab == ab_WhatsNew )
             {
-                jCombo_Duration.setEnabled( true );
                 jSpin_Day.setEnabled( true );
                 setEpochFilter( mAgeMillisec );
                 return; // required
@@ -237,17 +211,9 @@ public class JPanel_StatusFilter extends JPanel
                 }
             }
 
-            jCombo_Duration.setEnabled( false );
             jSpin_Day.setEnabled( false );
 
             TheUiHolder.INSTANCE.getPortFilterPredicate().setStatusFilter( predicate );
-        }
-        else if( obj instanceof JComboBox )
-        {
-            if( ab_WhatsNew.isSelected() == true )
-            {
-                setEpochFilter( (EDuration)jCombo_Duration.getSelectedItem() );
-            }
         }
     }
 
@@ -275,14 +241,5 @@ public class JPanel_StatusFilter extends JPanel
                         }
                     };
         TheUiHolder.INSTANCE.getPortFilterPredicate().setStatusFilter( predicate );
-    }
-
-    @Deprecated
-    private void setEpochFilter( final EDuration duration )
-    {
-        final long epochAfterMillisec = ( duration == EDuration.SYNC )
-                ? System.currentTimeMillis() + TheApplication.INSTANCE.getPortsCatalog().getLastSyncEpoch() // ok
-                : duration.getDurationMillisec();
-        setEpochFilter( epochAfterMillisec );
     }
 }

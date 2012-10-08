@@ -58,19 +58,37 @@ public class ImageUtil_
         }
     }
 
+    /**
+     *
+     * @param internallyJarredResourceName should be prefixed with '/' to load from this jar / class files
+     * @return if not found, throws IllegalArgumentException
+     */
+    static public Image parseImage( final String internallyJarredResourceName )
+    {
+        try
+        {
+            final byte[] bytes = Util.retrieveResourceBytes( internallyJarredResourceName );
+            return parseImage( internallyJarredResourceName, bytes );
+        }
+        catch( IOException ex )
+        {
+            throw new IllegalArgumentException( internallyJarredResourceName +" NOT FOUND IN CLASS PATH" );
+        }
+    }
+
     //ENHANCE
     /**
      * Special case Java's borken ".ICO" handling and the web's sloppy adherence to W3C standards.
      *
-     * @param resourceName used to check file extension when MIME type info is lost, ".ico", ".png", ".gif", etc.
+     * @param name used to check file extension when MIME type info is lost, ".ico", ".png", ".gif", etc.
      * @param bytes content @ URI
      * @return 'null' if no image
      */
-    static public Image parseImage( final String resourceName, final byte[] bytes )
+    static public Image parseImage( final String name, final byte[] bytes )
     {
         if( bytes.length == 0 ) return null;
 
-        if( resourceName.toLowerCase().endsWith( _DOT_ICO_EXTENSION ) == false )
+        if( name.toLowerCase().endsWith( _DOT_ICO_EXTENSION ) == false )
         {   // Java can make a good show of JPEG, GIF, PNG, etc.
             return Toolkit.getDefaultToolkit().createImage( bytes );
         }
@@ -130,6 +148,7 @@ public class ImageUtil_
                     , Image.SCALE_SMOOTH
                     );
 
+// more work to do it this way...
 //            final BufferedImage scaledBi = new BufferedImage( maxWidthHeight, maxWidthHeight, BufferedImage.TYPE_INT_ARGB );
 //            final Graphics2D g2d = scaledBi.createGraphics();
 //            g2d.drawImage( image, 0, 0, maxWidthHeight, maxWidthHeight, null );

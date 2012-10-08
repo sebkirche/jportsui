@@ -1,6 +1,7 @@
 package oz.zomg.jport.gui.window;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
@@ -11,7 +12,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -47,41 +50,47 @@ import oz.zomg.jport.type.Portable.Predicatable;
 public class JDialog_AboutApp extends JDialog
     implements ActionListener
 {
-    static final private int _MAX_PIXEL_SIZE = 48;
-
-    static final private String _COPYRIGHT_NOTICE = "<HTML><CENTER>"
-            +"<IMG src=\"http://i.creativecommons.org/l/by-sa/3.0/80x15.png\"><BR>"
-            +"<SMALL>This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License</SMALL>"
-            ;
+    static final private int    _MAX_PIXEL_SIZE = 48;
+    static final private Font   _SAN_SERIF_9_FONT = new Font( Font.SANS_SERIF, Font.PLAIN, 9 );
+    static final private String _COPYRIGHT_NOTICE = "(c) 2012 by Stephen Baber";
+    static final private String _LICENSE_TEXT = "<HTML><CENTER><SMALL><FONT color=blue>"
+            +"<IMG src=\"http://i.creativecommons.org/l/by-sa/3.0/80x15.png\"><BR><U>"
+            +"This work is licensed under<BR>"
+            +"a Creative Commons<BR>"
+            +"Attribution-ShareAlike<BR>"
+            +"3.0 Unported License<BR>";
 
     static
     {}
 
-    final private Font fFont = new Font( Font.SANS_SERIF, Font.PLAIN, 9 );
-    final private JPanel fPopulatePanel = new JPanel( new FlowLayout() );
+    final private AbstractButton jAb_Ok = FocusedButtonFactory.create( _COPYRIGHT_NOTICE, "Originally designed and coded in NetBeans IDE 7.2 on JDK 1.6.0_35" );
 
     public JDialog_AboutApp()
     {
         super
             ( TheUiHolder.INSTANCE.getMainFrame() // stay on top
-            , PortConstants.APP_NAME +"  --  Java based, graphical user interface to MacPorts 2.0+"
+            , "About "+ PortConstants.APP_NAME
             , ModalityType.APPLICATION_MODAL
             );
 
         this.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
-        this.setLayout( new BorderLayout( 20, 20 ) );
-        this.setSize( 1024, 624 );
+        this.setLayout( new BorderLayout() );
+        this.setSize( 1024, 600 );
         this.setLocationByPlatform( true );
+
+        // center panel
+        final JPanel centerPanel = new JPanel( new FlowLayout() );
+        centerPanel.setBorder( BorderFactory.createEmptyBorder( 10, 0, 0, 10 ) ); // T L B R
 
         // determine unique domains
         final Map<String,Set<Portable>> orderedDomain_to_PortSet_Map = new TreeMap<String,Set<Portable>>();
 
+        // filter by installed or native
         final Predicatable predicate = new Predicatable() // para-lambda expression
                 {   @Override public boolean evaluate( final Portable port )
                     {   return port.hasStatus( EPortStatus.INSTALLED ) == true || TheOsBinaries.INSTANCE.has( port.getName() ) == true;
                     }
                 };
-
         final Portable[] ports = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().filter( predicate );
         for( final Portable port : ports )
         {   // installed or Native
@@ -95,8 +104,8 @@ public class JDialog_AboutApp extends JDialog
             orderedSet.add( port );
         }
 
-        orderedDomain_to_PortSet_Map.remove( "" ); // sometimes the domain is unknown
-        orderedDomain_to_PortSet_Map.remove( "http://www.darwinsys.com" ); // natively installed
+        orderedDomain_to_PortSet_Map.remove( "" ); // sometimes the domain is unknown even though installed
+        orderedDomain_to_PortSet_Map.remove( "http://www.darwinsys.com" ); // already natively installed
 
         // fetch images from cache or in another I/O thread
         for( final Map.Entry<String,Set<Portable>> entry : orderedDomain_to_PortSet_Map.entrySet() )
@@ -110,41 +119,84 @@ public class JDialog_AboutApp extends JDialog
                             {   @Override public void target( Image image )
                                 {   if( image != null && image.getWidth( null ) >= 16 )
                                     {   // ".ICO" image may be usable
-                                        addDomainButton( domain, image, portSet );
+                                        _addDomainButton
+                                                ( centerPanel
+                                                , domain
+                                                , image
+                                                , portSet
+                                                );
                                     }
                                 }
                             }
                     );
         }
 
-        // north
-        final JLabel jLabel = new JLabel( _COPYRIGHT_NOTICE );
-        jLabel.setHorizontalAlignment( JLabel.CENTER );
+        // vertical panel
+        final JPanel vertPanel = new JPanel( null );
+        vertPanel.setLayout( new BoxLayout( vertPanel, BoxLayout.PAGE_AXIS ) );
+        vertPanel.setBorder( BorderFactory.createEmptyBorder( 10, 20, 15, 0 ) ); // T L B R
 
-        // south
-        final AbstractButton ab = FocusedButtonFactory.create( "Copyright 2012 by Stephen Baber", "Originally designed and coded in NetBeans IDE 7.2 on JDK 1.6.0_35" );
-        ab.addActionListener( this );
+        final JLabel jLabel_AppName = new JLabel( "<HTML><BIG><B>"+ PortConstants.APP_NAME );
+        jLabel_AppName.setHorizontalAlignment( JLabel.CENTER );
+        jLabel_AppName.setHorizontalTextPosition( JLabel.CENTER );
+
+        final Image ozzomgImage = ImageUtil_.parseImage( "/oz/zomg/jport/gui/window/oz-dorothy-public-domain-4-color.png" );
+        final Image scaledImage = ozzomgImage.getScaledInstance
+                ( 310/2 // ozzomgImage.getWidth( null ) / 2 <- throws IAE for '0'
+                , 394/2 // ozzomgImage.getHeight( null ) / 2
+                , Image.SCALE_AREA_AVERAGING
+                );
+        final AbstractButton jAb_BrowseHosting = _createBrowsingButton
+                ( new ImageIcon( scaledImage )
+                , "<HTML><CENTER><FONT color=blue><U>Java based, graphical user<BR>interface to MacPorts 2.0+"
+                , PortConstants.PROJ_HOSTING
+                );
+
+        final AbstractButton jAb_BrowseLicense = _createBrowsingButton
+                ( null
+                , _LICENSE_TEXT
+                , "http://creativecommons.org/licenses/by-sa/3.0/deed.en_US"
+                );
 
         // sub-assemble
-        final JPanel jPanel = new JPanel( new BorderLayout() );
-        jPanel.add( jLabel, BorderLayout.NORTH );
-        jPanel.add( ab, BorderLayout.SOUTH );
+        vertPanel.add( jLabel_AppName );
+        vertPanel.add( jAb_BrowseHosting );
+        vertPanel.add( Box.createVerticalGlue() );
+        vertPanel.add( jAb_BrowseLicense );
+        vertPanel.add( Box.createVerticalGlue() );
+        vertPanel.add( jAb_Ok );
 
         // assemble
-        this.add( fPopulatePanel, BorderLayout.CENTER );
-        this.add( jPanel, BorderLayout.SOUTH );
+        this.add( centerPanel, BorderLayout.CENTER );
+        this.add( vertPanel  , BorderLayout.WEST );
+
+        // listener
+        jAb_Ok.addActionListener( this );
+    }
+
+    @Override public void actionPerformed( ActionEvent e )
+    {
+        final Object obj = e.getSource();
+
+        if( obj == jAb_Ok )
+        {
+            this.dispose();
+        }
     }
 
     /**
      * Live adds a browse button with domain "favicon".
-     * No duplicates possible.
+     * Avoids duplicate buttons.
+     * Swing thread safe.
      *
-     * @param domain
-     * @param image
-     * @param portSet
+     * @param container button factory adds here
+     * @param domain web site of multiple Ports
+     * @param image logo for button
+     * @param portSet for tool tip
      */
-    private void addDomainButton
-            ( final String domain
+    static private void _addDomainButton
+            ( final Container toContainer
+            , final String domain
             , final Image image
             , final Set<Portable> portSet
             )
@@ -153,36 +205,54 @@ public class JDialog_AboutApp extends JDialog
         {
             final Icon icon = new ImageIcon( ImageUtil_.reduceImage( image, _MAX_PIXEL_SIZE ) );
 
-            final AbstractButton ab = new JButton( domain, icon );
+            final AbstractButton ab = new JButton( "<HTML><U>"+ domain, icon );
             ab.setToolTipText( StringsUtil_.htmlTabularize( 6, " ", " ", portSet ) );
-            ab.setFont( fFont );
+            ab.setFont( _SAN_SERIF_9_FONT );
             ab.setBorderPainted( false );
             ab.setFocusPainted( false );
             ab.setContentAreaFilled( false );
+            ab.setFocusable( false );
             ab.addActionListener( new ActionListener() // anonymous class
                     {   @Override public void actionPerformed( ActionEvent e )
                         {   HttpUtil.browseTo( domain );
                         }
                     } );
 
-            fPopulatePanel.add( ab );
-            fPopulatePanel.add( Box.createHorizontalStrut( 5 ) );
-            fPopulatePanel.validate();
+            toContainer.add( ab );
+            toContainer.add( Box.createHorizontalStrut( 5 ) );
+            toContainer.validate();
         }
         else
         {
             SwingUtilities.invokeLater( new Runnable() // anonymous class
                     {   @Override public void run()
-                        {   addDomainButton( domain, image, portSet );
+                        {   _addDomainButton( toContainer, domain, image, portSet );
                         }
                     } );
         }
     }
 
-//... animate icons from logo cache
-
-    @Override public void actionPerformed( ActionEvent e )
+    static private AbstractButton _createBrowsingButton
+            ( final Icon   icon
+            , final String label
+            , final String webUrl
+            )
     {
-        this.dispose();
+        final AbstractButton ab = new JButton( label, icon );
+        ab.setToolTipText( "Browse to "+ webUrl );
+        ab.setHorizontalAlignment( AbstractButton.CENTER );
+        ab.setHorizontalTextPosition( AbstractButton.CENTER );
+        ab.setVerticalTextPosition( AbstractButton.BOTTOM );
+        ab.setBorderPainted( false );
+        ab.setContentAreaFilled( false );
+        ab.setFocusable( false );
+        
+        ab.addActionListener( new ActionListener() // anonymous class
+                {   @Override public void actionPerformed( ActionEvent e )
+                    {   HttpUtil.browseTo( webUrl );
+                    }
+                } );
+
+        return ab;
     }
 }

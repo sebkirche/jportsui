@@ -119,6 +119,7 @@ public class CliUtil
 
     /**
      * Relay abnormal execution.
+     * Swing thread safe.
      *
      * @param ex
      * @param listener
@@ -235,8 +236,6 @@ public class CliUtil
                                 }
                             } );
                 }
-//
-//dead                inputStream.close();
             }
             catch( IOException ex )
             {   // abnormal execution
@@ -258,6 +257,7 @@ public class CliUtil
 
         /**
          * Emit error reportage if any.
+         * Swing thread safe.
          *
          * @param process
          * @throws IOException
@@ -331,6 +331,9 @@ public class CliUtil
             fLineList = lineList;
         }
 
+        /**
+         * Swing thread safe.
+         */
         @Override public void run()
         {
             synchronized( this ) // acquire the monitor before the process.exec() caller starts
@@ -407,9 +410,9 @@ public class CliUtil
         implements Listener
     {
         @Override public boolean cliProcessListenerNeedsSwingDeferment() { return false; }
-        @Override public void cliProcessException( Exception ex ) {}
-        @Override public void cliProcessOutput( String outputLine ) {}
-        @Override public void cliProcessError( String errorLine ) {}
-        @Override public void cliProcessCompleted( int resultCode, String[] cliOutputLines, String[] cliErrorLines ) {}
+        @Override public void    cliProcessException( Exception ex ) {}
+        @Override public void    cliProcessOutput( String outputLine ) {}
+        @Override public void    cliProcessError( String errorLine ) {}
+        @Override public void    cliProcessCompleted( int resultCode, String[] cliOutputLines, String[] cliErrorLines ) {}
     }
 }

@@ -114,8 +114,8 @@ abstract public class AEnumTableModel_Array<R,C extends Enum<C>> extends AEnumTa
     /**
      * Set model contents.
      * Handles firing table row alterations as it compares the differences.
-     * Is reentrant, swing thread safe.
      * 'final' because called from derived class constructor.
+     * Swing thread safe.
      *
      * @param rows
      */

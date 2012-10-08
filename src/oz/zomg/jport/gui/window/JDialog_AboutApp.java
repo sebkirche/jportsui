@@ -52,9 +52,12 @@ public class JDialog_AboutApp extends JDialog
 {
     static final private int    _MAX_PIXEL_SIZE = 48;
     static final private Font   _SAN_SERIF_9_FONT = new Font( Font.SANS_SERIF, Font.PLAIN, 9 );
+    static final private String _DEV_ENV = "Originally designed and coded in NetBeans IDE 7.2 on JDK 1.6.0_35";
     static final private String _COPYRIGHT_NOTICE = "(c) 2012 by Stephen Baber";
-    static final private String _LICENSE_TEXT = "<HTML><CENTER><SMALL><FONT color=blue>"
-            +"<IMG src=\"http://i.creativecommons.org/l/by-sa/3.0/80x15.png\"><BR><U>"
+    static final private String _LICENSE_TEXT = "<HTML><CENTER><SMALL>"
+            + _COPYRIGHT_NOTICE +"<BR>"
+            +"<BR>"
+            +"<IMG src=\"http://i.creativecommons.org/l/by-sa/3.0/80x15.png\"><BR><FONT color=blue><U>"
             +"This work is licensed under<BR>"
             +"a Creative Commons<BR>"
             +"Attribution-ShareAlike<BR>"
@@ -63,7 +66,7 @@ public class JDialog_AboutApp extends JDialog
     static
     {}
 
-    final private AbstractButton jAb_Ok = FocusedButtonFactory.create( _COPYRIGHT_NOTICE, "Originally designed and coded in NetBeans IDE 7.2 on JDK 1.6.0_35" );
+    final private AbstractButton jAb_Ok = FocusedButtonFactory.create( "          OK          ", null );
 
     public JDialog_AboutApp()
     {
@@ -140,14 +143,9 @@ public class JDialog_AboutApp extends JDialog
         jLabel_AppName.setHorizontalAlignment( JLabel.CENTER );
         jLabel_AppName.setHorizontalTextPosition( JLabel.CENTER );
 
-        final Image ozzomgImage = ImageUtil_.parseImage( "/oz/zomg/jport/gui/window/oz-dorothy-public-domain-4-color.png" );
-        final Image scaledImage = ozzomgImage.getScaledInstance
-                ( 310/2 // ozzomgImage.getWidth( null ) / 2 <- throws IAE for '0'
-                , 394/2 // ozzomgImage.getHeight( null ) / 2
-                , Image.SCALE_AREA_AVERAGING
-                );
+        final Image ozzomgImage = ImageUtil_.parseImage( "/oz/zomg/jport/gui/window/oz-dorothy-public-domain-16-color.png" );
         final AbstractButton jAb_BrowseHosting = _createBrowsingButton
-                ( new ImageIcon( scaledImage )
+                ( new ImageIcon( ozzomgImage )
                 , "<HTML><CENTER><FONT color=blue><U>Java based, graphical user<BR>interface to MacPorts 2.0+"
                 , PortConstants.PROJ_HOSTING
                 );
@@ -157,6 +155,13 @@ public class JDialog_AboutApp extends JDialog
                 , _LICENSE_TEXT
                 , "http://creativecommons.org/licenses/by-sa/3.0/deed.en_US"
                 );
+
+        // center (OK) <- misaligns vertPanel due to HTML above
+        final JPanel okPanel = new JPanel( null ); // FlowLayout no workie
+        okPanel.setLayout( new BoxLayout( okPanel, BoxLayout.LINE_AXIS ) );
+        okPanel.add( Box.createHorizontalGlue() );
+        okPanel.add( jAb_Ok );
+        okPanel.add( Box.createHorizontalGlue() );
 
         // sub-assemble
         vertPanel.add( jLabel_AppName );

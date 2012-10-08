@@ -46,6 +46,8 @@ import oz.zomg.jport.gui.component.JListModel_Array;
 @SuppressWarnings("serial")
 public class JDialog_ProcessStream extends JDialog
 {
+    static final private boolean _IS_UI_IMMOBILE = false;
+
     static
     {}
 
@@ -87,7 +89,13 @@ public class JDialog_ProcessStream extends JDialog
             );
 
         this.setDefaultCloseOperation( WindowConstants.DO_NOTHING_ON_CLOSE );// required
+        this.setUndecorated( _IS_UI_IMMOBILE );
+        this.setResizable( _IS_UI_IMMOBILE == false );
         ((JPanel)this.getContentPane()).setBorder( BorderFactory.createEmptyBorder( 10, 10, 5, 10 ) ); // T L B R
+
+        final Window parent = this.getOwner();
+        this.setLocation( parent.getX(), parent.getY() );
+        this.setSize( parent.getWidth(), parent.getHeight() );
 
         final JList jList = new JList();
         jList.setFont( new Font( Font.MONOSPACED, Font.BOLD, 12 ) );
@@ -125,9 +133,6 @@ public class JDialog_ProcessStream extends JDialog
             this.add( Box.createVerticalStrut( 600 )  , BorderLayout.EAST );
             this.add( jsp                             , BorderLayout.CENTER );
             this.add( southPanel                      , BorderLayout.SOUTH );
-
-            this.pack();
-            this.setLocationRelativeTo( TheUiHolder.INSTANCE.getMainFrame() );
 
             // not working correctly to Cancel cli
     //        ab.addActionListener( new ActionListener() // anonymous class
@@ -213,8 +218,10 @@ public class JDialog_ProcessStream extends JDialog
 
             final JLabel jLabel_Exception = new JLabel();
             jLabel_Exception.setForeground( Color.RED );
+            jLabel_Exception.setOpaque( true ); // BorderLayout functions as a NullLayout inside each compass constraint
             jLabel_Exception.setText( "<HTML>"+ StringsUtil_.concatenate( "<BR>", lines ) );
-            fWindowToClose.add( jLabel_Exception, BorderLayout.WEST );
+            
+            fWindowToClose.add( jLabel_Exception, BorderLayout.NORTH );
         }
 
         /**
@@ -232,12 +239,14 @@ public class JDialog_ProcessStream extends JDialog
                 jLabel_Error.setForeground( Color.RED );
                 jLabel_Error.setOpaque( true ); // BorderLayout functions as a NullLayout inside each compass constraint
                 jLabel_Error.setText( "<HTML>"+ StringsUtil_.concatenate( "<BR>", cliErrorLines) );
-                fWindowToClose.add( jLabel_Error, BorderLayout.NORTH );
+                jLabel_Error.setVerticalAlignment( JLabel.TOP );
+
+                fWindowToClose.add( jLabel_Error, BorderLayout.WEST );
             }
 
             jProgressBar.setVisible( false );
 
-            ab_Done.setText( "Close" );
+            ab_Done.setText( "OK" );
             ab_Done.setEnabled( true );
             ab_Done.requestFocusInWindow(); // hilite it
 

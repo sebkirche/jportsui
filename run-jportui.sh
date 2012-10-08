@@ -1,6 +1,6 @@
 #!/bin/bash
 # run JPortUI .JAR as Posix compliant Bash shell script without deploying Ant, Maven, etc.
-JAR_APP="JPortUI.jar"
+JAR_APP="JPortsUI.jar"
 
 if [ ! -e $JAR_APP ]
 then
@@ -24,7 +24,7 @@ then
 	WARNINGS="-Xlint:all"
 	ALL_CLASS_PATHS="-classpath .:$CLASSPATH"
 	DESTINATION="-d ."
-	javac $SOURCE $WARNINGS -source 6 $ALL_CLASS_PATHS $DESTINATION
+	javac $WARNINGS $ALL_CLASS_PATHS $DESTINATION -g $SOURCE
 
 # archive all rsrc & .class
 	echo 

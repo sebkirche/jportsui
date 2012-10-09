@@ -126,25 +126,54 @@ public class ImageUtil_
 
     //ENHANCE?
     /**
-     * @param maxWidthHeight
      * @param image can be 'null'
-     * @return original if smaller than max pixels
+     * @param maxWidthHeight implies a square
+     * @return original if smaller than max pixels or zero pixels or 'null'
      */
     static public Image reduceImage( final Image image, final int maxWidthHeight )
     {
+        return reduceImage( image, maxWidthHeight, maxWidthHeight );
+    }
+
+    //ENHANCE?
+    /**
+     *
+     * @param image can be 'null'
+     * @param maxWidth
+     * @param maxHeight
+     * @return original if smaller than max pixels or zero pixels or 'null'
+     */
+    static public Image reduceImage( final Image image, final int maxWidth, final int maxHeight )
+    {
         if( image == null ) return image;
 
-        final int width  = image.getWidth ( null );
-        final int height = image.getHeight( null );
-        if( width <= maxWidthHeight && height <= maxWidthHeight && width > 0 && height > 0 )
-        {
+        final int srcWidth  = image.getWidth ( null );
+        final int srcHeight = image.getHeight( null );
+        if( ( srcWidth <= maxWidth && srcHeight <= maxHeight ) || srcWidth == 0 || srcHeight == 0 )
+        {   // no scaling required
             return image;
         }
         else
-        {
-            return image.getScaledInstance //... might not be square (1x1) aspect-ratio
-                    ( Math.min( width,  maxWidthHeight )
-                    , Math.min( height, maxWidthHeight )
+        {   // might not be square (1x1) aspect-ratio
+            final float destWidth  = maxWidth;
+            final float destHeight = maxHeight;
+
+            final int widt;
+            final int hite;
+            if( ( destHeight / destWidth ) < ( (float)srcHeight / (float)srcWidth ) ) // compare ratios
+            {
+                widt = (int)(srcWidth * ( destHeight / (float)srcHeight ));
+                hite = maxHeight;
+            }
+            else
+            {
+                widt = maxWidth;
+                hite = (int)(srcHeight * ( destWidth / (float)srcWidth ));
+            }
+
+            return image.getScaledInstance
+                    ( widt
+                    , hite
                     , Image.SCALE_SMOOTH
                     );
 

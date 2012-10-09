@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import oz.zomg.jport.common.Interfacing_.Transformable;
 
-
+//ENHANCED
 /**
  * Report occurrences of keys as frequency counts.
  * <H3><I><FONT color="#770000">Subset of original source.</FONT></I></H3>
@@ -94,8 +94,7 @@ public class Histogram_<K>
      */
     public Entry<K,Integer>[] getKeyFrequencyEntries()
     {
-        @SuppressWarnings("unchecked")
-        final Entry<K,Integer>[] kvEntries = Util.createArray( Entry.class, fKey_to_IntegerMap.entrySet() );
+        final Entry<K,Integer>[] kvEntries = Util.createMapEntryArray( fKey_to_IntegerMap );
 
         // para-lambda for ascending Map.Entry Integer compares
         // non-static because of Generics
@@ -140,7 +139,7 @@ public class Histogram_<K>
             {
                 final Entry<Integer,K> vkEntry = new IdentityEntry<Integer, K>( kvEntry.getValue(), kvEntry.getKey() );
                 vkEntries[ i ] = vkEntry;
-                i += 1;
+                i++;
             }
 
             // para-lambda for ascending Map.Entry Integer compares
@@ -297,6 +296,8 @@ public class Histogram_<K>
 
         private IdentityEntry( final K key, final V value )
         {
+            if( key == null ) throw new NullPointerException();
+
             fKey = key;
             fValue = value;
         }
@@ -329,9 +330,7 @@ public class Histogram_<K>
 
         @Override public int hashCode()
         {
-            int hash = 7;
-            hash = 97 * hash + ( this.fKey != null ? this.fKey.hashCode() : 0 );
-            return hash;
+            return fKey.hashCode();
         }
     }
 }

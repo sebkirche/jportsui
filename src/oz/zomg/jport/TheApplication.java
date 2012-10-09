@@ -209,7 +209,7 @@ public class TheApplication
      *
      * @return as reported by the CLI "port echo installed" all of which are type InstalledPort
      */
-    public Map<EPortStatus,Set<CliPortInfo>> cliEchoAllStatus()
+    public Map<EPortStatus,Set<CliPortInfo>> cliEchoAllPortStatus()
     {
         final Map<EPortStatus,Set<CliPortInfo>> status_to_InfoSet_Map = new EnumMap<EPortStatus, Set<CliPortInfo>>( EPortStatus.class );
 

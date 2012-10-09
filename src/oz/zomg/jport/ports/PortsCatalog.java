@@ -21,7 +21,7 @@ import oz.zomg.jport.type.Portable;
 
 
 /**
- * Reads all from the "PortIndex" file and then status is updated by the Port CLI tool.
+ * Aggregates all Ports from the "PortIndex" file.  Later actual Port status is queried by the Port CLI tool.
  *
  * @author <SMALL>Copyright 2012 by Stephen Baber
  * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
@@ -42,6 +42,7 @@ public class PortsCatalog
     /** Last Catalog generated Identification # */
     static final private AtomicInteger _ID = new AtomicInteger();
 
+    /** Initial, empty catalog. */
     static final public PortsCatalog NONE = new PortsCatalog();
 
     static
@@ -85,7 +86,7 @@ public class PortsCatalog
         // interrogate the CLI for user's installed Ports status
         @SuppressWarnings("unchecked")
         final Map<EPortStatus,Set<CliPortInfo>> status_to_CpiSet_Map = ( true )
-                ? TheApplication.INSTANCE.cliEchoAllStatus() // *BLOCKS* for CLI
+                ? TheApplication.INSTANCE.cliEchoAllPortStatus() // *BLOCKS* for CLI
                 : Collections.EMPTY_MAP;
 
         final Map<CliPortInfo,Set<EPortStatus>> cpi_to_StatusSet_Map = CliPortInfo.createInverseMultiMapping( status_to_CpiSet_Map );
@@ -141,7 +142,7 @@ public class PortsCatalog
         if( filePath.exists() == false )
         {   // Port index file not found
             JOptionPane.showMessageDialog( null, filePathName +"\n does not seem to exist." );
-            System.exit( 1 );
+//?            System.exit( 1 );
         }
         else
         {   // found Port index

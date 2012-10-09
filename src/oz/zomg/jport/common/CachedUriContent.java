@@ -171,8 +171,11 @@ public class CachedUriContent
     // ================================================================================
     /**
      * Reduces web server bandwidth usage by using home user's disk to persist from memory.
-     * Retains in HashMap softly.  When out of memory and content is GC'd, will restore
-     * from local media.
+     * Retains in HashMap softly.  When out of memory and content is GC'd, will restore from
+     * local media.
+     * <P>
+     * A Soft Reference is not disposed until it is the only referent to an Object and the JVM has
+     * consumed the maximum heap memory (or in some JVMs simply that a major GC was performed).
      */
     static private class NonVolatileCache
         implements UriContentCacheable

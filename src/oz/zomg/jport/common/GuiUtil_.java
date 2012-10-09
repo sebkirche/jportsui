@@ -89,10 +89,21 @@ public class GuiUtil_
     }
 
 // ENHANCE to JTreeFactory / JTreeUtil
-    static private <E extends Enum<E>, C extends Collection<?>> JTree createJTree( final boolean isExpanded, final Map<E,C> map )
+    /**
+     *
+     * @param <E> Enum of class type
+     * @param <C> Collection of class type
+     * @param isExpandAll 'true' shows all branch nodes open
+     * @param fromMultiMap
+     * @return
+     */
+    static private <E extends Enum<E>, C extends Collection<?>> JTree createJTree
+            ( final boolean isExpandAll
+            , final Map<E,C> fromMultiMap
+            )
     {
         final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-        for( final Map.Entry<E,C> entry : map.entrySet() )
+        for( final Map.Entry<E,C> entry : fromMultiMap.entrySet() )
         {
             final E e = entry.getKey();
             final C collection = entry.getValue();
@@ -112,7 +123,7 @@ public class GuiUtil_
         final JTree jTree = new JTree( root );
         jTree.setRootVisible( false );
 
-        if( isExpanded == true )
+        if( isExpandAll == true )
         {
             for( int i = 0; i < jTree.getRowCount(); i++ )
             {   // expand all 1st tier branches

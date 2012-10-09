@@ -126,7 +126,6 @@ public class JPanel_StatusFilter extends JPanel
         // south
         final JPanel southPanel = new JPanel( new GridLayout( 0, 1, 0, GuiUtil_.GAP_PIXEL ) );
         southPanel.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening
-        ab_WhatsNew.setEnabled( PortConstants.HAS_MAC_PORTS );
         jSpin_Day.setEnabled( false );
 
         ab_Marked.setFocusable( false );
@@ -198,7 +197,7 @@ public class JPanel_StatusFilter extends JPanel
                 switch( statusEnum )
                 {
                     case ALL :
-                            predicate = Predicatable.ANY;
+                            predicate = Predicatable.ANY; // no narrowing, wide open
                             break;
 
                     default :

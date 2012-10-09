@@ -126,7 +126,7 @@ public class HistogramUiFactory
                     predicate = PortsHistogramFactory.createPredicate( fHistoEnum, search );
                 }
                 else
-                {
+                {   // no narrowing, wide open
                     predicate = Predicatable.ANY;
                 }
 

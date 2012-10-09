@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * Get a pre-allocated empty array.  One dimensional arrays are type strict and length immutable.
+ * Aggregates pre-allocated empty arrays.  One dimensional arrays are type strict and length immutable.
  * This common allocation scenario happens surprisingly often and is not built into the
  * JVM/ClassLoader as of Sun/IcedTea Java 1.6.23.
  *<P>

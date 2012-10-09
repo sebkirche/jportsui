@@ -81,13 +81,13 @@ public class JFrame_Main extends JFrame
 
         // center
         final Component centerComponent;
-        if( Util.isOnMac() == false || PortConstants.HAS_MAC_PORTS == true )
+        if( PortConstants.HAS_MAC_PORTS == true || Util.isOnWindows() == true )
         {   //... allows testing on Windows but should not always
             centerComponent = jSplit_view_inv_detail;
         }
         else
         {   // no MacPorts installed
-            northComponent.setVisible( false ); // hide command bar to reduce confusion
+            northComponent.setVisible( false ); // hide Command Bar to reduce confusion
 
             final AbstractButton ab_BrowseMacPorts = FocusedButtonFactory.create
                     ( "<HTML><BIG><CENTER>JPortsUI requires MacPorts to be installed.<BR>Click to browse the MacPorts installer page."

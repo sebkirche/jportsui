@@ -39,10 +39,12 @@ public class Notification
 
     // ================================================================================
     /**
-     * Abstract base class that manages Listeners but does not cause notifications.
+     * Abstract base class that aggregates Listeners but does not cause notifications.
      * Your derived class will invoke listener notification via an Enumeration visitor.
-     * Notification method can not be declared 'abstract' because the actual .causeNotification()
-     * method has various parameters.
+     * Notification method can -not- be declared 'abstract' because the actual .causeNotification( ... )
+     * method will have various differing parameters per implementaton,
+     * which would break Java's method signature driven interfaces.
+     * <P>
      * Weakly referenced so does not CPU/mem leak when no
      * other Strongly reachable objects refer to the listener.
      * Thread safe.
@@ -405,7 +407,7 @@ public class Notification
 
     // ================================================================================
     /**
-     * Tagging interface.
+     * Tagging interface for starting a Listenable.
      */
     static public interface NotificationListenable
     {}

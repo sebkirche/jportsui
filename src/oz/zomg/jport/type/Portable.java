@@ -77,6 +77,7 @@ public interface Portable
      */
     static public interface Predicatable
     {
+        /** No intended narrowing, wide open. */
         static final public Predicatable ANY = new Predicatable() { @Override public boolean evaluate( Portable port ) { return true; } };
 
         abstract boolean evaluate( final Portable port );

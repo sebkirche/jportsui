@@ -66,6 +66,7 @@ public class JDialog_AboutApp extends JDialog
     static
     {}
 
+    /** Gaaah, LayoutManager vs embedded HTML issues. */
     final private AbstractButton jAb_Ok = FocusedButtonFactory.create( "          OK          ", null );
 
     public JDialog_AboutApp()

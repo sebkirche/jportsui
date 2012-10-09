@@ -59,6 +59,7 @@ public class PortFilterPredicates
             mStatusFilterPredicate = ( predicate != null ) ? predicate : Predicatable.ANY;
             setPortTableRowFilter();
         }
+        // else no change
     }
 
     /**
@@ -73,6 +74,7 @@ public class PortFilterPredicates
             mHistoFilterPredicate = ( predicate != null ) ? predicate : Predicatable.ANY;
             setPortTableRowFilter();
         }
+        // else no change
     }
 
     /**
@@ -87,6 +89,7 @@ public class PortFilterPredicates
             mTextSearchPredicate = ( predicate != null ) ? predicate : Predicatable.ANY;
             setPortTableRowFilter();
         }
+        // else no change
     }
 
     /**

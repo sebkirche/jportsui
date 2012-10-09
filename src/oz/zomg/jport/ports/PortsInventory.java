@@ -12,8 +12,8 @@ import oz.zomg.jport.type.Portable.Predicatable;
 
 
 /**
- * Ordered array of all installed with multiply versioned variants
- * and all not installed ports described in the "PortIndex" file.
+ * Ordered array of all installed with multiply versioned, local variants
+ * and also, all not installed ports as described by the "PortIndex" file.
  *
  * @author <SMALL>Copyright 2012 by Stephen Baber
  * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
@@ -36,7 +36,7 @@ public class PortsInventory
 
     /**
      *
-     * @param allPortSet values to array and sort by name and version
+     * @param allPortSet values to array and sorts by case-insensitive name + version + revision.
      */
     PortsInventory( final Set<Portable> allPortSet  )
     {
@@ -45,8 +45,12 @@ public class PortsInventory
     }
 
     /**
+     * Read only, do not modify any indexes of this array.
+     * Java does not provide a non-wrapped immutable array type so we are on the honor system.
+     * Note: Collections.unmodifiableList( ... ) requires 3 allocations,
+     * throws an UnsupportedOperationException on insert, and does not use square bracket syntax.
      *
-     * @return in ascending alphabetical order with descending version number tie-breakers
+     * @return in ascending alphabetical order with descending version + revision number tie-breakers
      */
     public Portable[] getAllPorts() { return fAllPorts; }
 

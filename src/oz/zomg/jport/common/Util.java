@@ -361,23 +361,23 @@ public class Util
      *
      * @param <K> will be swapped to a Value class type
      * @param <V> will be swapped to a Key class type
-     * @param inverseNeedsOrderedKeys 'true' requires Comparable elements
-     * @param inverseNeedsOrderedValues 'true' requires Comparable elements
-     * @param kvMap map to be inverted
+     * @param inverseMapNeedsOrderedKeys 'true' requires Comparable elements
+     * @param inverseMapNeedsOrderedValues 'true' requires Comparable elements
+     * @param fromKeyValueMap map to be inverted
      * @return an inverse mapping where Values are now mapped to potentially multiple Keys
      */
     static public <K,V> Map<V,Set<K>> createInverseMultiMapping
-            ( final boolean inverseNeedsOrderedKeys
-            , final boolean inverseNeedsOrderedValues
-            , final Map<K,V> kvMap
+            ( final boolean inverseMapNeedsOrderedKeys
+            , final boolean inverseMapNeedsOrderedValues
+            , final Map<K,V> fromKeyValueMap
             )
     {
-        final Map<V,Set<K>> invMap = ( inverseNeedsOrderedKeys == true )
+        final Map<V,Set<K>> invMap = ( inverseMapNeedsOrderedKeys == true )
                 ? new TreeMap<V, Set<K>>()
                 : new HashMap<V, Set<K>>();
 
         // invert keys - values
-        for( final Map.Entry<K,V> entry : kvMap.entrySet() )
+        for( final Map.Entry<K,V> entry : fromKeyValueMap.entrySet() )
         {
             final V invKey   = entry.getValue(); // alias
             final K invValue = entry.getKey(); // alias
@@ -398,7 +398,7 @@ public class Util
                     }
                     else
                     {   // copy to a bigger, non-singleton set
-                        final Set<K> biggerSet = ( inverseNeedsOrderedValues == true )
+                        final Set<K> biggerSet = ( inverseMapNeedsOrderedValues == true )
                                 ? new TreeSet<K>( set )
                                 : new HashSet<K>( set );
                         biggerSet.add( invValue );
@@ -413,24 +413,32 @@ public class Util
     }
 
     //ENHANCE CollectionsUtil
+    /**
+     *
+     * @param <K> will be swapped to a Value class type
+     * @param <V> will be swapped to a Key class type
+     * @param inverseMapNeedsOrderedKeys
+     * @param fromKeyMultiValueMap map to be inverted
+     * @return an inverse mapping where Values are now mapped to potentially multiple Keys
+     */
     static private <K,V> Map<V,Set<K>> createInverseMultiMapping
-            ( final boolean inverseNeedsOrderedKeys
-            , final Map<K,Set<V>> kvSet_Map
+            ( final boolean inverseMapNeedsOrderedKeys
+            , final Map<K,Collection<V>> fromKeyMultiValueMap
             )
     {
-        final Map<V,Set<K>> invMap = ( inverseNeedsOrderedKeys == true )
+        final Map<V,Set<K>> invMap = ( inverseMapNeedsOrderedKeys == true )
                 ? new TreeMap<V, Set<K>>()
                 : new HashMap<V, Set<K>>();
 
         // invert keys - values
-        for( final Map.Entry<K,Set<V>> entry : kvSet_Map.entrySet() )
+        for( final Map.Entry<K,Collection<V>> entry : fromKeyMultiValueMap.entrySet() )
         {
-            final Set<V> invKeySet = entry.getValue(); // alias
+            final Collection<V> invKeyCollection = entry.getValue(); // alias
             final K invValue = entry.getKey(); // alias
 
-            if( invKeySet != null )
+            if( invKeyCollection != null )
             {   // values maybe 'null' but keys can not be
-                for( final V invKey : invKeySet )
+                for( final V invKey : invKeyCollection )
                 {
                     if( invMap.containsKey( invKey ) == false )
                     {   // a singleton element is always ordered
@@ -463,9 +471,9 @@ public class Util
      * Performs a complete read of an existing File.
      * Bringing in very large files may require a large starting JVM heap.
      *
-     * @param filePath whose contents are less than 2 gigabytes in logical size
+     * @param filePath whose contents are less than 2 gigabytes in logical size else IllegalArgumentException
      * @return all content bytes for the file
-     * @throws IOException
+     * @throws IOException is typically FileNotFoundException
      */
     static public byte[] retrieveFileBytes( final File filePath ) throws IOException
     {

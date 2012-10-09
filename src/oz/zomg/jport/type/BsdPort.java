@@ -399,7 +399,7 @@ class BsdPort //... refactor IndexPort?
     /**
      *
      * @param obj
-     * @return works equally well with InstalledPort
+     * @return works equally well with InstalledPort as it is declared 'final'
      */
     @Override final public boolean equals( final Object obj )
     {
@@ -441,6 +441,11 @@ class BsdPort //... refactor IndexPort?
         return mHashCode;
     }
 
+    /**
+     *
+     * @param another
+     * @return by case-insensitive name + version + revision.
+     */
     @Override final public int compareTo( final Portable another )
     {
         if( another == this ) return 0;

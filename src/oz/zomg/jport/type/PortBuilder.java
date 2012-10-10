@@ -51,13 +51,14 @@ class PortBuilder
 
     static final private List<String> _SPLIT_LIST = new ArrayList<String>( 64 );
 
-    static final private Map<String,EPortField> FIELD_MAP = new HashMap<String, EPortField>();
+    /** Avoids exception throw of Enum.parse(...), would return 'null' instead. */
+    static final private Map<String,EPortField> _FIELD_TO_ENUM_MAP = new HashMap<String, EPortField>();
 
     static
     {
         for( final EPortField e : EPortField.values() )
-        {   // avoids exception throw of Enum.parse(...)
-            FIELD_MAP.put( e.name(), e );
+        {
+            _FIELD_TO_ENUM_MAP.put( e.name(), e );
         }
     }
 
@@ -107,9 +108,9 @@ class PortBuilder
             {   // found
                 final String key = parse.substring( 0, k );
 
-                if( FIELD_MAP.containsKey( key ) == true )
+                if( _FIELD_TO_ENUM_MAP.containsKey( key ) == true )
                 {
-                    final EPortField e = FIELD_MAP.get( key );
+                    final EPortField e = _FIELD_TO_ENUM_MAP.get( key );
                     parse = parse.substring( k + 1 ); // skip space
 
                     String value = "";

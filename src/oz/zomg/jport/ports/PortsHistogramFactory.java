@@ -41,9 +41,16 @@ public class PortsHistogramFactory
 
     private PortsHistogramFactory() {}
 
+    /**
+     * Single occurrence of words from Port short and long description.
+     * Does not consider <CODE>-, +, @, #, $, %, &, ~</CODE> to be word breaks.
+     *
+     * @param port
+     * @return
+     */
     static private String[] _getUniqueWords( final Portable port )
     {
-        final String string = port.getShortDescription() +' '+ port.getLongDescription() +' '+ ' '; // port.getName()
+        final String string = port.getShortDescription() +' '+ port.getLongDescription() +' '+' '; // port.getName()
 
         int begin = 0;
         final int end = string.length() - 1; // two spaces at end for teminus

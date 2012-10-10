@@ -66,8 +66,7 @@ public class JDialog_AboutApp extends JDialog
     static
     {}
 
-    /** Gaaah, LayoutManager vs embedded HTML issues. */
-    final private AbstractButton jAb_Ok = FocusedButtonFactory.create( "          OK          ", null );
+    final private AbstractButton jAb_Ok = FocusedButtonFactory.create( "OK", "Close" );
 
     public JDialog_AboutApp()
     {
@@ -136,9 +135,9 @@ public class JDialog_AboutApp extends JDialog
         }
 
         // vertical panel
-        final JPanel vertPanel = new JPanel( null );
-        vertPanel.setLayout( new BoxLayout( vertPanel, BoxLayout.PAGE_AXIS ) );
-        vertPanel.setBorder( BorderFactory.createEmptyBorder( 10, 20, 15, 0 ) ); // T L B R
+        final JPanel westPanel = new JPanel( null );
+        westPanel.setLayout( new BoxLayout( westPanel, BoxLayout.PAGE_AXIS ) );
+        westPanel.setBorder( BorderFactory.createEmptyBorder( 10, 20, 15, 0 ) ); // T L B R
 
         final JLabel jLabel_AppName = new JLabel( "<HTML><BIG><B>"+ PortConstants.APP_NAME );
         jLabel_AppName.setHorizontalAlignment( JLabel.CENTER );
@@ -158,23 +157,21 @@ public class JDialog_AboutApp extends JDialog
                 );
 
         // center (OK) <- misaligns vertPanel due to HTML above
-        final JPanel okPanel = new JPanel( null ); // FlowLayout no workie
-        okPanel.setLayout( new BoxLayout( okPanel, BoxLayout.LINE_AXIS ) );
-        okPanel.add( Box.createHorizontalGlue() );
-        okPanel.add( jAb_Ok );
-        okPanel.add( Box.createHorizontalGlue() );
+        final JPanel southPanel = new JPanel(); // FlowLayout.CENTER is default
+        southPanel.add( jAb_Ok );
 
         // sub-assemble
-        vertPanel.add( jLabel_AppName );
-        vertPanel.add( jAb_BrowseHosting );
-        vertPanel.add( Box.createVerticalGlue() );
-        vertPanel.add( jAb_BrowseLicense );
-        vertPanel.add( Box.createVerticalGlue() );
-        vertPanel.add( jAb_Ok );
+        westPanel.add( jLabel_AppName );
+        westPanel.add( jAb_BrowseHosting );
+        westPanel.add( Box.createVerticalGlue() );
+        westPanel.add( jAb_BrowseLicense );
+        westPanel.add( Box.createVerticalGlue() );
+        // Gaaah, LayoutManager vs embedded HTML issues. -> vertPanel.add( jAb_Ok );
 
         // assemble
         this.add( centerPanel, BorderLayout.CENTER );
-        this.add( vertPanel  , BorderLayout.WEST );
+        this.add( southPanel , BorderLayout.SOUTH );
+        this.add( westPanel  , BorderLayout.WEST );
 
         // listener
         jAb_Ok.addActionListener( this );
@@ -260,5 +257,10 @@ public class JDialog_AboutApp extends JDialog
                 } );
 
         return ab;
+    }
+
+    static public void main( String[] args )
+    {
+        new JDialog_AboutApp().setVisible( true );
     }
 }

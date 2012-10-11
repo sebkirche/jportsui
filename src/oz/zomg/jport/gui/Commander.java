@@ -114,6 +114,10 @@ public class Commander
         TheUiHolder.INSTANCE.setTableSortByMark();
     }
 
+    /**
+     * Change request all ports that are Inactive to Uninstall.
+     * Dependencies will be assumed as resolved by MacPorts.
+     */
     public void markInactivePorts()
     {
         final Portable[] inactivePorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().filter( EPortStatus.INACTIVE );
@@ -126,6 +130,7 @@ public class Commander
     }
 
     /**
+     * Who directs?  The user directs.
      *
      * @param searchText
      * @param searchWhere

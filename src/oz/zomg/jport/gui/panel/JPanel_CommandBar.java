@@ -2,26 +2,17 @@ package oz.zomg.jport.gui.panel;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 import oz.zomg.jport.PortConstants;
 import oz.zomg.jport.TheApplication;
 import oz.zomg.jport.common.Elemental;
@@ -31,7 +22,6 @@ import oz.zomg.jport.common.HttpUtil;
 import oz.zomg.jport.common.gui.ModalDialogFactory;
 import oz.zomg.jport.common.gui.ModalDialogFactory.EConfirmationChoices;
 import oz.zomg.jport.gui.Commander;
-import oz.zomg.jport.gui.Commander.ESearchWhere;
 import oz.zomg.jport.gui.TheUiHolder;
 import oz.zomg.jport.gui.window.JDialog_AboutApp;
 import oz.zomg.jport.ports.PortsCliUtil;
@@ -51,10 +41,11 @@ import oz.zomg.jport.type.Portable;
 public class JPanel_CommandBar extends JPanel
     implements
           ActionListener
-        , FocusListener
-        , KeyListener
         , Elemental.Listenable<Portable>
 {
+    static
+    {}
+
     final private Commander      fCommander;
 
     // ignored on Mac-PLAF are .setBackground() and .setContentAreaFilled()
@@ -62,7 +53,6 @@ public class JPanel_CommandBar extends JPanel
     final private AbstractButton ab_MarkOutdated      = new JButton( "Mark \u2192 All Upgrades" ); // unicode right arrow
     final private AbstractButton ab_ApplyMarks        = new JButton( "\u221A Apply..." ); // unicode square root
     final private AbstractButton ab_MoreCommand       = new JButton( "More \u25BC" ); // unicode downward triangle, can not be HTML or will wreck BoxLayout
-    final private AbstractButton ab_ClearSearch       = new JButton( "X" );
 
     final private JMenuItem      jItem_PortDetail     = new JMenuItem( "Details..." );
     final private JMenuItem      jItem_ResetMark      = new JMenuItem( "Reset Marks" );
@@ -75,9 +65,6 @@ public class JPanel_CommandBar extends JPanel
     final private JMenuItem      jItem_AppAbout       = new JMenuItem( "About "+ PortConstants.APP_NAME +"..." );
 
     final private JPopupMenu     jPop_MoreCmd         = new JPopupMenu();
-
-    final private JComboBox      jCombo_LookIn        = new JComboBox( ESearchWhere.values() );
-    final private JTextField     jField_Search        = new JTextField( 16 );
 
     /**
      * @param commander
@@ -99,7 +86,6 @@ public class JPanel_CommandBar extends JPanel
         ab_MarkOutdated     .setToolTipText( "Marks all outdated Ports for upgrading" );
         ab_ApplyMarks       .setToolTipText( "Applies marked Port status change requests" );
         ab_MoreCommand      .setToolTipText( "Show other commands" );
-        ab_ClearSearch      .setToolTipText( "Clear search text" );
         jItem_PortDetail    .setToolTipText( "Show Port details in a separate window" );
         jItem_ResetMark     .setToolTipText( "Remove all Port status change request marks" );
         jItem_ResetFilter   .setToolTipText( "Show all Ports without any filtering" );
@@ -109,8 +95,6 @@ public class JPanel_CommandBar extends JPanel
         jItem_UpgradeCli    .setToolTipText( "Have MacPorts self-update its CLI tools" );
         jItem_AppUpdate     .setToolTipText( "Browse to "+ PortConstants.PROJ_HOSTING );
         jItem_AppAbout      .setToolTipText( "Credits" );
-        jCombo_LookIn       .setToolTipText( "Choose what Port information to search" );
-        jField_Search       .setToolTipText( "Use '+' to require each search term be present" );
 
         ab_Sync         .setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
         ab_ApplyMarks   .setEnabled( false );
@@ -123,24 +107,11 @@ public class JPanel_CommandBar extends JPanel
                 , ab_MarkOutdated
                 , ab_ApplyMarks
                 , ab_MoreCommand
-                , ab_ClearSearch
-                , jCombo_LookIn
                 }
            ) { component.setFocusable( false ); } // more like a lame-duh expression than a lambda expression
 
-        jField_Search.setFont( new Font( Font.MONOSPACED, Font.BOLD, 16 ) );
-        jField_Search.setHorizontalAlignment( JTextField.CENTER );
-        jField_Search.requestFocusInWindow();
-
-        ab_ClearSearch.setPreferredSize( new Dimension( 22, 22 ) ); // Mac-PLAF ignored .setMaximumSize() alone
-        ab_ClearSearch.setMargin( GuiUtil_.ZERO_INSET );
-
-        // needed so that text box doesn't over-expand
-        JPanel searchPanel = new JPanel( new FlowLayout( FlowLayout.TRAILING, 1, 0 ) );
-        searchPanel.add( jCombo_LookIn );
-        searchPanel.add( new JLabel( "<HTML><BIG>\u26B2" ) ); // unicode character "neuter", looks sort of like Mac's magnify glass
-        searchPanel.add( jField_Search );
-        searchPanel.add( ab_ClearSearch );
+        JPanel searchPanel = new JPanel_Search( commander );
+        searchPanel.setLayout( new FlowLayout( FlowLayout.TRAILING, 1, 0 ) ); // needed so that text box doesn't over-expand
 
         // assemble
         jPop_MoreCmd.add( jItem_PortDetail );
@@ -184,33 +155,7 @@ public class JPanel_CommandBar extends JPanel
 //        jItem_Upgrade   .addActionListener( this );
 //        jItem_About   .addActionListener( this );
 
-        jCombo_LookIn.addActionListener( this );
-        jField_Search.addActionListener( this );
-
-        jField_Search.addFocusListener( this );
-        jField_Search.addKeyListener( this );
-
         TheApplication.INSTANCE.getCrudNotifier().addListener( this );
-    }
-
-    /**
-     * Set up by user interaction with GUI Components.
-     */
-    private void doDirectedTextSearch()
-    {
-        final String searchText = jField_Search.getText();
-        final ESearchWhere searchWhereEnum = (ESearchWhere)jCombo_LookIn.getSelectedItem();
-
-        fCommander.doDirectedTextSearch( searchText, searchWhereEnum );
-    }
-
-    /**
-     * Reset text filter.
-     */
-    private void clearTextSearch()
-    {
-        jField_Search.setText( "" );
-        doDirectedTextSearch();
     }
 
     @Override public void notify( final EElemental elemental, final Portable port )
@@ -228,6 +173,11 @@ public class JPanel_CommandBar extends JPanel
         }
     }
 
+    /**
+     * Needs more Enums.
+     *
+     * @param e
+     */
     @Override public void actionPerformed( ActionEvent e )
     {
         final Object obj = e.getSource();
@@ -245,10 +195,6 @@ public class JPanel_CommandBar extends JPanel
             else if( ab == ab_ApplyMarks )
             {
                 fCommander.confirmApplyMarks();
-            }
-            else if( ab == ab_ClearSearch )
-            {
-                clearTextSearch();
             }
             else if( ab == ab_MoreCommand )
             {
@@ -268,7 +214,6 @@ public class JPanel_CommandBar extends JPanel
             }
             else if( ab == jItem_ResetFilter )
             {
-                clearTextSearch();
                 TheUiHolder.causeReset();
             }
             else if( ab == jItem_ResetCache )
@@ -294,7 +239,7 @@ public class JPanel_CommandBar extends JPanel
                     new JDialog_AboutApp().setVisible( true );
                 }
                 else
-                {
+                {   // superceded
                     ModalDialogFactory.showConfirmation
                             ( EConfirmationChoices.OK
                             , TheUiHolder.INSTANCE.getMainFrame()
@@ -303,40 +248,6 @@ public class JPanel_CommandBar extends JPanel
                             );
                 }
             }
-        }
-        else if( obj instanceof JComboBox )
-        {
-            doDirectedTextSearch();
-        }
-        else if( obj instanceof JTextField )
-        {
-            doDirectedTextSearch();
-        }
-    }
-
-    @Override public void focusGained( FocusEvent e )
-    {
-        jField_Search.select( 0, 9999 ); // select all
-    }
-
-    @Override public void focusLost( FocusEvent e )
-    {
-        jField_Search.select( 9999, 9999 ); // deselect
-    }
-
-    /**
-     * Looses some key strokes!
-     * 
-     * @param e
-     */
-    @Override public void keyTyped( KeyEvent e ) {}
-    @Override public void keyPressed( KeyEvent e ) {}
-    @Override public void keyReleased( KeyEvent e ) 
-    {
-        if( jField_Search.getText().length() != 1 )
-        {   // Don't waste time with initial worse case of a single char.
-            // Though single char searches can be initiated by typing [ENTER] or [CR].
-            doDirectedTextSearch();
         }
     }
 }

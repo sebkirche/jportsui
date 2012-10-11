@@ -33,8 +33,6 @@ import oz.zomg.jport.type.Portable.Predicatable;
  */
 public class PortsMarker
 {
-    static final private boolean DEBUG = false;
-
     static
     {}
 
@@ -58,6 +56,8 @@ public class PortsMarker
         final int size = fPort_to_MarkMap.size();
         if( size == 0 ) return; // nothing to do
 
+        fPort_to_MarkMap.clear();
+
         // avoids Iterator concurrent modification exception when .put(k,v)
         for( Map.Entry<Portable,EPortMark> entry : Util.createMapEntryArray( fPort_to_MarkMap ) )
         {
@@ -66,7 +66,7 @@ public class PortsMarker
 
             final Portable refreshPort = refreshedPortsCatalog.getPortsInventory().equate( prevPort );
             if( refreshPort != null )
-            {   // found
+            {   // found equivalent
                 switch( mark )
                 {
                     case Conflicted           : // fall-thru
@@ -75,8 +75,7 @@ public class PortsMarker
                     case Dependency_Activate  : // fall-thru
                     case Dependency_Install   : // fall-thru
                     case Dependency_Upgrade   :
-                            // machine marked
-                            fPort_to_MarkMap.remove( prevPort );
+                            // was machine marked
                             break;
 
                     case Activate   : // fall-thru
@@ -84,21 +83,15 @@ public class PortsMarker
                     case Install    : // fall-thru
                     case Uninstall  : // fall-thru
                     case Upgrade    :
-                            if( mark.isApplicable( prevPort ) == false )
-                            {   // the mark no longer applies
-                                fPort_to_MarkMap.remove( prevPort );
-                            }
-                            else
-                            {   // replace with the new port instance
+                            if( mark.isApplicable( prevPort ) == true )
+                            {   // the change request mark is still applicable, restore with the new port instance
                                 fPort_to_MarkMap.put( refreshPort, mark );
                             }
+                            // else the mark no longer applies
                             break;
                 }
             }
-            else
-            {   // may have been removed from PortsIndex when Obsoleted (or Upgraded from a revision?)
-                fPort_to_MarkMap.remove( prevPort );
-            }
+            // else may have been removed from PortsIndex when Obsoleted (or Upgraded from a revision?)
         }
     }
 

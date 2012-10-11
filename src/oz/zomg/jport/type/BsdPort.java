@@ -399,7 +399,7 @@ class BsdPort //... refactor IndexPort?
     /**
      *
      * @param obj
-     * @return works equally well with InstalledPort as it is declared 'final'
+     * @return works equally well with InstalledPort as method declared 'final'
      */
     @Override final public boolean equals( final Object obj )
     {

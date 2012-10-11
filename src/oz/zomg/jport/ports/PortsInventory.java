@@ -88,7 +88,7 @@ public class PortsInventory
     }
 
     /**
-     * Look up a matching new port by case-insensitive name and version.
+     * Look up a matching new port by case-insensitive name + version + revision.
      *
      * @param otherPort from a previous catalog
      * @return Portable.NONE if not found

@@ -1,6 +1,7 @@
 package oz.zomg.jport;
 
 import java.io.File;
+import java.io.IOException;
 import oz.zomg.jport.common.Util;
 import oz.zomg.jport.type.Portable;
 
@@ -17,7 +18,6 @@ import oz.zomg.jport.type.Portable;
 public class PortConstants
 {
     static final public String     APP_NAME      = "JPortsUI";
-    static final public String     VERSION       = "2012.10"; // or use self .JAR creation date
     static final public String     PORTS_PATH    = "/opt/local/var/macports/sources/rsync.macports.org/release/ports/"; // Mac only, may want to use `which port`
     static final public String     PROJ_HOSTING  = "https://code.google.com/p/jportsui/downloads";
 
@@ -27,6 +27,23 @@ public class PortConstants
     static final public boolean    OPTIMIZATION  = true; // root of all evil -- D. Knuth
 
     static final public Portable[] NO_PORTS      = new Portable[ 0 ];
+
+    /**
+     *
+     * @return .JAR creation date
+     */
+    static public String getVersion()
+    {
+        try
+        {
+            final byte[] bytes = Util.retrieveResourceBytes( "/build-date.txt" );
+            return new String( bytes );
+        }
+        catch( IOException ex )
+        {
+            return "";
+        }
+    }
 
     private PortConstants() {}
 }

@@ -139,7 +139,8 @@ public class JDialog_AboutApp extends JDialog
         westPanel.setLayout( new BoxLayout( westPanel, BoxLayout.PAGE_AXIS ) );
         westPanel.setBorder( BorderFactory.createEmptyBorder( 10, 20, 15, 0 ) ); // T L B R
 
-        final JLabel jLabel_AppName = new JLabel( "<HTML><BIG><B>"+ PortConstants.APP_NAME );
+        final String version = PortConstants.getVersion();
+        final JLabel jLabel_AppName = new JLabel( "<HTML><CENTER><BIG><B>"+ PortConstants.APP_NAME +"</B></BIG>"+ ( version.isEmpty() ? "" : "<BR>"+ version ) );
         jLabel_AppName.setHorizontalAlignment( JLabel.CENTER );
         jLabel_AppName.setHorizontalTextPosition( JLabel.CENTER );
 

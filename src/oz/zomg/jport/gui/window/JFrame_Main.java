@@ -53,7 +53,7 @@ public class JFrame_Main extends JFrame
             , final Component       commandBarComponent
             )
     {
-        super( PortConstants.APP_NAME +"  -  "+ PortConstants.VERSION  );
+        super( PortConstants.APP_NAME +"  -  "+ PortConstants.getVersion()  );
 
         final JTabbedPane jTab_Filter = new JTabPane_Filter();
         final JTabbedPane jTab_Detail = new JTabPane_Detail();

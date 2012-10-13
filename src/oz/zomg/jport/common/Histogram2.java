@@ -20,7 +20,7 @@ import oz.zomg.jport.common.Interfacing_.Transformable;
  * This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
  * Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.</SMALL>
  */
-public class Histogram_<K>
+public class Histogram2<K>
 {
     static // initializer block
     {}
@@ -32,7 +32,7 @@ public class Histogram_<K>
      *
      * @param ofClassType for reified arrays of keys
      */
-    public Histogram_( final Class<K> ofClassType )
+    public Histogram2( final Class<K> ofClassType )
     {
         if( ofClassType == null ) throw new NullPointerException();
 
@@ -115,6 +115,50 @@ public class Histogram_<K>
 
     /**
      *
+     * @param minimumFreq use 0 for no min bound
+     * @param maximumFreq use Integer.MAX_VALUE for no max bound
+     * @return populate array with only those Entries which are bounded by min and max
+     */
+    public Entry<Integer,K>[] getFrequencyKeyEntries( final int minimumFreq, final int maximumFreq )
+    {
+        final Entry<Integer,K>[] entries = getFrequencyKeyEntries();
+
+        int count = entries.length;
+        for( int i = 0; i < entries.length; i++ )
+        {
+            final int freq = entries[ i ].getKey();
+            if( freq < minimumFreq || freq > maximumFreq )
+            {
+                entries[ i ] = null;
+                count--;
+            }
+        }
+
+        if( count != entries.length )
+        {   // some reduction
+            @SuppressWarnings("unchecked")
+            final Entry<Integer,K>[] filterEntries = Util.createArray( Entry.class, count );
+
+            int i = 0;
+            for( final Entry<Integer,K> entry : entries )
+            {
+                if( entry != null )
+                {
+                    filterEntries[ i ] = entry;
+                    i++;
+                }
+            }
+
+            return filterEntries;
+        }
+        else
+        {   // all passed
+            return entries;
+        }
+    }
+
+    /**
+     *
      * @return array of reversed count-key Entries in ascending frequencies order
      */
     public Entry<Integer,K>[] getFrequencyKeyEntries()
@@ -185,9 +229,9 @@ public class Histogram_<K>
      * @param elements instances to produce a histogram of
      * @return
      */
-    static public <E> Histogram_<E> create( final E[] elements )
+    static public <E> Histogram2<E> create( final E[] elements )
     {
-        final Histogram_<E> histogram = new Histogram_<E>( Util.getElementalClass( elements ) );
+        final Histogram2<E> histogram = new Histogram2<E>( Util.getElementalClass( elements ) );
 
         for( final E element : elements )
         {
@@ -205,9 +249,9 @@ public class Histogram_<K>
      * @param iterable as an iterator, probably from a Collection
      * @return
      */
-    static public <E> Histogram_<E> create( final Class<E> ofClassType, final Iterable<E> iterable )
+    static public <E> Histogram2<E> create( final Class<E> ofClassType, final Iterable<E> iterable )
     {
-        final Histogram_<E> histogram = new Histogram_<E>( ofClassType );
+        final Histogram2<E> histogram = new Histogram2<E>( ofClassType );
 
         for( final E element : iterable )
         {
@@ -227,13 +271,13 @@ public class Histogram_<K>
      * @param inputs as an array
      * @return
      */
-    static public <I,O> Histogram_<O> create
+    static public <I,O> Histogram2<O> create
             ( final Transformable<I,O> transformer
             , final Class<O> outputOfClassType
             , final I[] inputs
             )
     {
-        final Histogram_<O> histogram = new Histogram_<O>( outputOfClassType );
+        final Histogram2<O> histogram = new Histogram2<O>( outputOfClassType );
 
         for( final I input : inputs )
         {
@@ -257,13 +301,13 @@ public class Histogram_<K>
      * @param inputs as an iterator, probably from a Collection
      * @return
      */
-    static public <I,O> Histogram_<O> create
+    static public <I,O> Histogram2<O> create
             ( final Transformable<I,O> transformer
             , final Class<O> outputOfClassType
             , final Iterable<I> inputs
             )
     {
-        final Histogram_<O> histogram = new Histogram_<O>( outputOfClassType );
+        final Histogram2<O> histogram = new Histogram2<O>( outputOfClassType );
 
         for( final I input : inputs )
         {

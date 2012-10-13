@@ -10,7 +10,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import oz.zomg.jport.TheApplication;
-import oz.zomg.jport.common.Histogram_;
+import oz.zomg.jport.common.Histogram2;
 import oz.zomg.jport.gui.table.TableModel_Histogram;
 import oz.zomg.jport.ports.PortsHistogramFactory;
 import oz.zomg.jport.ports.PortsHistogramFactory.EHistogram;
@@ -53,7 +53,7 @@ public class HistogramUiFactory
      */
     static public Component createComponent( final AbstractButton ab_Any, final EHistogram histoEnum )
     {
-        final Histogram_<String> histogram = new Histogram_<String>( String.class );
+        final Histogram2<String> histogram = new Histogram2<String>( String.class );
         final Portable[] allPorts = TheApplication.INSTANCE.getPortsCatalog().getPortsInventory().getAllPorts();
         for( final Portable port : allPorts )
         {
@@ -63,8 +63,12 @@ public class HistogramUiFactory
             }
         }
 
+        final Map.Entry<Integer,String>[] entries = ( histoEnum == EHistogram.Categories )
+                ? histogram.getFrequencyKeyEntries( 3, Integer.MAX_VALUE ) // each Category will need at least three Ports in it
+                : histogram.getFrequencyKeyEntries();
+
         final TableModel_Histogram tmh = new TableModel_Histogram();
-        tmh.setRows( histogram.getFrequencyKeyEntries() );
+        tmh.setRows( entries );
 
         // listener
         final PrivateListener privateListener = new PrivateListener( tmh, histoEnum );

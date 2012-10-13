@@ -166,7 +166,7 @@ public class JDialog_AboutApp extends JDialog
         westPanel.add( jAb_BrowseHosting );
         westPanel.add( Box.createVerticalGlue() );
         westPanel.add( jAb_BrowseLicense );
-        westPanel.add( Box.createVerticalGlue() );
+        // westPanel.add( Box.createVerticalGlue() );
         // Gaaah, LayoutManager vs embedded HTML issues. -> vertPanel.add( jAb_Ok );
 
         // assemble

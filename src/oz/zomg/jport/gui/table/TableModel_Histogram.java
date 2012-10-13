@@ -37,7 +37,7 @@ public class TableModel_Histogram extends AEnumTableModel_Array<Entry,TableModel
             ( Entry.class
             , EEditable.DISABLE
             , ERowSelection.SINGLE_SELECTION
-            , EColorize.ALT_BAR_2
+            , EColorize.DISABLE
             , EColumn.values()
             );
 

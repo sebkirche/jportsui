@@ -5,6 +5,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import oz.zomg.jport.TheApplication;
+import oz.zomg.jport.TheOsBinaries;
 import oz.zomg.jport.common.Elemental;
 import oz.zomg.jport.common.Elemental.EElemental;
 import oz.zomg.jport.common.StringsUtil_;
@@ -28,6 +29,7 @@ public abstract class AJLabel_PortInfo extends JLabel
     implements Elemental.Listenable<Portable>
 {
     static final public String SELECT_PORT_TEXT = "<HTML><BIG><I>Select a port from the above list";
+    static final private char SQUARE_ROOT_CHAR = '\u221A';
 
     static
     {}
@@ -168,7 +170,7 @@ public abstract class AJLabel_PortInfo extends JLabel
             }
             else
             {
-                final String text = "<HTML><CENTER><BIG><B>"+ port.getName() +"</B></BIG><BR><BR>"
+                final String text = "<HTML><CENTER><BIG><B>"+ _getFontHtml( port ) + port.getName() +"</FONT></B></BIG><BR><BR>"
                         +"<B><I> "+ port.getShortDescription() +"</I></B></CENTER><BR><BR>"
                         + ( ( port.getShortDescription().equals( port.getLongDescription() ) == false ) ? port.getLongDescription() : "" ); // to show, short != long
                 this.setText( text );
@@ -202,15 +204,16 @@ public abstract class AJLabel_PortInfo extends JLabel
 
                 for( int i = 0; i < ports.length; i++ )
                 {
-                    final String description = "</TD><TD><FONT color=gray>"+ ports[ i ].getShortDescription() +"</FONT></TD>";
+                    final String prepend = "<TD>"+ _getFontHtml( ports[ i ] );
+                    final String append = "</FONT></TD> <TD><FONT color=gray>"+ ports[ i ].getShortDescription() +"</FONT></TD>";
 
                     if( ports[ i ].hasStatus( EPortStatus.ACTIVE ) == true )
                     {   // color Active ports green
-                        names[ i ] = "<TD> <FONT color=green><B>"+ names[ i ] +" </B></FONT>"+ description; // needs prepended space for sort
+                        names[ i ] = prepend +"<B>"+ SQUARE_ROOT_CHAR +' '+ names[ i ] +"</B>"+ append; // needs prepended space for sort
                     }
                     else
                     {   // not installed
-                        names[ i ] = "<TD>"+ names[ i ] + description;
+                        names[ i ] = prepend + names[ i ] + append;
                     }
                 }
 
@@ -250,15 +253,16 @@ public abstract class AJLabel_PortInfo extends JLabel
 
                 for( int i = 0; i < ports.length; i++ )
                 {
-                    final String description = "</TD><TD><FONT color=gray>"+ ports[ i ].getShortDescription() +"</FONT></TD>";
+                    final String prepend = "<TD>";
+                    final String append = "</TD> <TD><FONT color=gray>"+ ports[ i ].getShortDescription() +"</FONT></TD>";
 
                     if( ports[ i ].hasStatus( EPortStatus.ACTIVE ) == true )
                     {   // color Active ports red
-                        names[ i ] = "<TD> <FONT color=red><B>"+ names[ i ] +" </B></FONT>"+ description; // needs prepended space for sort
+                        names[ i ] = prepend +" <FONT color=red><B>"+ SQUARE_ROOT_CHAR +' '+ names[ i ] +" </B></FONT>"+ append; // needs prepended space for sort
                     }
                     else
                     {   // not installed
-                        names[ i ] = "<TD>"+ names[ i ] + description;
+                        names[ i ] = prepend + names[ i ] + append;
                     }
                 }
 
@@ -321,5 +325,12 @@ public abstract class AJLabel_PortInfo extends JLabel
     //...                 Arrays.sort( ports );
             }
         }
+    }
+
+    static private String _getFontHtml( final Portable port )
+    {
+        return ( port.hasStatus( EPortStatus.ACTIVE ) == true ) ? "<FONT color=blue>"
+                : ( TheOsBinaries.INSTANCE.has( port.getName() ) == true ) ? "<FONT color=green>"
+                : "<FONT>";
     }
 }

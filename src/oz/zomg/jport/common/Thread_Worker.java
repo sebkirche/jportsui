@@ -25,11 +25,12 @@ class Thread_Worker extends Thread
     static
     {}
 
-    /** FIFO. */
+    /** A FIFO. */
     final private Queue<Runnable> fRunQueue = new ConcurrentLinkedQueue<Runnable>(); // required to avoid 'synchronized' deadlock
 
     /**
      * Worker daemon.
+     * Terminates JVM if it and any other daemon threads are all that remain.
      */
     Thread_Worker( final String name )
     {

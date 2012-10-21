@@ -384,7 +384,7 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
         // listener
         if( JPopupMenuProvidable.class.isAssignableFrom( rowOfClassType ) == true )
         {   // auto support right-click or control-click popup menu support for single selection.
-            jTable.addMouseListener( new MouseAdapter()
+            jTable.addMouseListener( new MouseAdapter() // anonymous class
                     {   @Override public void mouseClicked( final MouseEvent e )
                         {   // e.isControlDown() is used to deselect selections
                             if( e.isPopupTrigger() == true || e.getButton() == MouseEvent.BUTTON3 )

@@ -142,7 +142,7 @@ public class TheApplication
         // from the Swing thread, reload port table, clear selection etc.
         if( TheUiHolder.isReady() == true )
         {
-            SwingUtilities.invokeLater( new Runnable()
+            SwingUtilities.invokeLater( new Runnable() // anonymous class
                     {   @Override public void run()
                         {   TheApplication.INSTANCE.causeReset();
                             deprang();
@@ -157,7 +157,7 @@ public class TheApplication
      */
     public void deprang()
     {
-        SwingUtilities.invokeLater( new Runnable()
+        SwingUtilities.invokeLater( new Runnable() // anonymous class
                 {   @Override public void run()
                     {   getPortsMarker().exchangeAudit( vCurrentPortsCatalog );
                         TheUiHolder.INSTANCE.goLive();

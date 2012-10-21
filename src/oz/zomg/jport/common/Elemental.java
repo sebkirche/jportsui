@@ -102,7 +102,7 @@ public class Elemental
          */
         public Notifier( final E initialSelection )
         {   // no-op can not be 'static final' because Generic type <E>
-            super( new Listenable<E>() { @Override public void notify( EElemental elemental, E obj ) {} } );
+            super( new Listenable<E>() { @Override public void notify( EElemental elemental, E obj ) {} } ); // anonymous class
 
             mLastRetrieved = initialSelection;
         }

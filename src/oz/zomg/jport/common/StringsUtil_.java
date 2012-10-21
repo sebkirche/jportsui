@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
  */
 public class StringsUtil_
 {
-    static final public String[] NO_STRINGS = new String[] {};
+    static final public String[] NO_STRINGS = new String[ 0 ];
 
     private StringsUtil_() {}
 
@@ -214,17 +214,19 @@ public class StringsUtil_
     //ENHANCE StringUtils?
     /**
      *
+     * @param isCaseInsensitive
      * @param strings
      * @return in-place sorted
      */
-    static public String[] sort( final String... strings )
+    static public String[] sort( final boolean isCaseInsensitive, final String... strings )
     {
         switch( strings.length )
         {
             case 0 : return NO_STRINGS;
             case 1 : return strings;
             default:
-                {   Arrays.sort( strings );
+                {   if( isCaseInsensitive == false ) { Arrays.sort( strings ); }
+                    else { Arrays.sort( strings, String.CASE_INSENSITIVE_ORDER ); }
                     return strings;
                 }
         }

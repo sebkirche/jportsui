@@ -38,11 +38,11 @@ public class CliUtil
     {
         if( _CONSOLE_OUT_PROCESS_ENVIRONMENT == true )
         {
-            final ProcessBuilder pb = new ProcessBuilder( "ls".split( " " ) ); // need an object ref to get at .environment()
+            final ProcessBuilder pb = new ProcessBuilder( "cd".split( " " ) ); // need an object ref to get at .environment()
             final Map<String,String> env = pb.environment();
             final String[] keys = StringsUtil_.toStrings( env.keySet() );
 
-            for( final String key : StringsUtil_.sort( keys ) )
+            for( final String key : StringsUtil_.sort( true, keys ) )
             {
                 System.out.println( key + " = " + env.get( key ) );
             }
@@ -263,7 +263,7 @@ public class CliUtil
          * @throws IOException
          */
         private void doError( final Process process ) throws IOException
-        {
+        {   // decorator
             final BufferedReader errorStream = new BufferedReader( new InputStreamReader( process.getErrorStream() ) );
 
             String errLine = "";
@@ -337,7 +337,7 @@ public class CliUtil
         @Override public void run()
         {
             synchronized( this ) // acquire the monitor before the process.exec() caller starts
-            {
+            {   // decorator
                 final BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( fInputStream ), 128 * 1024 ); // found that .ready()=false always
 
                 try

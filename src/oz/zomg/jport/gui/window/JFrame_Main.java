@@ -94,7 +94,7 @@ public class JFrame_Main extends JFrame
                     , "http://www.macports.org/install.php"
                     );
             ab_BrowseMacPorts.setIcon( UIManager.getIcon( "OptionPane.errorIcon" ) );
-            ab_BrowseMacPorts.addActionListener( new ActionListener()
+            ab_BrowseMacPorts.addActionListener( new ActionListener() // anonymous class
                     {   @Override public void actionPerformed( ActionEvent e )
                         {   HttpUtil.browseTo( "http://www.macports.org/install.php" );
                         }

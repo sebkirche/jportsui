@@ -330,7 +330,7 @@ public class Commander
             }
             else
             {   // recover from CLI error but don't reset UI. For ex. Wifi is off, but clearing the user's marks would be antisocial.
-                SwingUtilities.invokeLater( new Runnable()
+                SwingUtilities.invokeLater( new Runnable() // anonymous class
                         {   @Override public void run()
                             {   TheApplication.INSTANCE.deprang();
                             }

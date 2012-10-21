@@ -2,14 +2,8 @@ package oz.zomg.jport.common;
 
 import java.awt.Desktop;
 import java.awt.Image;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.List;
-import java.util.Map;
 import oz.zomg.jport.common.CachedUriContent.UriContentCacheable;
 import oz.zomg.jport.common.Interfacing_.Targetable;
 
@@ -168,7 +162,7 @@ public class HttpUtil
         UriContent uriContent;
         try
         {
-            uriContent = readContent( uri, _CONNECTION_TIME_OUT_MILLISEC );
+            uriContent = UriContent.create( uri, _CONNECTION_TIME_OUT_MILLISEC );
         }
         catch( IOException ex )
         {   // treat as 404
@@ -177,58 +171,6 @@ public class HttpUtil
 
         _URI_CONTENT_CACHE.put( uriContent );
         return uriContent;
-    }
-
-    /**
-     * Get the content of an URI as bytes during this Thread without caching.
-     *
-     * @param timeoutMillisec
-     * @param uri
-     * @return the content bytes @ URI
-     * @throws IOException if FileNotFoundException or server reset connection
-     */
-    static private UriContent readContent( final URI uri, final int timeoutMillisec ) throws IOException
-    {
-        final URL youAreEl = uri.toURL(); // *BLOCKS* for DNS resolution
-        final URLConnection connection = youAreEl.openConnection();
-        connection.setConnectTimeout( timeoutMillisec ); // web servers get busy too
-
-        // required to avoid err 403
-        connection.addRequestProperty( "User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)" );
-        connection.connect();
-
-        final int size = connection.getContentLength(); // *BLOCKS* connects to remote sever
-        if( size > 0 )
-        {
-            final InputStream is = connection.getInputStream();
-            final DataInputStream dis = new DataInputStream( is );
-
-if(false) //... lame, need to recognize encoding and MIME types and add to URIContent
-{
-            System.out.println( "Header @ "+ uri.toString() );
-            final Map<String,List<String>> map = connection.getHeaderFields();
-            for( final Map.Entry<String,List<String>> entry : map.entrySet() )
-            {
-                System.out.println( "field="+ entry.getKey() );
-                for( final String string : entry.getValue() )
-                {
-                    System.out.println( "    ->"+ string );
-                }
-            }
-}
-
-            final byte[] bytes = new byte[ size ];
-            dis.readFully( bytes ); // *BLOCKS* to GET from remote server
-
-            dis.close();
-            is.close();
-
-            return new UriContent( uri, bytes );
-        }
-        else
-        {
-            return new UriContent( uri ); // nothing to read
-        }
     }
 
     static public String getDomain( String urlString )
@@ -247,7 +189,6 @@ if(false) //... lame, need to recognize encoding and MIME types and add to URICo
         }
         return urlString;
     }
-
 
     /**
      *

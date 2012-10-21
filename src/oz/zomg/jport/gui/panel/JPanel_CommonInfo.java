@@ -184,7 +184,7 @@ public class JPanel_CommonInfo extends JPanel
 
         if( variants.length == 0 ) return " \t \n"; // no variants
 
-        String modVariants = " "+ StringsUtil_.concatenate( ", ", StringsUtil_.sort( port.getVariants() ) ); // .replace() required special casing first char
+        String modVariants = " "+ StringsUtil_.concatenate( ", ", StringsUtil_.sort( false, port.getVariants() ) ); // .replace() required special casing first char
 
         if( port.hasStatus( EPortStatus.INSTALLED ) == false || ( variants.length == 1 && port.getVariantsInstalled().length == 0 ) )
         {   // port NOT installed or installed but the one variant is not active

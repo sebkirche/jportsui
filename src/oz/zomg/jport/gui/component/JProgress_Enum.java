@@ -69,7 +69,7 @@ public class JProgress_Enum<E extends Enum<E>> extends JProgressBar
         }
         else
         {
-            SwingUtilities.invokeLater( new Runnable()
+            SwingUtilities.invokeLater( new Runnable() // anonymous class
                     {   @Override public void run()
                         {   listen( here );
                         }

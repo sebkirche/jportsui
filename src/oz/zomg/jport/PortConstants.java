@@ -41,7 +41,7 @@ public class PortConstants
         }
         catch( IOException ex )
         {
-            return "";
+            return "(unversioned)";
         }
     }
 

@@ -31,7 +31,7 @@ import oz.zomg.jport.type.Portable;
  */
 public class PortsCatalog
 {
-    static final private boolean _FIRST_MAP_REASSIGN = false;
+    static final private boolean _IS_PREV_MAP_REUSED = false;
 
     /** This file created by MacPorts. */
     static final private String _PORTS_FILE_NAME = "PortIndex";
@@ -77,7 +77,7 @@ public class PortsCatalog
      */
     public PortsCatalog( final PortsCatalog prevCatalog )
     {
-        final Map<String,Portable> ciName_to_PortMap = ( _FIRST_MAP_REASSIGN == false )
+        final Map<String,Portable> ciName_to_PortMap = ( _IS_PREV_MAP_REUSED == false )
                 ? _parsePortIndex( PortConstants.PORTS_PATH + _PORTS_FILE_NAME ) // *BLOCKS* for disk I/O
                 : prevCatalog.fCiName_to_PortMap;
 
@@ -142,14 +142,13 @@ public class PortsCatalog
         if( filePath.exists() == false )
         {   // Port index file not found
             JOptionPane.showMessageDialog( null, filePathName +"\n does not seem to exist." );
-//?            System.exit( 1 );
         }
         else
         {   // found Port index
             if( PortConstants.DEBUG ) System.out.println( PortsCatalog.class.getSimpleName() +" OPTIMIZATION="+ PortConstants.OPTIMIZATION );
             final long startMillisec = System.currentTimeMillis();
 
-            if( PortConstants.OPTIMIZATION )
+            if( PortConstants.OPTIMIZATION == true )
             {   // Scanner uses regex, this is 2x faster on startup -AND- accommodates multi-line port info
                 try
                 {

@@ -16,7 +16,7 @@ import oz.zomg.jport.type.Portable;
 
 
 /**
- * Port information for embedding in the various JTabPane_Detail tabs.
+ * Outer abstraction for embedding Port information in the various JTabPane_Detail tabs.
  *
  * @author <SMALL>Copyright 2012 by Stephen Baber
  * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
@@ -171,9 +171,13 @@ public abstract class AJLabel_PortInfo extends JLabel
             else
             {
                 final String text = "<HTML><CENTER><BIG><B>"+ _getFontHtml( port ) + port.getName() +"</FONT></B></BIG><BR><BR>"
-                        +"<B><I> "+ port.getShortDescription() +"</I></B></CENTER><BR><BR>"
-                        + ( ( port.getShortDescription().equals( port.getLongDescription() ) == false ) ? port.getLongDescription() : "" ); // to show, short != long
-                this.setText( text );
+                        +"<B><I> "+ port.getShortDescription() +"</I></B></CENTER><BR><BR>";
+
+                final String text2 = ( port.getShortDescription().equals( port.getLongDescription() ) == false )
+                        ? port.getLongDescription().replace( "{", "<B>" ).replace( "}", "</B>" )
+                        : ""; // not shown when short=long
+                
+                this.setText( text + text2 );
             }
         }
     }

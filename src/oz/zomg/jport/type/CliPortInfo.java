@@ -1,5 +1,6 @@
 package oz.zomg.jport.type;
 
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,6 +78,9 @@ public class CliPortInfo
         return hash;
     }
 
+    /**
+     * @return as displayed by the 'port' CLI tool
+     */
     @Override public String toString()
     {
         return fName +'@'+ fVersionInstalled +'_'+ fRevisionInstalled;
@@ -88,18 +92,18 @@ public class CliPortInfo
      * @param kvMap
      * @return
      */
-    static public Map<CliPortInfo,Set<EPortStatus>> createInverseMultiMapping( final Map<EPortStatus,Set<CliPortInfo>> kvMap )
+    static public Map<CliPortInfo,Set<EPortStatus>> createInverseMultiMapping( final Map<EPortStatus,? extends Collection<CliPortInfo>> kvMap )
     {
         final Map<CliPortInfo,Set<EPortStatus>> invMap = new HashMap<CliPortInfo, Set<EPortStatus>>();
 
-        for( final Map.Entry<EPortStatus,Set<CliPortInfo>> entry : kvMap.entrySet() )
+        for( final Map.Entry<EPortStatus,? extends Collection<CliPortInfo>> entry : kvMap.entrySet() )
         {
-            final Set<CliPortInfo> cpiSet = entry.getValue(); // alias
+            final Collection<CliPortInfo> cpiCollection = entry.getValue(); // alias
             final EPortStatus statusEnum = entry.getKey(); // alias
 
-            if( cpiSet != null )
-            {   // values maybe 'null' but keys can not be
-                for( final CliPortInfo cpiKey : cpiSet )
+            if( cpiCollection != null )
+            {   // values may be 'null', but keys can not be
+                for( final CliPortInfo cpiKey : cpiCollection )
                 {
                     if( invMap.containsKey( cpiKey ) == false )
                     {   // new key

@@ -369,7 +369,7 @@ class BsdPort //... refactor IndexPort?
                 ? ""
                 : "<FONT color=#444444>"+ getMark() +"\u2192</FONT> "; // dark-gray, right arrow
 
-        final StringBuilder tip = new StringBuilder( "<HTML><CENTER><B>"+ mark + getName() +"</B></CENTER><BR>"  );
+        final StringBuilder tip = new StringBuilder( "<HTML><CENTER><B>"+ mark + getName() +"</B></CENTER><BR>" );
 
         final String[] strings = this.getLongDescription().split( "\\s" ); // break on whitespace
 
@@ -380,7 +380,8 @@ class BsdPort //... refactor IndexPort?
                 tip.append( "<BR>" );
             }
 
-            tip.append( strings[ i ] ).append( ' ' );
+            final String text = strings[ i ].replace( "{", "<B><I>" ).replace( "}", "</I></B>" ); // some descriptions use '{','}' for emphasis
+            tip.append( text ).append( ' ' );
         }
 
         return tip.toString();

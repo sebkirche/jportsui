@@ -494,21 +494,21 @@ public class Util
     /**
      * Fully drain available stream to a byte[].
      *
-     * @param localInputStream is not closed
+     * @param localInputStream is not closed here
      * @return populated by InputStream read available
      * @throws IOException
      */
     static public byte[] readFullyBytes( final InputStream localInputStream ) throws IOException
     {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream( 0 ); // 0 as most likely will be copying 100% in one shot if stream is local
-        final DataInputStream dis = new DataInputStream( localInputStream );
-        byte[] inBytes = NO_BYTES; // length=0
-        int avail;
+        final DataInputStream dis = new DataInputStream( localInputStream ); // decorated as InputStream does not have a .readFully()
 
-        while( ( avail = localInputStream.available() ) > 0 ) // update with any more remaining without blocking
+        byte[] inBytes = NO_BYTES; // establish length=0
+        int avail;
+        while( ( avail = localInputStream.available() ) > 0 ) // without blocking, check if any unread bytes remain
         {
             if( inBytes.length != avail ) inBytes = new byte[ avail ];
-            dis.readFully( inBytes ); // InputStream does not have a .readFully()
+            dis.readFully( inBytes ); // decorated as InputStream does not have a .readFully()
             baos.write( inBytes ); // copy bytes
         }
 

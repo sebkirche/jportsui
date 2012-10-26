@@ -14,6 +14,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -414,24 +415,28 @@ public class Util
 
     //ENHANCE CollectionsUtil
     /**
+     * A specialized Inverse Mapping that takes Enum keyed
+     * Collections of Values into Value Keyed associated Enum Sets.
      *
      * @param <K> will be swapped to a Value class type
      * @param <V> will be swapped to a Key class type
-     * @param inverseMapNeedsOrderedKeys
-     * @param fromKeyMultiValueMap map to be inverted
+     * @param valuesOfClassType 
+     * @param fromEnumKey_to_MultiValueMap map to be inverted
      * @return an inverse mapping where Values are now mapped to potentially multiple Keys
      */
-    static private <K,V> Map<V,Set<K>> createInverseMultiMapping
-            ( final boolean inverseMapNeedsOrderedKeys
-            , final Map<K,Collection<V>> fromKeyMultiValueMap
+    static private <K extends Enum<K>,V>
+        Map<V,EnumSet<K>> createInverseMultiMapping
+            ( final Class<V> valuesOfClassType
+            , final Map<K,? extends Collection<V>> fromEnumKey_to_MultiValueMap
             )
     {
-        final Map<V,Set<K>> invMap = ( inverseMapNeedsOrderedKeys == true )
-                ? new TreeMap<V, Set<K>>()
-                : new HashMap<V, Set<K>>();
+        final boolean isValueComparable = Comparable.class.isAssignableFrom( valuesOfClassType );
+        final Map<V,EnumSet<K>> invMap = ( isValueComparable == true )
+                ? new TreeMap<V, EnumSet<K>>()
+                : new HashMap<V, EnumSet<K>>();
 
         // invert keys - values
-        for( final Map.Entry<K,Collection<V>> entry : fromKeyMultiValueMap.entrySet() )
+        for( final Map.Entry<K,? extends Collection<V>> entry : fromEnumKey_to_MultiValueMap.entrySet() )
         {
             final Collection<V> invKeyCollection = entry.getValue(); // alias
             final K invValue = entry.getKey(); // alias
@@ -440,23 +445,17 @@ public class Util
             {   // values maybe 'null' but keys can not be
                 for( final V invKey : invKeyCollection )
                 {
-                    if( invMap.containsKey( invKey ) == false )
-                    {   // a singleton element is always ordered
-                        final Set<K> set = Collections.singleton( invValue );
-                        invMap.put( invKey, set );
-                    }
-                    else
-                    {   // seen the inverse key before
-                        final Set<K> set = invMap.get( invKey );
-                        if( set.size() > 1 )
-                        {   // set already bigger
-                            set.add( invValue );
+                    if( invKey != null )
+                    {
+                        if( invMap.containsKey( invKey ) == false )
+                        {   // a singleton element is always ordered
+                            final EnumSet<K> set = EnumSet.of( invValue );
+                            invMap.put( invKey, set );
                         }
                         else
-                        {   // copy to a bigger, non-singleton set
-                            final Set<K> biggerSet = new HashSet<K>( set );
-                            biggerSet.add( invValue );
-                            invMap.put( invKey, biggerSet );
+                        {   // seen the inverse key before
+                            final EnumSet<K> set = invMap.get( invKey );
+                            set.add( invValue );
                         }
                     }
                 }

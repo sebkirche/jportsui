@@ -37,6 +37,10 @@ public class JDialog_PortDetail extends JDialog
 
     final private Portable fAssignedPort;
 
+    /**
+     *
+     * @param assignedPort neither 'null' nor Portable.NONE
+     */
     public JDialog_PortDetail( final Portable assignedPort )
     {
         super // even though MODELESS which allows MainFrame to accept clicks, only 'null' parent will allow layering behind MainFrame

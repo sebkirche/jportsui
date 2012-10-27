@@ -122,7 +122,7 @@ public abstract class AJLabel_PortInfo extends JLabel
 
     // ================================================================================
     /**
-     * Debug view of port private, etc. fields
+     * Debug view of port private, etc. instance fields
      */
     static class JLabel_PortFields extends AJLabel_PortInfo
     {

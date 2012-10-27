@@ -24,7 +24,7 @@ public class PortConstants
     static final public boolean    HAS_MAC_PORTS = Util.isOnMac() == true && new File( PORTS_PATH ).exists();
     static final public boolean    IS_SHOWING_FAVICON = true; // Java not so good with ".ico" image format and transparency, bummer!
     static final public boolean    DEBUG         = false;
-    static final public boolean    OPTIMIZATION  = true; // root of all evil -- D. Knuth
+    static final public boolean    OPTIMIZATION  = true; // prematurely, it is the root of all evil -- D. Knuth
 
     static final public Portable[] NO_PORTS      = new Portable[ 0 ];
 
@@ -41,7 +41,7 @@ public class PortConstants
         }
         catch( IOException ex )
         {
-            return "(unversioned)";
+            return "(unversioned)"; // was not built from run script
         }
     }
 

@@ -2,6 +2,7 @@ package oz.zomg.jport.gui.component;
 
 import java.awt.Component;
 import javax.swing.JTabbedPane;
+import oz.zomg.jport.PortConstants;
 import oz.zomg.jport.common.Interfacing_.Creatable;
 import oz.zomg.jport.common.gui.EmbeddedCreatorFactory_;
 import oz.zomg.jport.common.gui.JScrollPaneFactory_.EScrollPolicy;
@@ -9,6 +10,7 @@ import oz.zomg.jport.gui.component.AJLabel_PortInfo.JLabel_Dependants;
 import oz.zomg.jport.gui.component.AJLabel_PortInfo.JLabel_Dependencies;
 import oz.zomg.jport.gui.component.AJLabel_PortInfo.JLabel_Description;
 import oz.zomg.jport.gui.component.AJLabel_PortInfo.JLabel_FilesInstalled;
+import oz.zomg.jport.gui.component.AJLabel_PortInfo.JLabel_PortFields;
 import oz.zomg.jport.gui.panel.JPanel_CommonInfo;
 import oz.zomg.jport.gui.table.TableModel_Variants;
 import oz.zomg.jport.type.Portable;
@@ -66,6 +68,9 @@ public class JTabPane_Detail extends JTabbedPane
 //        this.addTab( "Versions"       , EmbeddedCreatorFactory.create( EScrollPolicy.VERT_AS_NEEDED__HORIZ_NONE
   //                                                                   , new Creatable<Component>() { @Override public Component create() { return new JLabel_Versioning    ( port ); } } ) );
 
-//        this.addTab( "<>"             , EmbeddedCreatorFactory_.create( new Creatable<Component>() { @Override public Component create() { return new JLabel_PortFields    ( port ); } } ) );
+        if( PortConstants.DEBUG )
+        {   // reflection dump of non-static fields
+            this.addTab( "<>"         , EmbeddedCreatorFactory_.create( new Creatable<Component>() { @Override public Component create() { return new JLabel_PortFields    ( port ); } } ) );
+        }
     }
 }

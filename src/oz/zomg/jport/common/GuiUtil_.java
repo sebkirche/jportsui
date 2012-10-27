@@ -48,11 +48,7 @@ public class GuiUtil_
         if( fromContainers.length == 1 && fromContainers[ 0 ].getComponentCount() == 0 ) return Collections.emptySet();
 
         final Set<Component> allChildrenSet = new HashSet<Component>();
-
-        for( final Container fromContainer : fromContainers )
-        {
-            _putAllChildren( allChildrenSet, fromContainer );
-        }
+        _putAllChildren( allChildrenSet, fromContainers );
 
         final Set<T> filteredSet = new HashSet<T>();
         for( final Component child : allChildrenSet )
@@ -72,9 +68,9 @@ public class GuiUtil_
      * @param intoSet also receives top-level parent and lower-level parent Containers
      * @param components
      */
-    static private void _putAllChildren( final Set<Component> intoSet, final Component... components )
+    static private void _putAllChildren( final Set<Component> intoSet, final Component[] components )
     {
-        if( components.length == 0 ) return;
+        if( components.length == 0 ) return; // all Swing components are Containers but most have no children
 
         for( final Component component : components )
         {

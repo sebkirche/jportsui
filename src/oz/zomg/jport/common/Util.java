@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import oz.zomg.jport.common.Interfacing_.Targetable;
 
 
 /**
@@ -357,20 +358,54 @@ public class Util
         return sb.toString();
     }
 
+    //ENHANCE
+    /**
+     *
+     * @param <T> targetee of class type
+     * @param targetor lambda expression
+     * @param objs
+     */
+    static public <T> void withEach( final Targetable<T> targetor, final T... objs )
+    {
+        for( final T obj : objs )
+        {
+            targetor.target( obj );
+        }
+    }
+
+    //ENHANCE
+    /**
+     *
+     * @param <T> targetee of class type
+     * @param targetor lambda expression
+     * @param iterator collection
+     */
+    static public <T> void withEach( final Targetable<T> targetor, final Iterable<T> iterator )
+    {
+        for( final T obj : iterator )
+        {
+            targetor.target( obj );
+        }
+    }
+
     //ENHANCE CollectionUtil
     /**
+     * Inverses a mapping of unique keys to values into unique values to sets of keys.
      *
      * @param <K> will be swapped to a Value class type
      * @param <V> will be swapped to a Key class type
      * @param inverseMapNeedsOrderedKeys 'true' requires Comparable elements
      * @param inverseMapNeedsOrderedValues 'true' requires Comparable elements
      * @param fromKeyValueMap map to be inverted
+     * @param valuesIterate the value is Iterable <code>Needed because type erasure of Map<K,V> clashes with Map<K,? extends Collection<V>></code>
      * @return an inverse mapping where Values are now mapped to potentially multiple Keys
      */
-    static public <K,V> Map<V,Set<K>> createInverseMultiMapping
+    static public <K,V>
+        Map<V,Set<K>> createInverseMultiMapping
             ( final boolean inverseMapNeedsOrderedKeys
             , final boolean inverseMapNeedsOrderedValues
             , final Map<K,V> fromKeyValueMap
+//...            , final boolean valuesIterate
             )
     {
         final Map<V,Set<K>> invMap = ( inverseMapNeedsOrderedKeys == true )
@@ -415,8 +450,8 @@ public class Util
 
     //ENHANCE CollectionsUtil
     /**
-     * A specialized Inverse Mapping that takes Enum keyed
-     * Collections of Values into Value Keyed associated Enum Sets.
+     * A specialized Inverse Mapping that takes Enum keyed Collections
+     * of Values into Value Keyed associated Enum Sets.
      *
      * @param <K> will be swapped to a Value class type
      * @param <V> will be swapped to a Key class type

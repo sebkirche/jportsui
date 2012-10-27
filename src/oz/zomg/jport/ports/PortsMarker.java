@@ -93,6 +93,9 @@ public class PortsMarker
             }
             // else may have been removed from PortsIndex when Obsoleted (or Upgraded from a revision?)
         }
+
+        // syncs up enablement of the (Apply) button
+        TheApplication.INSTANCE.causeCrudNotification( EElemental.UPDATED, Portable.NONE );
     }
 
     /**

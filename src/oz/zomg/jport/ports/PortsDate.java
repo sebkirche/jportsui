@@ -26,7 +26,7 @@ class PortsDate
     final private Map<Portable,Long> fPort_to_EpochMap = new HashMap<Portable,Long>();
 
     /** Bi-directional mapping. */
-    private Map<Long,Set<Portable>> mEpoch_to_PortsMap = null;
+    private Map<Long,Set<Portable>> mEpoch_to_PortSet_Map = null;
 
     static
     {}
@@ -92,12 +92,12 @@ class PortsDate
      */
     private Map<Long,Set<Portable>> getInverseMultiMapping()
     {
-        if( mEpoch_to_PortsMap == null )
+        if( mEpoch_to_PortSet_Map == null )
         {   // lazy instantiate
-            mEpoch_to_PortsMap = Util.createInverseMultiMapping( true, false, fPort_to_EpochMap );
+            mEpoch_to_PortSet_Map = Util.createInverseMultiMapping( true, false, fPort_to_EpochMap );
         }
 
-        return mEpoch_to_PortsMap; // Collections.unmodifiableMap( ... ) fubars (NavigableSet<Long>) cast
+        return mEpoch_to_PortSet_Map; // Collections.unmodifiableMap( ... ) fubars (NavigableSet<Long>) cast
     }
 
     /**

@@ -260,7 +260,7 @@ public class StringsUtil_
      * @param prepend to table data, can be ""
      * @param append to table data, can be ""
      * @param collection
-     * @return starts with <code> [HTML] </code> and ends with <code> [/TABLE] </code>
+     * @return starts with <CODE> [HTML] </CODE> and ends with <CODE> [/TABLE] </CODE>
      */
     static public String htmlTabularize
             ( final int columnCount

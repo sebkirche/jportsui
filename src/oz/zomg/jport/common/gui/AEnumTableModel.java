@@ -187,7 +187,7 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
         if( columnEnums.length == 0 ) throw new IllegalArgumentException( "AT LEAST ONE COLUMN ENUM/NAME NEEDED FOR .getColumnCount()" );
 
         // determine Column class type closest to Enum.class as it is possible to internally anonymously extend an enum and get the wrong answer!
-        // For example <code>enum EExamp { E {toString()}, F, G{hashcode()} } should not return EExamp$1</code>
+        // For example <CODE>enum EExamp { E {toString()}, F, G{hashcode()} }</CODE> should not return <CODE>EExamp$1</CODE>
         fColumnEnumType = columnEnums[ 0 ].getDeclaringClass(); // gets the Enum's correct type even if it is an anonymous Enum like EExamp$1
 
         @SuppressWarnings("unchecked")
@@ -412,14 +412,14 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
     /**
      * Used by derived class constructor to set other options.
      * Technically there could be multiple tables with the same model but this is most rare.
-     * To get just the header bar, use <code>.getJTable().getTableHeader()</code>
+     * To get just the header bar, use <CODE>.getJTable().getTableHeader()</CODE>
      *
      * @return The JTable associated with this TableModel
      */
     public JTable getJTable() { return jTable; }
 
     /**
-     * To get just the header bar, use <code>.getJTable().getTableHeader()</code>
+     * To get just the header bar, use <CODE>.getJTable().getTableHeader()</CODE>
      *
      * @return .add() this table embedded JScrollPane to the parent container.  Always 'null' when object constructed with EScrolling.DISABLE.
      */
@@ -506,20 +506,20 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
     final public void toggelSortColumn( final C columnEnum )
     {
         // Can not use .ordinal() as the ATableModel_ may have been created with a subset of an Enum or mixed Enums.
-        // So no <code>if( columnEnum == kColumnEnums[ columnEnum.ordinal() ] ) toggelSortColumn( columnEnum.ordinal() ); </code>
+        // So no <CODE>if( columnEnum == kColumnEnums[ columnEnum.ordinal() ] ) { toggelSortColumn( columnEnum.ordinal() ); } </CODE>
         final int index = Util.indexOfIdentity( columnEnum, fColumnEnums );
         toggelSortColumn( index ); // invalid index handled by 'int' signature method
     }
 
     /**
      * Useful in switch() statements usually seen in .getValueAt().
-     * This method is more efficient than the array copy of <code>Enum.values()</code>.
+     * This method is more efficient than the array copy of <CODE>Enum.values()</CODE>.
      * One gains code simplicity over copy-pasting
-     * <code>static final private EColumn[] _ENUMS=EColumn.values();</code>
+     * <CODE>static final private EColumn[] _ENUMS=EColumn.values();</CODE>
      * at the cost of a dynamic cast.
      *<P>
-     * Have not got <code>kColumnEnumType.cast(kColumnEnums[index])</code> working yet due to
-     * not wanting to commit to making all derived classes specify <code><C></code>.
+     * Have not got <CODE>kColumnEnumType.cast(kColumnEnums[index])</CODE> working yet due to
+     * not wanting to commit to making all derived classes specify column of class type <CODE><C></CODE>.
      *
      * @param enumClass
      * @param index

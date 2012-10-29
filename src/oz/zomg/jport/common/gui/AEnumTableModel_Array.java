@@ -107,7 +107,7 @@ abstract public class AEnumTableModel_Array<R,C extends Enum<C>> extends AEnumTa
     /**
      * Normally, simply use .provideRow()
      *
-     * @return is never 'null' but may be an empty reified array []{}.  If using the [] for occasional content modification, you will need to call <code>this.fireTableDataChanged();</code>
+     * @return is never 'null' but may be an empty reified array []{}.  If using the [] for occasional content modification, you will need to call <CODE>this.fireTableDataChanged();</CODE>
      */
     public R[] getRowArray() { return mRows; }
 

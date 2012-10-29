@@ -55,7 +55,7 @@ public class PortsVariants
      * Port man page
      *<BLOCKQUOTE>
      * Port variants can specified as +name, which indicates the variant is desired, or -name, indicating the contrary.
-     * In case of ambiguities, a port can be fully specified with the <code>@version_revision+variants</code> format.
+     * In case of ambiguities, a port can be fully specified with the <CODE>@version_revision+variants</CODE> format.
      *</BLOCKQUOTE>
      *
      * @param ofPort

@@ -148,8 +148,8 @@ public class CliUtil
      * Blocks until CLI process is fully executed while updating listeners at at a GUI safe time.
      *
      * Unless explicitly passed to '/bin/bash -c', many facilities are not available.
-     * Failure ex. <code> /bin/echo "" | /usr/bin/mysql --version --quick > /home/raid/sql-version.txt</code>
-     * Success ex. <code> /bin/bash -c /bin/echo password1 | /usr/bin/sudo -S /bin/ls /bin/</code>
+     * Failure ex. <CODE> /bin/echo "" | /usr/bin/mysql --version --quick > /home/raid/sql-version.txt</CODE>
+     * Success ex. <CODE> /bin/bash -c /bin/echo password1 | /usr/bin/sudo -S /bin/ls /bin/</CODE>
      */
     static private class CliProcess
     {

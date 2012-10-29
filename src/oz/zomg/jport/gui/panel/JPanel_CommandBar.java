@@ -104,26 +104,11 @@ public class JPanel_CommandBar extends JPanel
         jItem_UpgradeCli.setEnabled( PortsCliUtil.HAS_PORT_CLI ); // only if ports bin file exists
         // leaving ab_MarkOutdated enabled because if any Ports are outdated, then we wont know until later in the Notifier Elemental from CLI recon
 
+        // required for text field to gain focus at startup
         ab_Sync        .setFocusable( false );
         ab_MarkOutdated.setFocusable( false );
         ab_ApplyMarks  .setFocusable( false );
         ab_MoreCommand .setFocusable( false );
-
-// irreducibly, awkward syntax
-//        Util.withEach( new Targetable<Component>() { @Override public void target( Component obj ) { obj.setFocusable( false ); } }
-//                , ab_Sync
-//                , ab_MarkOutdated
-//                , ab_ApplyMarks
-//                , ab_MoreCommand
-//                );
-//
-//        for( final Component component : new Component[] // required for text field to gain focus at startup
-//                { ab_Sync
-//                , ab_MarkOutdated
-//                , ab_ApplyMarks
-//                , ab_MoreCommand
-//                }
-//           ) { component.setFocusable( false ); } // more like a lame-duh expression than a lambda expression
 
         JPanel searchPanel = new JPanel_Search( commander );
         searchPanel.setLayout( new FlowLayout( FlowLayout.TRAILING, 1, 0 ) ); // needed so that text box doesn't over-expand
@@ -153,6 +138,9 @@ public class JPanel_CommandBar extends JPanel
         this.add( searchPanel );
 
         // listeners
+        TheApplication.INSTANCE.getCrudNotifier().addListener( this );
+
+        // downside to this type of List Comprehension is that IDE's "Find Usages" is unavailable
         for( final AbstractButton ab : GuiUtil_.getChildren( AbstractButton.class, jPop_MoreCmd, (Container)this ) )
         {   // popup menu items and panel's other ABs
             ab.addActionListener( this );
@@ -169,8 +157,6 @@ public class JPanel_CommandBar extends JPanel
 //        jItem_ResetMark .addActionListener( this );
 //        jItem_Upgrade   .addActionListener( this );
 //        jItem_About   .addActionListener( this );
-
-        TheApplication.INSTANCE.getCrudNotifier().addListener( this );
     }
 
     @Override public void notify( final EElemental elemental, final Portable port )

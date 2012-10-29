@@ -100,8 +100,8 @@ public class PortsCliUtil
     }
 
     /**
-     * Requests package info from the Ports CLI. Ex.
-     * <code> git-core @1.7.12.1_0+credential_osxkeychain+doc+pcre+python27 </code>
+     * Requests package info from the Ports CLI.
+     * For example <CODE> git-core @1.7.12.1_0+credential_osxkeychain+doc+pcre+python27 </CODE>
      *
      * @param statusEnum type of port pseudo-name, version and variant information to echo
      * @return as reported by the CLI

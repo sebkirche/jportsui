@@ -34,7 +34,7 @@ public class Interfacing_
      *
      * To avoid breaking the contract for Object.equals() and disrupt the collection classes, Implementor
      * tests if two objects are similar enough to be considered equivalent.  If you have to implement this method
-     * and you don't know what to do with it, a safe bet is <code> return this.equals( toAnother ); </code>
+     * and you don't know what to do with it, a safe bet is <CODE> return this.equals( toAnother ); </CODE>
      *
      * For example .equals() generally makes a quick check against only UUIDs, logical IDs, file path names, etc.
      * (preferably in sync with the fields used to generate  .hashcode() ) whereas .isEquivalent() performs a more

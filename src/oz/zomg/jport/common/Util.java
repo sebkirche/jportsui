@@ -360,6 +360,24 @@ public class Util
 
     //ENHANCE
     /**
+     * <CODE><PRE>
+        // note: pre jdk8 lambda expression syntax will make for lame-duhs
+        Util.withEach( new Targetable<Component>() { @Override public void target( Component obj ) { obj.setFocusable( false ); } }
+                , ab_Sync
+                , ab_MarkOutdated
+                , ab_ApplyMarks
+                , ab_MoreCommand
+                );
+
+        // better then above anonymous class creation but still irreducibly awkward
+        for( final Component component : new Component[]
+                { ab_Sync
+                , ab_MarkOutdated
+                , ab_ApplyMarks
+                , ab_MoreCommand
+                }
+           ) { component.setFocusable( false ); }
+     * </PRE></CODE>
      *
      * @param <T> targetee of class type
      * @param targetor lambda expression
@@ -397,7 +415,7 @@ public class Util
      * @param inverseMapNeedsOrderedKeys 'true' requires Comparable elements
      * @param inverseMapNeedsOrderedValues 'true' requires Comparable elements
      * @param fromKeyValueMap map to be inverted
-     * @param valuesIterate the value is Iterable <code>Needed because type erasure of Map<K,V> clashes with Map<K,? extends Collection<V>></code>
+     * @param valuesIterate the value is Iterable Needed because type erasure of <CODE>Map<K,V></CODE> clashes with <CODE>Map<K,? extends Collection<V>></CODE>
      * @return an inverse mapping where Values are now mapped to potentially multiple Keys
      */
     static public <K,V>

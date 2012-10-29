@@ -5,13 +5,13 @@ import oz.zomg.jport.common.Providers_.VisibilityProvidable;
 
 
 /**
- * Enum's <code>.isApplicable()</code> uses revocation logic with mutually exclusive stati.
+ * Enum's <CODE>.isApplicable()</CODE> uses revocation logic with mutually exclusive stati.
  *<P>
- * <code>port</code> CLI options are generally
+ * <CODE>port</CODE> CLI options are generally
  * <UL>
- * <LI> <code>[-p]</code> Proceed to next port when a preceeding port has an error
- * <LI> <code>[-u]</code> Uninstalls inactive ports
- * <LI> <code>[-c]</code> Clean
+ * <LI> <CODE> [-p] </CODE> Proceed to next port when a preceeding port has an error
+ * <LI> <CODE> [-u] </CODE> Uninstalls inactive ports
+ * <LI> <CODE> [-c] </CODE> Clean
  * </UL>
  *
  * @author <SMALL>Copyright 2012 by Stephen Baber

@@ -63,7 +63,8 @@ fi
 
 if [ -e $JAR_APP ]
 then
-java -jar $JAR_APP
+echo "Built `ls -o $JAR_APP`"
+java -jar $JAR_APP &
 fi
 
 # exit

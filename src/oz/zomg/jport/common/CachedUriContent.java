@@ -258,7 +258,7 @@ public class CachedUriContent
                             byte[] contentBytes = Util.retrieveFileBytes( filepath );
 
                             final UriContent uriContent = ( contentBytes.length != 0 )
-                                    ? new UriContent( uri, contentBytes, 0 )
+                                    ? new UriContent( uri, contentBytes )
                                     : new UriContent( uri ); // 404
 
                             final Reference<UriContent> uriContentRef = new SoftReference<UriContent>( uriContent );

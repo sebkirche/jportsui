@@ -66,9 +66,15 @@ public class HttpUtil
     {
         _HTTP_WORKER_THREAD.offer( new Runnable() // anonymous class
                 {   @Override public void run()
-                    {   final Image image = retrieveLogo( domain );
-                        imageTargetable.target( image );
-                    }
+//                    {   final Thread thread = new Thread( new Runnable() // anonymous class
+  //                          {   @Override public void run()
+                                {   final Image image = retrieveLogo( domain );
+                                    imageTargetable.target( image );
+                                }
+          //                  } );
+    //                        thread.setDaemon( true );
+      //                      thread.start(); <- may look to an ISP like an outgoing DOS attack
+        //            }
                 } );
     }
 

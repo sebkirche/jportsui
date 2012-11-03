@@ -333,7 +333,7 @@ public class PortsCatalog
     {
         // test
         final long startMillisec = System.currentTimeMillis();
-        final PortsCatalog portsCatalog = new PortsCatalog( null );
+        final PortsCatalog portsCatalog = new PortsCatalog( NONE );
 //        final Portable[] dependPorts = portsCatalog.getDeps().getFullDependenciesOf( portsCatalog.parse( "graphviz" ) );
         // OR -> portsCatalog.parse( "graphviz" ).buildFullDependencies()
         System.out.println( PortsCatalog.class.getSimpleName() +".main() ms="+ ( System.currentTimeMillis() - startMillisec ) );

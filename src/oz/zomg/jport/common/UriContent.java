@@ -22,8 +22,9 @@ import java.util.Map;
 public class UriContent
 {
     final public URI     fUri;
-    final public byte[]  fContentBytes;
+    final public byte[]  fContentBytes; // 'null' if 404
     final public boolean fIs404; //... general 'wget' error code
+    final public int     fFetchDeltaMillisec;
     //... HeaderFields map and MIME types
 
     /**
@@ -33,19 +34,25 @@ public class UriContent
      */
     UriContent( final URI uri )
     {
-        this( uri, null, true );
+        this( uri, null, true, 0 );
     }
 
-    UriContent( final URI uri, final byte[] contentBytes )
+    UriContent( final URI uri, final byte[] contentBytes, final int fetchDeltaMillisec )
     {
-        this( uri, contentBytes, false );
+        this( uri, contentBytes, false, fetchDeltaMillisec );
     }
 
-    private UriContent( final URI uri, final byte[] contentBytes, final boolean is404 )
+    private UriContent
+            ( final URI uri
+            , final byte[] contentBytes
+            , final boolean is404
+            , final int deltaMillisec
+            )
     {
         fUri = uri;
         fContentBytes = contentBytes;
         fIs404 = is404;
+        fFetchDeltaMillisec = deltaMillisec;
     }
 
     /**
@@ -59,6 +66,9 @@ public class UriContent
     static UriContent create( final URI uri, final int timeoutMillisec ) throws IOException
     {
         final URL youAreEl = uri.toURL(); // *BLOCKS* for DNS resolution
+
+        final long startMillisec = System.currentTimeMillis();
+
         final URLConnection connection = youAreEl.openConnection();
         connection.setConnectTimeout( timeoutMillisec ); // web servers get busy too
 
@@ -92,7 +102,8 @@ if(false) //... lame, need to recognize encoding and MIME types and add to URICo
             dis.close();
             is.close();
 
-            return new UriContent( uri, bytes );
+            final int deltaMillisec = (int)(System.currentTimeMillis() - startMillisec);
+            return new UriContent( uri, bytes, deltaMillisec );
         }
         else
         {

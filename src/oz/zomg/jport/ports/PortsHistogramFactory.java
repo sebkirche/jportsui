@@ -53,7 +53,7 @@ public class PortsHistogramFactory
         final String string = port.getShortDescription() +' '+ port.getLongDescription() +' '+' '; // port.getName()
 
         int begin = 0;
-        final int end = string.length() - 1; // two spaces at end for teminus
+        final int end = string.length() - 1; // two spaces at end for terminus
         for( int index = 0; index < end; index++ )
         {
             final char c = string.charAt( index );

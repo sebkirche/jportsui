@@ -19,8 +19,6 @@ import oz.zomg.jport.common.Elemental;
 import oz.zomg.jport.common.Elemental.EElemental;
 import oz.zomg.jport.common.GuiUtil_;
 import oz.zomg.jport.common.HttpUtil;
-import oz.zomg.jport.common.Interfacing_.Targetable;
-import oz.zomg.jport.common.Util;
 import oz.zomg.jport.common.gui.ModalDialogFactory;
 import oz.zomg.jport.common.gui.ModalDialogFactory.EConfirmationChoices;
 import oz.zomg.jport.gui.Commander;

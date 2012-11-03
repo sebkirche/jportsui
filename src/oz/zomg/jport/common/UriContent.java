@@ -37,6 +37,11 @@ public class UriContent
         this( uri, null, true, 0 );
     }
 
+    UriContent( final URI uri, final byte[] contentBytes )
+    {
+        this( uri, contentBytes, false, 0 );
+    }
+
     UriContent( final URI uri, final byte[] contentBytes, final int fetchDeltaMillisec )
     {
         this( uri, contentBytes, false, fetchDeltaMillisec );

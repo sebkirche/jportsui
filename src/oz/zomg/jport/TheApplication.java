@@ -46,7 +46,7 @@ public class TheApplication
     /** Facility for driving progress bar when ports CLI echo Ports status query is ongoing. */
     final private Notification.Notifier<EPortStatus> fEchoStatusNotifier = new Notification.Notifier<EPortStatus>();
 
-    /** Get notifications of individual  */
+    /** Get notifications of individual Port C.R.U.D. (Create, Retrieve, Update, Delete). */
     final private Elemental.Notifier<Portable> fPortElementNotifier = new Elemental.Notifier<Portable>( Portable.NONE );
 
     final private PortsMarker fPortsMarker = new PortsMarker();
@@ -55,12 +55,14 @@ public class TheApplication
 
     /**
      * Singleton constructor.
-     * Needs to be fast as many Threads are waiting on TheApplication.INSTANCE being non-null!
+     * Needs to happen quickly (i.e. be non-blocking) as many Threads are
+     * waiting on TheApplication.INSTANCE being non-null!
      */
     private TheApplication() {}
 
     /**
-     * Constructor needed to be fast as many Threads were waiting on TheApplication.INSTANCE being non-null!
+     * Method broken out here as the constructor needed to be fast because
+     * many Threads were waiting on TheApplication.INSTANCE being non-null!
      */
     public void init()
     {
@@ -71,7 +73,7 @@ public class TheApplication
                 {   @Override public void run()
                     {   synchronized( MONITOR )
                         {
-                            TheOsBinaries.INSTANCE.has( "?" ); // hey lazy Swing thread, do some work!
+                            TheOsBinaries.INSTANCE.has( "?" ); // hey lazy Swing thread, do some extraneous work!
                             TheUiHolder.INSTANCE.init(); // start Swing in EDT thread
                             MONITOR.notifyAll();
                         }
@@ -173,21 +175,21 @@ public class TheApplication
     public Notifiable<Resetable> getResetNotifier() { return fCatalogResetNotifier; }
 
     /**
-     * Subscribe to Ports Catalog reset notifications.
+     * Subscribe to Ports CLI status notifications.
      *
      * @return just the listener .add() & .remove() aspect of the interface
      */
     public Notifiable<OneArgumentListenable<EPortStatus>> getEchoStatusNotifier() { return fEchoStatusNotifier; }
 
     /**
-     * Subscribe to Port elemental notifications.
+     * Subscribe to Port elemental C.R.U.D. (Create, Retrieve, Update, Delete) notifications.
      *
      * @return just the listener .add() & .remove() aspect of the interface
      */
     public Notifiable<Listenable<Portable>> getCrudNotifier() { return fPortElementNotifier; }
 
     /**
-     * Sends message to all C.R.U.D. listeners
+     * Sends message to all Port elemental C.R.U.D. (Create, Retrieve, Update, Delete) listeners.
      *
      * @param elemental
      * @param port
@@ -205,7 +207,9 @@ public class TheApplication
     /**
      * Full accounting avoids asking for All ports or Uninstalled ports as
      * these are assumed from the "PortIndex" parsing.
-     * Note: Inefficient but I do not know a way to get all status attributes for each installed port, see "man port"
+     *<P>
+     * Note: Inefficient but I do not know a way to get all status attributes
+     * for each installed port, see "man port"
      *
      * @return as reported by the CLI "port echo installed" all of which are type InstalledPort
      */

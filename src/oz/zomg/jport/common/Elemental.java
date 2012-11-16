@@ -8,8 +8,8 @@ import oz.zomg.jport.common.Notification.NotificationListenable;
 
 
 /**
- * Name space for Observer and Observable C.R.U.D.
- * events on Collection or array elements.
+ * Name space for Observer and Observable C.R.U.D. (Create, Retrieve, Update, Delete)
+ * events for a Collection of elements or an array of elements.
  *
  * @author <SMALL>Copyright 2012 by Stephen Baber
  * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
@@ -34,7 +34,7 @@ public class Elemental
 
     /**
      * Cause elemental notifications to occur that would mutate listeners
-     * from a "before" state into an "after" state.
+     * from a "before" Set state into an "after" Set state.
      *
      * @param <E>
      * @param notifier
@@ -89,7 +89,7 @@ public class Elemental
     // ================================================================================
     /**
      *
-     * @param <E>  element of class type
+     * @param <E> element of class type
      */
     static public class Notifier<E> extends ANotifier<Listenable<E>>
     {
@@ -120,6 +120,7 @@ public class Elemental
         }
 
         /**
+         * Notify listeners.
          *
          * @param elemental
          * @param obj
@@ -145,6 +146,10 @@ public class Elemental
             }
         }
 
+        /**
+         *
+         * @return for GUI cold starts of a past singular selection element
+         */
         synchronized E getLastRetrieved() { return mLastRetrieved; }
     }
 }

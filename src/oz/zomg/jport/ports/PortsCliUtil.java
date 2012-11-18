@@ -21,8 +21,9 @@ import oz.zomg.jport.type.Portable;
 
 
 /**
- * Actual Port status from CLI.
- * Ex. root CLI -> /bin/bash -c echo "*password*" | sudo -S ls -shakl /Library ;
+ * Utilities to send commands and receive status from CLI 'port' tool.
+ * When a password is required, it is embedded for the ProcessBuilder with
+ * <CODE>/bin/bash -c echo "*password*" | sudo -S ls -shakl /Library ;</CODE>
  *
  * @author <SMALL>Copyright 2012 by Stephen Baber
  * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
@@ -32,30 +33,16 @@ import oz.zomg.jport.type.Portable;
  */
 public class PortsCliUtil
 {
-    static private enum ECmd
-            { VERSION // cli ports version
-            , SYNC       ( true ) // update ports tree
-            , SELFUPDATE ( true ) // update macPorts software and ports tree
-            , ECHO // print
-            , CONTENTS // files installed by the port
-            , CLEAN // removes distribution, working, and/or log files
-            ;
-                    private ECmd() { this( false ); }
-                    private ECmd( final boolean needAdmin ) { fNeedAdmin = needAdmin; }
-                    final private boolean fNeedAdmin;
-                    String _() { return this.name().toLowerCase(); }
-            }
-
     /** Non-running thread for Windows. */
     static final private Thread DEAD_THREAD = new Thread( new Runnable() { @Override public void run() {} }, "NO_RUN_THREAD" );
 
     static final private String _PORT_BIN_PATH = "/opt/local/bin/port"; //... this is non-portable, use "which port" command instead
     static final public boolean HAS_PORT_CLI = new File( _PORT_BIN_PATH ).exists();
 
-    /** Note: Will be incorrect after the "port selfupdate" that actually gets a new version of the Port CLI tool. */
+    /** Note: Will be incorrect after the "port selfupdate" that actually gets a new version of the Port CLI tool.  But this is rare. */
     static final public String PORT_CLI_VERSION = PortsCliUtil.cliPortVersion();
 
-    /** For a non-Ports environment, needs to be installed. */
+    /** Simulated delay for a non-Ports environment, needs to be installed. */
     static final private int _NO_PORT_DELAY_MILLISEC = 350;
 
     static
@@ -63,23 +50,43 @@ public class PortsCliUtil
 
     private PortsCliUtil() {}
 
+    /**
+     *
+     * @param lines
+     * @return first posted line or "" if none
+     */
     static private String _first( final String[] lines )
     {
         return ( lines.length != 0 ) ? lines[ 0 ] : "";
     }
 
-    static public Thread cliTest( final CliUtil.Listener listener )
+    static private Thread _cliTest( final CliUtil.Listener listener )
     {
         return ( HAS_PORT_CLI )
                 ? CliUtil.forkCommand( listener, "list", "installed" ) // "locate Portfile" ~= 4,500, "locate perl" ~= 6,200 "locate java" ~= 54,000 "locate /" ~850,000
                 : CliUtil.forkCommand( listener, "ping", "-n ", "4", "localhost" ); // waits a sec on Windows
     }
 
+    /**
+     *
+     * @param password
+     * @param portParam sub-command and arguments
+     * @return Bashism for running 'port' command with escalated privileges
+     */
+    static private String _getPrivilegedPortCmd( final String password, final String portParam )
+    {
+        return "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portParam +" ; ";
+    }
+
+    /**
+     *
+     * @return MacPort version in use as reported from CLI
+     */
     static public String cliPortVersion()
     {
         if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return "NOT AVAILABLE"; }
 
-        return _first( CliUtil.executeCommand( _PORT_BIN_PATH, ECmd.VERSION._() ) );
+        return _first( CliUtil.executeCommand( _PORT_BIN_PATH, "version" ) );
     }
 
 //... UNTESTED, needs root/admin to work, maybe sudoer file change walkthrough?
@@ -96,7 +103,7 @@ public class PortsCliUtil
     {
         if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return StringsUtil_.NO_STRINGS; }
 
-        return CliUtil.executeCommand( _PORT_BIN_PATH, ECmd.CONTENTS._(), port.getName() );
+        return CliUtil.executeCommand( _PORT_BIN_PATH, "contents", port.getName() );
     }
 
     /**
@@ -104,7 +111,7 @@ public class PortsCliUtil
      * For example <CODE> git-core @1.7.12.1_0+credential_osxkeychain+doc+pcre+python27 </CODE>
      *
      * @param statusEnum type of port pseudo-name, version and variant information to echo
-     * @return as reported by the CLI
+     * @return instances as reported by the CLI
      */
     static synchronized public Set<CliPortInfo> cliEcho( final EPortStatus statusEnum )
     {
@@ -113,7 +120,7 @@ public class PortsCliUtil
         final Set<CliPortInfo> set = new HashSet<CliPortInfo>();
 
         final String portStatus = statusEnum.name().toLowerCase(); // a psuedo-name
-        final String[] lines = CliUtil.executeCommand( _PORT_BIN_PATH, ECmd.ECHO._(), portStatus );
+        final String[] lines = CliUtil.executeCommand( _PORT_BIN_PATH, "echo", portStatus );
 
         for( final String untrimmedLine : lines )
         {   // CLI reported information
@@ -167,10 +174,10 @@ public class PortsCliUtil
     /**
      * Creates the command line argument representing all the Port status change request marks.
      *
-     * @param <S>
+     * @param <S> will be inferred
      * @param isSimulated 'true' for dry-run testing
-     * @param map
-     * @return
+     * @param map the user's marked intentions
+     * @return multiple CLI commands
      */
     static public <S extends Set<? extends Portable>> String getApplyMarksCli( final boolean isSimulated, final Map<EPortMark,S> map )
     {
@@ -206,12 +213,12 @@ public class PortsCliUtil
     /**
      * Let CLI "-ru" option resolve any Activate, Install, Upgrade deps according to the CLI port tool.
      *
-     * @param <S>
-     * @param map the user's marked intentions
-     * @param isSimulated 'true' for dry-run test
-     * @param listener
+     * @param <S> will be inferred
      * @param password
-     * @return 'null' if no ports
+     * @param isSimulated 'true' for dry-run test
+     * @param map the user's marked intentions
+     * @param listener
+     * @return non-started Thread if no 'port' CLI
      */
     static synchronized public <S extends Set<? extends Portable>> Thread cliApplyMarks
             ( final String           password
@@ -232,50 +239,55 @@ public class PortsCliUtil
      *
      * @param password
      * @param listener
-     * @return 'null' if no ports
+     * @return non-started Thread if no 'port' CLI
      */
     static synchronized public Thread cliUpdateMacPortsItself( final String password, final CliUtil.Listener listener )
     {
         if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return DEAD_THREAD; }
 
-        final String portCmd = "-v "+ ECmd.SELFUPDATE._();
-        final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd + " ; ";
+        final String portParam = "-v selfupdate";
+        final String bashIt = _getPrivilegedPortCmd( password, portParam );
         return CliUtil.forkCommand( listener, UNIX_BIN_BASH, BASH_OPT_C, bashIt ); // ok!
     }
 
     /**
-     * Port bin will call rsync to update the port tree and updates the PortIndex file.
+     * Port bin will call rsync to update the port tree and update the "PortIndex" file.
      *
      * @param listener
      * @param password
-     * @return 'null' if no ports
+     * @return non-started Thread if no 'port' CLI
      */
     static synchronized public Thread cliSyncUpdate( final String password, final CliUtil.Listener listener )
     {
         if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return DEAD_THREAD; }
 
-        final String portCmd = "-v "+ ECmd.SYNC._();
-        final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd + " ; ";
+        final String portParam = "-v sync";
+        final String bashIt = _getPrivilegedPortCmd( password, portParam );
         return CliUtil.forkCommand( listener, UNIX_BIN_BASH, BASH_OPT_C, bashIt ); // ok!
     }
 
     /**
      * Cleans all installed Ports of distribution files, working files, and logs.
-     * Was supposed to Removes all inactive Ports also.
+     * Was supposed to Remove all inactive Ports also.
      *
      * @param password
      * @param listener
-     * @return 'null' if no ports
+     * @return non-started Thread if no 'port' CLI
      */
     static synchronized public Thread cliCleanInstalled( final String password, final CliUtil.Listener listener )
     {
         if( HAS_PORT_CLI == false ) { Util.sleep( _NO_PORT_DELAY_MILLISEC ); return DEAD_THREAD; }
 
-        final String portCmd = "-u -p "+ ECmd.CLEAN._() +" --all "+ EPortStatus.INSTALLED.name().toLowerCase();
-        final String bashIt = "echo \""+ password +"\" | sudo -S "+ _PORT_BIN_PATH +' '+ portCmd +" ; ";
+        final String portParam = "-u -p clean --all "+ EPortStatus.INSTALLED.name().toLowerCase();
+        final String bashIt = _getPrivilegedPortCmd( password, portParam );
         return CliUtil.forkCommand( listener, UNIX_BIN_BASH, BASH_OPT_C, bashIt );
     }
 
+    /**
+     * Test CliPortInfo variants.
+     *
+     * @param args
+     */
     static public void main(String... args)
     {
         final Set<CliPortInfo> set = cliEcho( EPortStatus.INSTALLED );

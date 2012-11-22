@@ -5,6 +5,7 @@ import oz.zomg.jport.common.Providers_.VisibilityProvidable;
 
 
 /**
+ * Allows tagging a Portable instance with a user's Port status change request or indicating a dependency status change.
  * Enum's <CODE>.isApplicable()</CODE> uses revocation logic with mutually exclusive stati.
  *<P>
  * <CODE>port</CODE> CLI options are generally

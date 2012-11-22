@@ -193,7 +193,7 @@ public class JDialog_AboutApp extends JDialog
      * Avoids duplicate buttons.
      * Swing thread safe.
      *
-     * @param container button factory adds here
+     * @param toContainer button factory adds here
      * @param domain web site of multiple Ports
      * @param image logo for button
      * @param portSet for tool tip

@@ -6,7 +6,7 @@ import java.util.Set;
 
 
 /**
- * These instances have more information from CLI calls than the "QuickIndex" parse of the BsdPort.
+ * These instances have more information from CLI status calls than from the "PortIndex" parse for BsdPort instances.
  * Usually locally installed, but possibly outdated.
  *
  * @author <SMALL>Copyright 2012 by Stephen Baber

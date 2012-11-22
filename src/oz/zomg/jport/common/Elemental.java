@@ -19,10 +19,13 @@ import oz.zomg.jport.common.Notification.NotificationListenable;
  */
 public class Elemental
 {
+    /**
+     * Operation to apply when late synchronizing collections of elements via the Produce-Consumer design pattern.
+     */
     static public enum EElemental
             { CREATED     // element .add()
             , RETRIEVED   // element selected by user
-            , UPDATED     // element changed
+            , UPDATED     // element changed, usually mutable in composition
             , DELETED     // element .remove()
 //...            , REMOVED_ALL // all elements .clear()
 //...            , REBUILT     // flush and cold start from the backing collection

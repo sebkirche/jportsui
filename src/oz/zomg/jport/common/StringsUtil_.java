@@ -163,7 +163,7 @@ public class StringsUtil_
             sb.append( separator );
         }
 
-        if( sb.length() == 0 ) return ""; //BUG FIX when Iterable is empty[] for comanche.lang.StringsUtil
+        if( sb.length() == 0 ) return ""; //BUG FIX when Iterable is empty
 
         sb.setLength( sb.length() - separator.length() ); // remove last separator
         return sb.toString();

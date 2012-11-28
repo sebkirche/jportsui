@@ -16,12 +16,6 @@ import oz.zomg.jport.common.Notification.NotificationListenable;
  */
 public class Reset
 {
-    /** No Operation Listener para-lambda. */
-    static final private Resetable _NO_OP = new Resetable()
-            {   @Override public void reset() // anonymous class
-                {}
-            };
-
     private Reset() {}
 
     // ================================================================================
@@ -43,11 +37,6 @@ public class Reset
      */
     static public class Reseter extends ANotifier<Resetable>
     {
-        public Reseter()
-        {
-            super( _NO_OP );
-        }
-
         /**
          * Called after a probe of Ports information to redisplay all contents in the GUI.
          */

@@ -68,7 +68,7 @@ public class TableModel_Variants extends AEnumTableModel_Array<String,TableModel
         this.toggelSortColumn( EColumn.VARIANT );
 
         // listener
-        TheApplication.INSTANCE.getCrudNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
+        TheApplication.INSTANCE.getCrudNotifier().addListenerWeakly( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
     }
 
     private void setPort( final Portable port )

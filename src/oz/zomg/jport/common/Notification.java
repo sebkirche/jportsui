@@ -32,8 +32,29 @@ public class Notification
      */
     static public interface Notifiable<L extends NotificationListenable>
     {
-        abstract void addListener   ( final L listenable );
+        /**
+         * Unsubscribe from notifications.
+         * Note: if added weakly then removal happens automatically when no other Strongly reachable objects refer to it.
+         *
+         * @param listenable does not have to exist
+         */
         abstract void removeListener( final L listenable );
+
+        /**
+         * Subscribe to notifications.
+         *
+         * @param listenable
+         */
+        abstract void addListener( final L listenable );
+
+        /**
+         * Subscribe to notifications for as long as the instance of L's implementor is strongly referenced outside of the Notifier.
+         * Works well for Swing components but do not use with non-retained Anonymous Class objects.
+         * Depending on the implementation, those might be immediately GC'd.
+         *
+         * @param listenable will automatically stop being notified when the reference count to this instance (it) drops to zero
+         */
+        abstract void addListenerWeakly( final L listenable );
     }
 
 
@@ -42,11 +63,9 @@ public class Notification
      * Abstract base class that aggregates Listeners but does not cause notifications.
      * Your derived class will invoke listener notification via an Enumeration visitor.
      * Notification method can -not- be declared 'abstract' because the actual .causeNotification( ... )
-     * method will have various differing parameters per implementaton,
+     * method will have various differing parameters per implementation,
      * which would break Java's method signature driven interfaces.
      * <P>
-     * Weakly referenced so does not CPU/mem leak when no
-     * other Strongly reachable objects refer to the listener.
      * Thread safe.
      *
      * @param <L> class type will be inferred
@@ -57,6 +76,7 @@ public class Notification
         static final private Reference<?>[] NO_REFS = new Reference[ 0 ];
         static final private NoArgumentListenable[] NO_LISTENERS = new NoArgumentListenable[ 0 ];
 
+        /** No further allocations required, para-lambda expression. */
         static final private Enumeration<?> EMPTY_ENUMERATION = new Enumeration<Object>() // anonymous class
                 {   @Override public boolean hasMoreElements() { return false; }
                     @Override public Object nextElement() { throw new NoSuchElementException(); }
@@ -65,39 +85,28 @@ public class Notification
         static
         {}
 
-
-        /** Used to avoid checking for 'null' in .causeNotification() visitor. */
-        final private L fNoOperationListener;
-
-        /** WARNING! non-ref'd anonymous classes will get GC'd out of a WeakHashMap. */
+        /** WARNING! non-retained anonymous classes will be immediately GC'd. */
         volatile private Reference<L>[] vWeakListeners = null;
 
-        /** Non-Garbage Collected hard refs to Listeners. */
+        /** Non-Garbage Collected hard references to Listeners. */
         volatile private NotificationListenable[] vNoGcListeners = null;
 
+        /**
+         * Can be sub-classed.
+         */
+        public ANotifier() {}
 
         /**
-         *
-         * @param noOperationListener Used to avoid checking for 'null' in .causeNotification() visitor in case a Listener was weakly GC'd.
+         * @param listenable can not be 'null'.
+         * @param isWeakReference 'true' to automatically remove when no strong reference exists in the object retention graph
          */
         @SuppressWarnings("unchecked")
-        public ANotifier( final L noOperationListener )
+        synchronized private void add( final L listenable, final boolean isWeakReference )
         {
-            if( noOperationListener == null ) throw new NullPointerException();
+            if( listenable == null ) throw new NullPointerException();
 
-            fNoOperationListener = noOperationListener;
-        }
-
-        /**
-         * Subscribe to notifications.
-         *
-         * @param listenable
-         */
-        @SuppressWarnings("unchecked")
-        @Override synchronized public void addListener( final L listenable )
-        {
-            if( listenable.getClass().isAnonymousClass() == true )
-            {
+            if( isWeakReference == false )
+            {   // normally retained
                 if( vNoGcListeners == null )
                 {   // start up case
                     vNoGcListeners = new NotificationListenable[] { listenable };
@@ -111,12 +120,9 @@ public class Notification
                     destRefs[ length ] = listenable; // at end
                     vNoGcListeners = destRefs;
                 }
-//dead                vNoGcListeners = ( vNoGcListeners == null )
-//                        ? new NotificationListenable[] { listenable } // start up case
-//                        : RefsUtil.append( vNoGcListeners, listenable );
             }
             else
-            {
+            {   // weakly retained
                 final WeakReference<L> weakRef = new WeakReference<L>( listenable );
                 if( vWeakListeners == null )
                 {   // start up case
@@ -131,79 +137,91 @@ public class Notification
                     destRefs[ length ] = weakRef; // at end
                     vWeakListeners = destRefs;
                 }
-//dead                vWeakListeners = ( vWeakListeners == null )
-//                        ? new WeakReference[] { weakRef }
-//                        : RefsUtil.append( vWeakListeners, weakRef );
             }
         }
 
+        /**
+         * 
+         * @param listenable should later be .removeListener() to avoid CPU or memory leaks.
+         */
+        @Override public void addListener( final L listenable )
+        {
+            add( listenable, false );
+        }
 
+        /**
+         * Weakly referenced so does not CPU/mem leak when no
+         * other Strongly reachable objects refer to the listener.
+         *
+         * @param listenable
+         */
+        @Override public void addListenerWeakly( final L listenable )
+        {
+            add( listenable, true );
+        }
 
         /**
          * Unsubscribe from notifications.
+         * Note: calling with 'null' will clean-up the weakly referenced array but this is not necessary as
+         * the Enumeration will skip them as needed.
          *
          * @param listenable removal happens automatically by Weak ref when no other Strongly reachable objects refer to it.
          */
         @SuppressWarnings("unchecked")
         @Override synchronized public void removeListener( final L listenable )
         {
-            if( listenable.getClass().isAnonymousClass() == true )
+            if( vNoGcListeners != null )
             {
-                if( vNoGcListeners != null )
+                if( vNoGcListeners.length > 1 )
                 {
-                    if( vNoGcListeners.length > 1 )
-                    {
-                        final NotificationListenable[] srcArray = vNoGcListeners;
-                        final int atIndex = Util.indexOfIdentity( listenable, srcArray );
-                        if( atIndex != Util.INVALID_INDEX )
-                        {   // got one, perform slice
-                            final int lengthMinusOne = srcArray.length - 1;
-                            final NotificationListenable[] destArray = new NotificationListenable[ lengthMinusOne ];
-                            if( atIndex != lengthMinusOne ) System.arraycopy( srcArray, atIndex + 1, destArray, atIndex, lengthMinusOne - atIndex ); // fill in from after removeRef
-                            if( atIndex != 0 )              System.arraycopy( srcArray, 0          , destArray, 0      , atIndex ); // fill in from before removeRef
-                            vNoGcListeners = destArray;
-                        }
-                        // else no change
-//dead                        vNoGcListeners = RefsUtil.removeIdentity( vNoGcListeners, listenable );
+                    final NotificationListenable[] srcArray = vNoGcListeners;
+                    final int atIndex = Util.indexOfIdentity( listenable, srcArray );
+                    if( atIndex != Util.INVALID_INDEX )
+                    {   // got one, perform slice that removes identity
+                        final int lengthMinusOne = srcArray.length - 1;
+                        final NotificationListenable[] destArray = new NotificationListenable[ lengthMinusOne ];
+                        if( atIndex != lengthMinusOne ) System.arraycopy( srcArray, atIndex + 1, destArray, atIndex, lengthMinusOne - atIndex ); // fill in from after removeRef
+                        if( atIndex != 0 )              System.arraycopy( srcArray, 0          , destArray, 0      , atIndex ); // fill in from before removeRef
+                        vNoGcListeners = destArray;
+                        return;
                     }
-                    else if( vNoGcListeners[ 0 ] == listenable )
-                    {
-                        vNoGcListeners = null; // safely releases array while other observers may still be iterating thru it
-                    }
-                    // else ignore
                 }
-                // else ignore
+                else if( vNoGcListeners[ 0 ] == listenable )
+                {   // length must be 1
+                    vNoGcListeners = null; // safely releases array while other observers may still be iterating thru it
+                    return;
+                }
+                // else might be weakly listening
             }
-            else
-            {
-                if( vWeakListeners != null )
-                {
-                    if( vWeakListeners.length > 1 )
-                    {
-                        final Reference<L>[] srcRefs = vWeakListeners;
-                        final List<Reference<L>> refList = new ArrayList<Reference<L>>( srcRefs.length );
-                        for( final Reference<L> ref : srcRefs )
-                        {
-                            final L listener = ref.get();
-                            if( listener != listenable && listener != null )
-                            {   // drop the ref-to-remove or GCd ref
-                                refList.add( ref );
-                            }
-                        }
+            // else might be weakly listening
 
-                        vWeakListeners = ( refList.isEmpty() == false )
-                                ? refList.toArray( new Reference[ refList.size() ] )
-                                : null;
-//dead                        vWeakListeners = RefsUtil.removeIdentity( vWeakListeners, findWeakRef );
-                    }
-                    else if( vWeakListeners[ 0 ].get() == listenable )
+            if( vWeakListeners != null )
+            {
+                if( vWeakListeners.length > 1 )
+                {   // safe to assume the listener is present, rebuild the array without it or any weakly GC'd refs
+                    final Reference<L>[] srcRefs = vWeakListeners;
+                    final List<Reference<L>> refList = new ArrayList<Reference<L>>( srcRefs.length );
+                    for( final Reference<L> ref : srcRefs )
                     {
-                        vWeakListeners = null; // safely releases array while other observers may still be iterating thru it
+                        final L listener = ref.get();
+                        if( listener != listenable && listener != null )
+                        {
+                            refList.add( ref );
+                        }
+                        // else drop the ref-to-remove or weakly GC'd ref by not adding
                     }
-                    // else ignore
+
+                    vWeakListeners = ( refList.isEmpty() == false )
+                            ? refList.toArray( new Reference[ refList.size() ] )
+                            : null;
+                }
+                else if( vWeakListeners[ 0 ].get() == listenable )
+                {   // length must be 1
+                    vWeakListeners = null; // safely releases array while other observers may still be iterating thru it
                 }
                 // else ignore
             }
+            // else equivalent to length=0
         }
 
         /**
@@ -222,9 +240,8 @@ public class Notification
 
         /**
          * Visitor factory, does not incur an allocation if no listeners have been added.
-         * Derived class caller does -not- have to check for 'null' listeners because
-         * when the WeakRef has been GC'd a NO_OP will be offered.
-         * Not an Iterable because don't want .remove() exposed.
+         * Derived class caller does -not- have to check for 'null' listeners because they will be skipped.
+         * Does not implement Iterable because we do not want .remove() exposed.
          *
          * @return all listeners
          */
@@ -239,47 +256,67 @@ public class Notification
 
         // ================================================================================
         /**
-         * Visitor pattern to combine both the Notifier's LinkedList and the WeakRefs[].
+         * Visitor pattern to combine both the Notifier's strongly and weakly retained listeners.
          *
          * @param <L>
          */
         static private class ListenerEnumeration<L extends NotificationListenable>
             implements Enumeration<L>
         {
-            /** Used to avoid checking for 'null' in .causeNotification() visitor in case Listener has been weakly GC'd. */
-            final private L fNoOperationListener;
-
             final private NotificationListenable[] fNoGcListeners;
             private int mNoGcIndex = 0;
 
             final private Reference<L>[] fWeakRefListeners;
             private int mWeakRefIndex = 0;
 
+            /** Commit to hard reference here any promised next listenable.  This allowed dropping the NO-OP Listenable paradigm completely. */
+            private L mListener;
+
             @SuppressWarnings("unchecked")
             private ListenerEnumeration( final ANotifier<L> notifier )
             {
-                fNoOperationListener = notifier.fNoOperationListener;
-                fNoGcListeners       = ( notifier.vNoGcListeners != null ) ? notifier.vNoGcListeners : NO_LISTENERS;
-                fWeakRefListeners    = ( notifier.vWeakListeners != null ) ? notifier.vWeakListeners : (Reference<L>[])NO_REFS;
-            }
+                fNoGcListeners    = ( notifier.vNoGcListeners != null ) ? notifier.vNoGcListeners : NO_LISTENERS;
+                fWeakRefListeners = ( notifier.vWeakListeners != null ) ? notifier.vWeakListeners : (Reference<L>[])NO_REFS;
 
-            @Override public boolean hasMoreElements()
-            {
-                return ( mWeakRefIndex < fWeakRefListeners.length ) || ( mNoGcIndex < fNoGcListeners.length );
+                mListener = hardReferenceNext(); // needed for staging .hasMoreElements()
             }
 
             @SuppressWarnings("unchecked")
+            private L hardReferenceNext()
+            {
+                if( mNoGcIndex < fNoGcListeners.length )
+                {
+                    return (L)fNoGcListeners[ mNoGcIndex++ ]; // post incr
+                }
+
+                while( mWeakRefIndex < fWeakRefListeners.length )
+                {   // when weakly GC'd .get() returns 'null'
+                    final L listener = fWeakRefListeners[ mWeakRefIndex++ ].get(); // post incr
+                    if( listener != null ) return listener;
+                }
+
+                return null;
+            }
+
+            /**
+             *
+             * @return 'true' if more elements
+             */
+            @Override public boolean hasMoreElements()
+            {
+                return mListener != null;
+            }
+
+            /**
+             *
+             * @return guaranteed to be non-'null'
+             */
             @Override public L nextElement()
             {
-                final L listener = ( mWeakRefIndex < fWeakRefListeners.length )
-                        ? fWeakRefListeners[ mWeakRefIndex++ ].get()
-                        : ( mNoGcIndex < fNoGcListeners.length )
-                                ? (L)fNoGcListeners[ mNoGcIndex++ ]
-                                : null;
-
-                return ( listener != null )
-                        ? listener
-                        : fNoOperationListener; // was GC'd but this implementor will NO-OP without special case logic
+                final L listener = mListener;
+                if( listener == null ) throw new NoSuchElementException();
+                mListener = hardReferenceNext();
+                return listener;
             }
         }
     }
@@ -293,13 +330,6 @@ public class Notification
      */
     static private class Notifier_NoArgument extends ANotifier<NoArgumentListenable>
     {
-        static final private NoArgumentListenable NO_OP = new NoArgumentListenable() { @Override public void listen() {} };
-
-        public Notifier_NoArgument() // final NoArgumentListenable noOPeration )
-        {
-            super( NO_OP );
-        }
-
         synchronized public void causeNotification()
         {
             final Enumeration<NoArgumentListenable> enumerati = createEnumeration();
@@ -313,30 +343,45 @@ public class Notification
 
     // ================================================================================
     /**
-     * Example of one argument notifications.
+     * Example of one argument notifications
+     * where the listener is automatically initialized.
      *
      * @param <E> event of class type will be inferred
      */
     static public class Notifier<E> extends ANotifier<OneArgumentListenable<E>>
     {
-        static final private OneArgumentListenable<?> NO_OP = new OneArgumentListenable<Object>() { @Override public void listen( Object event ) {} };
-
         final private Initializable<E> fInitializable;
 
+        /**
+         * No initialization event context.
+         */
         public Notifier()
         {
             this( null );
         }
 
         /**
-         * @param initializable automatic cold-start event can be 'null'
+         * Provide an initialization event context.
+         *
+         * @param initializable automatic cold-starts new listeners only when not 'null'
          */
         @SuppressWarnings("unchecked")
         public Notifier( final Initializable<E> initializable )
         {
-            super( (OneArgumentListenable<E>)NO_OP );
-
             fInitializable = initializable;
+        }
+
+        /**
+         * Anti-pattern, why you no copy-pasta?
+         *
+         * @param listenable
+         */
+        private void contextualize( final OneArgumentListenable<E> listenable )
+        {
+            if( fInitializable != null )
+            {   // cold-start
+                listenable.listen( fInitializable.provideInitialEvent() );
+            }
         }
 
         /**
@@ -346,12 +391,22 @@ public class Notification
          */
         @Override synchronized public void addListener( final OneArgumentListenable<E> listenable )
         {
-            if( fInitializable != null )
-            {   // cold-start
-                listenable.listen( fInitializable.getInitializerEvent() );
-            }
-
+            contextualize( listenable );
             super.addListener( listenable );
+        }
+
+        /**
+         * Subscribe to notifications weakly.
+         * I.e. for as long as the instance of L's implementor is strongly referenced outside of the Notifier.
+         * Works well for Swing components but do not use with non-retained Anonymous Class objects.
+         * Those would be immediately GC'd.
+         *
+         * @param listenable will automatically stop being notified when the reference count to this instance (it) drops to zero
+         */
+        @Override synchronized public void addListenerWeakly( final OneArgumentListenable<E> listenable )
+        {
+            contextualize( listenable );
+            super.addListenerWeakly( listenable );
         }
 
         synchronized public void causeNotification( final E event )
@@ -372,7 +427,7 @@ public class Notification
          */
         static public interface Initializable<E>
         {
-            abstract E getInitializerEvent();
+            abstract E provideInitialEvent();
         }
     }
 
@@ -386,14 +441,6 @@ public class Notification
      */
     static private class Notifier_TwoArgument<S,E> extends ANotifier<TwoArgumentListenable<S,E>>
     {
-        static final private TwoArgumentListenable<?,?> NO_OP = new TwoArgumentListenable<Object,Object>() { @Override public void listen( Object source, Object event ) {} };
-
-        @SuppressWarnings("unchecked")
-        public Notifier_TwoArgument()
-        {
-            super( (TwoArgumentListenable<S,E>)NO_OP );
-        }
-
         synchronized public void causeNotification( final S source, final E event )
         {
             final Enumeration<TwoArgumentListenable<S,E>> enumerati = createEnumeration();

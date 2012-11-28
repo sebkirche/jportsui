@@ -140,7 +140,7 @@ public class JFrame_Main extends JFrame
                     }
                 } );
 
-        TheApplication.INSTANCE.getEchoStatusNotifier().addListener( jProgress_EchoPortStatus );
+        TheApplication.INSTANCE.getEchoStatusNotifier().addListenerWeakly( jProgress_EchoPortStatus );
     }
 
     /**
@@ -151,5 +151,5 @@ public class JFrame_Main extends JFrame
     @Override public void stateChanged( final ChangeEvent e )
     {
         TheUiHolder.causeReset();
-    }
+    }    
 }

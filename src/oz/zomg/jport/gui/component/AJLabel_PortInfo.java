@@ -54,7 +54,7 @@ public abstract class AJLabel_PortInfo extends JLabel
         this.setHorizontalAlignment( SwingConstants.LEFT );
 
         // listener
-        TheApplication.INSTANCE.getCrudNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
+        TheApplication.INSTANCE.getCrudNotifier().addListenerWeakly( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
     }
 
     /**
@@ -119,6 +119,14 @@ public abstract class AJLabel_PortInfo extends JLabel
      */
     abstract void setPort( Portable port );
 
+    /**
+     * Not needed as instance listens to CRUD weakly.
+     */
+    @Override public void removeNotify()
+    {
+        TheApplication.INSTANCE.getCrudNotifier().removeListener( this );
+    }
+
 
     // ================================================================================
     /**
@@ -176,7 +184,7 @@ public abstract class AJLabel_PortInfo extends JLabel
                 final String text2 = ( port.getShortDescription().equals( port.getLongDescription() ) == false )
                         ? port.getLongDescription().replace( "{", "<B>" ).replace( "}", "</B>" )
                         : ""; // not shown when short=long
-                
+
                 this.setText( text + text2 );
             }
         }

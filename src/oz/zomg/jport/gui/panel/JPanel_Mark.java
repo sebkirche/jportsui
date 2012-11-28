@@ -66,8 +66,6 @@ public class JPanel_Mark extends JPanel
 
         fIsAssignmentLocked = assignedPort != Portable.NONE;
 
-        ab_Unmark.setToolTipText( "<HTML>Remove any pending Port status<BR>change requests for Apply" );
-
         final JPanel subPanel = new JPanel( new GridLayout( 0, 1, 0, 5 ) ); // row col hgap vgap
 
         int i = 0;
@@ -78,6 +76,7 @@ public class JPanel_Mark extends JPanel
             ab.setActionCommand( e.name() );
             ab.setToolTipText( e.provideTipText() ); // built into enum
             ab.setEnabled( false );
+            ab.setFocusable( false ); // work-around for http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4289940
             ab.addActionListener( this );
             ab_Marks[ i ] = ab;
             i++;
@@ -85,6 +84,8 @@ public class JPanel_Mark extends JPanel
             if( e.provideIsVisible() == true ) subPanel.add( ab, 0 ); // inserted in reverse of CLI exec order
         }
 
+        ab_Unmark.setToolTipText( "<HTML>Remove any pending Port status<BR>change requests for Apply" );
+        ab_Unmark.setFocusable( false ); // work-around for http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4289940
         ab_Unmark.setEnabled( false );
         subPanel.add( ab_Unmark, 0 ); // put [Unmark] at top
 
@@ -92,7 +93,7 @@ public class JPanel_Mark extends JPanel
 
         // listener
         ab_Unmark.addActionListener( this );
-        TheApplication.INSTANCE.getCrudNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
+        TheApplication.INSTANCE.getCrudNotifier().addListenerWeakly( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
     }
 
     /**
@@ -168,5 +169,13 @@ public class JPanel_Mark extends JPanel
             final EPortMark markEnum = EPortMark.valueOf( ab.getActionCommand() );
             MarkConfirmUi.showConfirmation( mAssignedPort, markEnum );
         }
+    }
+
+    /**
+     * Not needed as instance listens to CRUD weakly.
+     */
+    @Override public void removeNotify()
+    {
+        TheApplication.INSTANCE.getCrudNotifier().removeListener( this );
     }
 }

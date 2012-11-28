@@ -17,6 +17,7 @@ import javax.swing.SortOrder;
 import oz.zomg.jport.TheApplication;
 import oz.zomg.jport.common.Elemental;
 import oz.zomg.jport.common.Elemental.EElemental;
+import oz.zomg.jport.common.Interfacing_.Unleakable;
 import oz.zomg.jport.common.Providers_.JPopupMenuProvidable;
 import oz.zomg.jport.common.Providers_.WidthProvidable;
 import oz.zomg.jport.common.Util;
@@ -39,7 +40,9 @@ import oz.zomg.jport.type.Portable;
  */
 @SuppressWarnings("serial")
 public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_Port.EColumn>
-    implements Elemental.Listenable<Portable>
+    implements 
+          Elemental.Listenable<Portable>
+        , Unleakable
 {
     static enum EColumn implements WidthProvidable
             { MARK        (  90 ) // status request
@@ -70,7 +73,7 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
         this.toggelSortColumn( EColumn.NAME );
 
         // listener
-        TheApplication.INSTANCE.getCrudNotifier().addListener( this );
+        TheApplication.INSTANCE.getCrudNotifier().addListenerWeakly( this );
 
         if( JPopupMenuProvidable.class.isAssignableFrom( Portable.class ) == false )
         {   // future proofing
@@ -84,8 +87,8 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
     public void setTableSortByMark()
     {
         final List<? extends SortKey> list = Arrays.asList
-                ( new SortKey( EColumn.MARK.ordinal(), SortOrder.DESCENDING )
-                , new SortKey( EColumn.NAME.ordinal(), SortOrder.ASCENDING )
+                ( new SortKey( EColumn.MARK     .ordinal(), SortOrder.DESCENDING )
+                , new SortKey( EColumn.NAME     .ordinal(), SortOrder.ASCENDING )
                 , new SortKey( EColumn.INSTALLED.ordinal(), SortOrder.DESCENDING )
                 );
         this.getJTable().getRowSorter().setSortKeys( list );
@@ -98,7 +101,7 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
     public void setTableSortByName()
     {
         final List<? extends SortKey> list = Arrays.asList
-                ( new SortKey( EColumn.NAME.ordinal(), SortOrder.ASCENDING )
+                ( new SortKey( EColumn.NAME     .ordinal(), SortOrder.ASCENDING )
                 , new SortKey( EColumn.INSTALLED.ordinal(), SortOrder.DESCENDING )
                 );
         this.getJTable().getRowSorter().setSortKeys( list );
@@ -138,6 +141,14 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
         }
     }
 
+    /**
+     * Not needed as instance listens to CRUD weakly.
+     */
+    @Override public void unleak()
+    {
+        TheApplication.INSTANCE.getCrudNotifier().removeListener( this );
+    }
+
     static private String _getMark( final Portable port )
     {
         if( port.isUnmarked() == true ) return "";
@@ -148,13 +159,13 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
         switch( mark )
         {
             case Activate : case Deactivate :
-            case Install : case Uninstall :
-            case Upgrade :
+            case Install  : case Uninstall :
+            case Upgrade  :
                     return "<HTML><B>"+ string;
 
             case Dependency_Activate : case Dependant_Deactivate :
-            case Dependency_Install : case Dependant_Uninstall :
-            case Dependency_Upgrade :
+            case Dependency_Install  : case Dependant_Uninstall :
+            case Dependency_Upgrade  :
                     return string;
 
             case Conflicted :
@@ -220,7 +231,7 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
         if( port != null )
         {
             final EPortMark portMark = port.getMark();
-            final JPopupMenu jpm = new JPopupMenu(); // Mac-PLAF no titled menu param
+            final JPopupMenu jpm = new JPopupMenu(); // on Mac-PLAF, no menu title rendered
 
             final JMenuItem titleItem = new JMenuItem( "<HTML><B>"+ port.getName() +"</B><SMALL> Details" );
             titleItem.setEnabled( true );
@@ -275,7 +286,7 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
 
     // ================================================================================
     /**
-     * Double-click shows Details view and right-click shows mark menu.
+     * Double-click shows Details view and right-click shows Change Request Mark menu.
      */
     private class PrivateListener extends MouseAdapter
     {

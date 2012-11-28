@@ -19,8 +19,6 @@ import oz.zomg.jport.common.Elemental;
 import oz.zomg.jport.common.Elemental.EElemental;
 import oz.zomg.jport.common.GuiUtil_;
 import oz.zomg.jport.common.HttpUtil;
-import oz.zomg.jport.common.gui.ModalDialogFactory;
-import oz.zomg.jport.common.gui.ModalDialogFactory.EConfirmationChoices;
 import oz.zomg.jport.gui.Commander;
 import oz.zomg.jport.gui.TheUiHolder;
 import oz.zomg.jport.gui.window.JDialog_AboutApp;
@@ -136,7 +134,7 @@ public class JPanel_CommandBar extends JPanel
         this.add( searchPanel );
 
         // listeners
-        TheApplication.INSTANCE.getCrudNotifier().addListener( this );
+        TheApplication.INSTANCE.getCrudNotifier().addListenerWeakly( this );
 
         // downside to this type of List Comprehension is that IDE's "Find Usages" is unavailable
         for( final AbstractButton ab : GuiUtil_.getChildren( AbstractButton.class, jPop_MoreCmd, (Container)this ) )
@@ -233,20 +231,16 @@ public class JPanel_CommandBar extends JPanel
             }
             else if( ab == jItem_AppAbout )
             {
-                if( true )
-                {
-                    new JDialog_AboutApp().setVisible( true );
-                }
-                else
-                {   // superceded
-                    ModalDialogFactory.showConfirmation
-                            ( EConfirmationChoices.OK
-                            , TheUiHolder.INSTANCE.getMainFrame()
-                            , PortConstants.APP_NAME +" Credits"
-                            , "<HTML>UI designed and coded by Stephen Baber (c) 2012<BR><SMALL><BR>MacPorts availble @ http://www.macports.org/"
-                            );
-                }
+                new JDialog_AboutApp().setVisible( true );
             }
         }
+    }
+
+    /**
+     * Not needed as instance listens to CRUD weakly.
+     */
+    @Override public void removeNotify()
+    {
+        TheApplication.INSTANCE.getCrudNotifier().removeListener( this );
     }
 }

@@ -104,10 +104,18 @@ public class Elemental
          * @param initialSelection usually a guard reference representing a NONE or UNKNOWN state.
          */
         public Notifier( final E initialSelection )
-        {   // no-op can not be 'static final' because Generic type <E>
-            super( new Listenable<E>() { @Override public void notify( EElemental elemental, E obj ) {} } ); // anonymous class
-
+        {
             mLastRetrieved = initialSelection;
+        }
+
+        /**
+         * Avoid copy-pasta.
+         *
+         * @param listenable Will catch-up / cold-start the new listener.
+         */
+        private void contextualize( final Listenable<E> listenable )
+        {
+            listenable.notify( EElemental.RETRIEVED, mLastRetrieved );
         }
 
         /**
@@ -117,9 +125,19 @@ public class Elemental
          */
         @Override synchronized public void addListener( final Listenable<E> listenable )
         {
-            listenable.notify( EElemental.RETRIEVED, mLastRetrieved );
-
+            contextualize( listenable );
             super.addListener( listenable );
+        }
+
+        /**
+         * Subscribe to notifications until 'listenable' is no longer strongly reachable elsewhere.
+         *
+         * @param listenable Will catch-up / cold-start the new listener.
+         */
+        @Override synchronized public void addListenerWeakly( final Listenable<E> listenable )
+        {
+            contextualize( listenable );
+            super.addListenerWeakly( listenable );
         }
 
         /**

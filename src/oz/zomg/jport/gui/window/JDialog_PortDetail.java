@@ -51,7 +51,7 @@ public class JDialog_PortDetail extends JDialog
 
         fAssignedPort = assignedPort;
 
-        setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE ); // default behavior is HIDE_ON_CLOSE
+        this.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE ); // default behavior is HIDE_ON_CLOSE
 
         // assemble
         this.add( new JTabPane_Detail( assignedPort ), BorderLayout.CENTER );
@@ -61,10 +61,10 @@ public class JDialog_PortDetail extends JDialog
         this.setLocationByPlatform( true ); // cascades
 
         // listener
-        TheApplication.INSTANCE.getResetNotifier().addListener( this );
+        TheApplication.INSTANCE.getResetNotifier().addListenerWeakly( this );
 
         if( Util.isOnMac() == true )
-        {   // register [CMD-W] as close window
+        {   // register [CMD-W] as close window as expected with Mac-PLAF
             final KeyStroke ks = KeyStroke.getKeyStroke( KeyEvent.VK_W, java.awt.event.InputEvent.META_DOWN_MASK );
             final InputMap im = getRootPane().getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW );
             im.put( ks, ks ); // action could have been the String "CLOSE"
@@ -76,8 +76,12 @@ public class JDialog_PortDetail extends JDialog
         }
     }
 
+    /**
+     * Re-Sync (PortIndex parse) closes all Port Details dialogs.
+     */
     @Override public void reset()
     {
+        // not needed as instance listens weakly
         TheApplication.INSTANCE.getResetNotifier().removeListener( this );
 
         this.dispose();

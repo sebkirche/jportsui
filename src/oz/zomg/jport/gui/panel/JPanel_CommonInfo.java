@@ -72,6 +72,8 @@ public class JPanel_CommonInfo extends JPanel
 
         this.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening
 
+        abHomepage.setFocusable( false );
+
         for( int i = 0; i < jLabels.length; i++ )
         {   // init array, lambda expressions would be nicer
             final JLabel jLabel = new JLabel();
@@ -99,7 +101,7 @@ public class JPanel_CommonInfo extends JPanel
 
         // listener
         abHomepage.addActionListener( this );
-        TheApplication.INSTANCE.getCrudNotifier().addListener( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
+        TheApplication.INSTANCE.getCrudNotifier().addListenerWeakly( this ); // automatically calls .notify() and updates mAssignedPort conforming the view
     }
 
     /**
@@ -321,5 +323,13 @@ public class JPanel_CommonInfo extends JPanel
         {   // could have used CLI -> port gohome $NAME
             HttpUtil.browseTo( mAssignedPort.getHomepage() );
         }
+    }
+
+    /**
+     * Not needed as instance listens to CRUD weakly.
+     */
+    @Override public void removeNotify()
+    {
+        TheApplication.INSTANCE.getCrudNotifier().removeListener( this );
     }
 }

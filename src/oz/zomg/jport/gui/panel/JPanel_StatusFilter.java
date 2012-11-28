@@ -16,7 +16,6 @@ import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import oz.zomg.jport.PortConstants;
 import oz.zomg.jport.TheOsBinaries;
 import oz.zomg.jport.common.GuiUtil_;
 import oz.zomg.jport.common.Reset.Resetable;

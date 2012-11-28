@@ -33,11 +33,11 @@ public class JTabPane_Filter extends JTabbedPane
 
 //        final HistogramUiFactory histogramUi = new HistogramUiFactory();
 
-        this.addTab( "Status"        , EmbeddedCreatorFactory_.create( new Creatable<Component>() { @Override public Component create() { return new JPanel_StatusFilter(); } } ) );
-        this.addTab( "Totals"        , EmbeddedCreatorFactory_.create( new Creatable<Component>() { @Override public Component create() { return new JPanel_Histogram(); } } ) );
+        this.addTab( "Status" , EmbeddedCreatorFactory_.create( new Creatable<Component>() { @Override public Component create() { return new JPanel_StatusFilter(); } } ) );
+        this.addTab( "Totals" , EmbeddedCreatorFactory_.create( new Creatable<Component>() { @Override public Component create() { return new JPanel_Histogram(); } } ) );
 
 //        if( HistogramUiFactory.NEED_BREAK_OUT_CATEGORIES )
-//        this.addTab( "Categories"    , EmbeddedCreatorFactory.create( new Creatable<Component>() { @Override public Component create() { return histogramUi.createCategoriesComponent(); } } ) );
+//        this.addTab( "Categories" , EmbeddedCreatorFactory.create( new Creatable<Component>() { @Override public Component create() { return histogramUi.createCategoriesComponent(); } } ) );
 
 //...        this.addTab( "Search Results", new JLabel( "SHOW HERE..." ) ); //...
 

@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -75,8 +76,8 @@ public class Util
     /**
      * Linear Search an array for an identity with '==' instead of
      * using Arrays.binarySearch() when the array can not be sort ordered
-     * or when less than approx. 10 elements requiring the hashcode generation
-     * to seek into an IdentityHashMap.
+     * or when less than approx. 10 elements avoiding the overhead of
+     * searching a sparsely populated IdentityHashMap.
      *
      * @param <E> will be inferred
      * @param searchReferent to locate in the array.  Can be 'null'
@@ -100,6 +101,34 @@ public class Util
                     }
                     return INVALID_INDEX;
         }
+    }
+
+    //ENHANCE
+    /**
+     * Linear identity search specialization for Weak, Soft, or Phantom Reference arrays.
+     *
+     * @param <E> will be inferred
+     * @param searchReferent to locate in the array.  Can be 'null'
+     * @param inRefArray will -not- be altered!
+     * @return
+     */
+    static private <E> int indexOfIdentity( final E searchReferent, final Reference<E>[] inRefArray )
+    {
+        switch( inRefArray.length )
+        {
+            case 0 : return INVALID_INDEX;
+
+            case 1 : return ( searchReferent == inRefArray[ 0 ].get() ) ? 0 : INVALID_INDEX; // 0=found index
+
+            default:
+                    int i = 0;
+                    for( final Reference<E> ref : inRefArray )
+                    {   // linear search faster than indentity hashing until more than ~10 elements
+                        if( searchReferent == ref.get() ) return i; // found
+                        i += 1;
+                    }
+                    return INVALID_INDEX;
+        }        
     }
 
     /**

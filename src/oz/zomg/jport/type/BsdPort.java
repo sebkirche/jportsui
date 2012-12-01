@@ -12,7 +12,7 @@ import oz.zomg.jport.ports.PortsCatalog;
 
 /**
  * Implementation of Port info originating from a PortBuilder
- * instance via the "PortIndex" file.
+ * instance via the MacPorts built "PortIndex" file.
  * Mostly immutable Port with lazily instantiated,
  * non-recursive external Port dependencies as
  * the entire Port index has to be constructed first.
@@ -387,7 +387,7 @@ class BsdPort //... refactor IndexPort?
         return tip.toString();
     }
 
-    @Override public Color provideForeColor()
+    @Override public Color provideColor()
     {   // sequential check logic
         return hasStatus( EPortStatus.UNINSTALLED ) ? Color.DARK_GRAY
              : hasStatus( EPortStatus.OUTDATED )    ? Color.RED

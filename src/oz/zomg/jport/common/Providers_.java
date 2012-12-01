@@ -19,12 +19,11 @@ public class Providers_
     private Providers_() {}
 
     // stateless
-    static public interface BackColorProvidable          { abstract public Color         provideBackColor(); }
     static public interface ClassProvidable              { abstract public Class<?>      provideClass(); } // use with TabelModel.getColumnClass() etc.
     static public interface ColorProvidable              { abstract public Color         provideColor(); }
     static public interface DisplayTextProvidable        { abstract public String        provideDisplayText(); }
     static public interface EnabledProvidable            { abstract public boolean       provideIsEnabled(); } // Component attribute
-    static public interface ForeColorProvidable          { abstract public Color         provideForeColor(); }
+    static public interface ForeBackColorProvidable      { abstract public Color         provideForeColor(); abstract public Color provideBackColor(); }
     static public interface JPopupMenuProvidable         { abstract public JPopupMenu    provideJPopupMenu(); } // enables JTable right-clicks
     static public interface TipProvidable                { abstract public String        provideTipText(); } // enables any object to provide a text for a Tooltip
     static public interface VisibilityProvidable         { abstract public boolean       provideIsVisible(); } // Component attribute

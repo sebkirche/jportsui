@@ -24,13 +24,12 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import oz.zomg.jport.common.Interfacing_.Equatable;
-import oz.zomg.jport.common.Providers_.BackColorProvidable;
 import oz.zomg.jport.common.Providers_.ClassProvidable;
 import oz.zomg.jport.common.Providers_.ColorProvidable;
 import oz.zomg.jport.common.Providers_.ContextualVisibilityProvidable;
 import oz.zomg.jport.common.Providers_.DisplayTextProvidable;
 import oz.zomg.jport.common.Providers_.EnabledProvidable;
-import oz.zomg.jport.common.Providers_.ForeColorProvidable;
+import oz.zomg.jport.common.Providers_.ForeBackColorProvidable;
 import oz.zomg.jport.common.Providers_.JPopupMenuProvidable;
 import oz.zomg.jport.common.Providers_.RowProvidable;
 import oz.zomg.jport.common.Providers_.VisibilityProvidable;
@@ -38,9 +37,8 @@ import oz.zomg.jport.common.Providers_.WidthProvidable;
 import oz.zomg.jport.common.SearchTerm2;
 import oz.zomg.jport.common.Util;
 import oz.zomg.jport.common.gui.CellRenderers_.CellRenderer_AlternatingBar;
-import oz.zomg.jport.common.gui.CellRenderers_.CellRenderer_BackColor;
 import oz.zomg.jport.common.gui.CellRenderers_.CellRenderer_Color;
-import oz.zomg.jport.common.gui.CellRenderers_.CellRenderer_ForeColor;
+import oz.zomg.jport.common.gui.CellRenderers_.CellRenderer_ForeBackColor;
 import oz.zomg.jport.common.gui.JScrollPaneFactory_.EHorizontalScroller;
 import oz.zomg.jport.common.gui.JScrollPaneFactory_.EVerticalScroller;
 
@@ -204,18 +202,9 @@ abstract public class AEnumTableModel<R,C extends Enum<C>> extends AbstractTable
         switch( colorizeRow )
         {
             case ENABLE :
-//                    if( ForeColorProvidable.class.isAssignableFrom( rowOfClassType ) && BackColorProvidable.class.isAssignableFrom( rowOfClassType ) ) // or both
-//                    {
-//                        tableCellRenderer = new CellRenderer_ForeAndBackColor( (RowProvidable<ForeBackColorProvidable>)this );
-//                    }
-//                    else
-                {   if( ForeColorProvidable.class.isAssignableFrom( rowOfClassType ) == true )
+                {   if( ForeBackColorProvidable.class.isAssignableFrom( rowOfClassType ) == true )
                     {
-                        tableCellRenderer = new CellRenderer_ForeColor( (RowProvidable<ForeColorProvidable>)this );
-                    }
-                    else if( BackColorProvidable.class.isAssignableFrom( rowOfClassType ) == true )
-                    {
-                        tableCellRenderer = new CellRenderer_BackColor( (RowProvidable<BackColorProvidable>)this );
+                        tableCellRenderer = new CellRenderer_ForeBackColor( (RowProvidable<ForeBackColorProvidable>)this );
                     }
                     else if( ColorProvidable.class.isAssignableFrom( rowOfClassType ) == true )
                     {

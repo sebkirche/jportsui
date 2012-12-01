@@ -183,7 +183,7 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
         }
         else
         {   // sequential logic
-            return "<HTML><FONT "+ _getHtmlColor( port.provideForeColor() ) +'>'+
+            return "<HTML><FONT "+ _getHtmlColor( port.provideColor() ) +'>'+
                     ( port.hasStatus( EPortStatus.OUTDATED ) ? "<B>"
                     : port.hasStatus( EPortStatus.INACTIVE ) ? "<I>"
                                                              : "" // installed

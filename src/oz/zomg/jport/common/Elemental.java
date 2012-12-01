@@ -20,7 +20,7 @@ import oz.zomg.jport.common.Notification.NotificationListenable;
 public class Elemental
 {
     /**
-     * Operation to apply when late synchronizing collections of elements via the Produce-Consumer design pattern.
+     * Operation to apply when late synchronizing collections of elements via the Producer-Consumer design pattern.
      */
     static public enum EElemental
             { CREATED     // element .add()
@@ -91,6 +91,8 @@ public class Elemental
 
     // ================================================================================
     /**
+     * Single element C.R.U.D. notifications.
+     * Thread safe.
      *
      * @param <E> element of class type
      */
@@ -119,7 +121,7 @@ public class Elemental
         }
 
         /**
-         * Subscribe to notifications.
+         * Subscribe to notifications until <CODE>.removeListener( x )</CODE> is invoked.
          *
          * @param listenable Will catch-up / cold-start the new listener.
          */

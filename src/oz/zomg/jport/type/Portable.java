@@ -1,6 +1,6 @@
 package oz.zomg.jport.type;
 
-import oz.zomg.jport.common.Providers_.ForeColorProvidable;
+import oz.zomg.jport.common.Providers_.ColorProvidable;
 import oz.zomg.jport.common.Providers_.TipProvidable;
 
 
@@ -16,7 +16,7 @@ import oz.zomg.jport.common.Providers_.TipProvidable;
 public interface Portable
     extends
           Comparable<Portable>
-        , ForeColorProvidable
+        , ColorProvidable
         , TipProvidable
 {
     static final public Portable NONE = BsdPort.BSD_NONE;

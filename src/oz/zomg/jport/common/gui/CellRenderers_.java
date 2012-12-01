@@ -5,9 +5,8 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-import oz.zomg.jport.common.Providers_.BackColorProvidable;
 import oz.zomg.jport.common.Providers_.ColorProvidable;
-import oz.zomg.jport.common.Providers_.ForeColorProvidable;
+import oz.zomg.jport.common.Providers_.ForeBackColorProvidable;
 import oz.zomg.jport.common.Providers_.RowProvidable;
 import oz.zomg.jport.common.gui.AEnumTableModel.EColorize;
 
@@ -189,12 +188,12 @@ public class CellRenderers_
     // ================================================================================
     /**
      * Driven by
-     * @see ForeColorProvidable
+     * @see ForeBackColorProvidable
      */
-    static public class CellRenderer_ForeColor extends ACellRenderer_Rowable_<ForeColorProvidable>
+    static public class CellRenderer_ForeBackColor extends ACellRenderer_Rowable_<ForeBackColorProvidable>
         implements ColorByNumbersInterface
     {
-        public CellRenderer_ForeColor( final RowProvidable<ForeColorProvidable> rowProvider )
+        public CellRenderer_ForeBackColor( final RowProvidable<ForeBackColorProvidable> rowProvider )
         {
             super( rowProvider );
         }
@@ -202,31 +201,6 @@ public class CellRenderers_
         @Override public Color getForeColor( int index )
         {
             return provideRow( index ).provideForeColor();
-        }
-
-        @Override public Color getBackColor( int index )
-        {
-            return null;
-        }
-    }
-
-
-    // ================================================================================
-    /**
-     * Driven by
-     * @see BackColorProvidable
-     */
-    static public class CellRenderer_BackColor extends ACellRenderer_Rowable_<BackColorProvidable>
-        implements ColorByNumbersInterface
-    {
-        public CellRenderer_BackColor( final RowProvidable<BackColorProvidable> rowProvider )
-        {
-            super( rowProvider );
-        }
-
-        @Override public Color getForeColor( int index )
-        {
-            return null;
         }
 
         @Override public Color getBackColor( int index )
@@ -367,30 +341,4 @@ public class CellRenderers_
             return renderer;
         }
     }
-
-
-    // ================================================================================
-    /* *
-     * Driven by
-     * @see ForeColorProvidable
-     * @see BackColorProvidable
-     */
-//?    static public class CellRenderer_ForeAndBackColor extends ACellRenderer_Rowable_<X extends ForeColorProvidable & BackColorProvidable>
-//        implements ColorByNumbersInterface
-//    {
-//        public CellRenderer_ForeAndBackColor( final RowProvidable<X> rowProvider )
-//        {
-//            super( rowProvider );
-//        }
-//
-//        @Override public Color getForeColor( int index )
-//        {
-//            return provideRow( index ).provideForeColor();
-//        }
-//
-//        @Override public Color getBackColor( int index )
-//        {
-//            return provideRow( index ).provideBackColor();
-//        }
-//    }
 }

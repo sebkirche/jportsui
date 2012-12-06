@@ -128,7 +128,7 @@ public class Util
                         i += 1;
                     }
                     return INVALID_INDEX;
-        }        
+        }
     }
 
     /**
@@ -248,6 +248,28 @@ public class Util
     static public <E> Class<E> getElementalClass( final E[] typedArray )
     {
         return (Class<E>)(typedArray.getClass().getComponentType()); // BTW- not an java.awt.Component
+    }
+
+    /**
+     * A single element array of the desired super type.
+     * Special cases Object[] as seen in the JDK source.
+     * Avoids generic array creation compiler errors of <CODE>new T[]{ obj }</CODE> has
+     * to be <CODE>(T[])new Object[]{ obj }</CODE> and "unchecked" warnings suppressed.
+     *
+     * @param <S> super type of T
+     * @param <T> will be inferred
+     * @param withElementOfSuperClassType can be more base than the derived element's type
+     * @param fromSingleElement
+     * @return single element one-dimensional array of a reified type
+     */
+    static private <S,T extends S> S[] createArrayWrapper( final Class<S> withElementOfSuperClassType, final T fromSingleElement )
+    {
+        @SuppressWarnings("unchecked")
+        final S[] array = ( withElementOfSuperClassType != Object.class )
+                ? (S[])Array.newInstance( withElementOfSuperClassType, 1 )
+                : (S[])new Object[ 1 ];
+        array[ 0 ] = fromSingleElement;
+        return array;
     }
 
     /**
@@ -412,7 +434,7 @@ public class Util
      * @param targetor lambda expression
      * @param objs
      */
-    static public <T> void withEach( final Targetable<T> targetor, final T... objs )
+    static private <T> void withEach( final Targetable<T> targetor, final T... objs )
     {
         for( final T obj : objs )
         {
@@ -427,7 +449,7 @@ public class Util
      * @param targetor lambda expression
      * @param iterator collection
      */
-    static public <T> void withEach( final Targetable<T> targetor, final Iterable<T> iterator )
+    static private <T> void withEach( final Targetable<T> targetor, final Iterable<T> iterator )
     {
         for( final T obj : iterator )
         {
@@ -502,7 +524,7 @@ public class Util
      *
      * @param <K> will be swapped to a Value class type
      * @param <V> will be swapped to a Key class type
-     * @param valuesOfClassType 
+     * @param valuesOfClassType
      * @param fromEnumKey_to_MultiValueMap map to be inverted
      * @return an inverse mapping where Values are now mapped to potentially multiple Keys
      */

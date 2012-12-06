@@ -73,9 +73,6 @@ public class Notification
     static abstract public class ANotifier<L extends NotificationListenable>
         implements Notifiable<L>
     {
-        static final private Reference<?>[] NO_REFS = new Reference[ 0 ];
-        static final private NoArgumentListenable[] NO_LISTENERS = new NoArgumentListenable[ 0 ];
-
         /** No further allocations required, para-lambda expression. */
         static final private Enumeration<?> EMPTY_ENUMERATION = new Enumeration<Object>() // anonymous class
                 {   @Override public boolean hasMoreElements() { return false; }
@@ -85,11 +82,11 @@ public class Notification
         static
         {}
 
-        /** WARNING! non-retained anonymous classes will be immediately GC'd. */
-        volatile private Reference<L>[] vWeakListeners = null;
-
         /** Non-Garbage Collected hard references to Listeners. */
         volatile private NotificationListenable[] vNoGcListeners = null;
+
+        /** WARNING! non-retained anonymous classes will be immediately GC'd. */
+        volatile private Reference<L>[] vWeakListeners = null;
 
         /**
          * Can be sub-classed.
@@ -263,6 +260,11 @@ public class Notification
         static private class ListenerEnumeration<L extends NotificationListenable>
             implements Enumeration<L>
         {
+            /** 'static' so can not be genericized to <L>. */
+            static final private NotificationListenable[] NO_LISTENERS = new NotificationListenable[ 0 ];
+            static final private Reference<?>[] NO_REFS = new Reference[ 0 ];
+
+            /** Compiler enforces Java array covariance.  Can not be declared invariant with <CODE>L[]</CODE>. */
             final private NotificationListenable[] fNoGcListeners;
             private int mNoGcIndex = 0;
 
@@ -281,11 +283,16 @@ public class Notification
                 mListener = hardReferenceNext(); // needed for staging .hasMoreElements()
             }
 
+            /**
+             * Listener notifications are expected to be invoked from within a single thread, i.e. not concurrently.
+             *
+             * @return via the stack makes a weak reference a hard reference
+             */
             @SuppressWarnings("unchecked")
             private L hardReferenceNext()
             {
                 if( mNoGcIndex < fNoGcListeners.length )
-                {
+                {   // take a 'cast' hit
                     return (L)fNoGcListeners[ mNoGcIndex++ ]; // post incr
                 }
 
@@ -295,7 +302,7 @@ public class Notification
                     if( listener != null ) return listener;
                 }
 
-                return null;
+                return null; // .nextElement() will throw the exception
             }
 
             /**
@@ -315,7 +322,7 @@ public class Notification
             {
                 final L listener = mListener;
                 if( listener == null ) throw new NoSuchElementException();
-                mListener = hardReferenceNext();
+                mListener = hardReferenceNext(); // retain locally
                 return listener;
             }
         }

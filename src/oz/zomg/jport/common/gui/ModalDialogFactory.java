@@ -39,7 +39,7 @@ public class ModalDialogFactory
     private ModalDialogFactory() {}
 
     /**
-     * Force operator response with a modal GUI.
+     * Force user response with a modal GUI.
      *
      * @param confirmationEnum
      * @param parent 'null' is acceptable but does not seem to properly use the default parent component of the root frame
@@ -84,7 +84,7 @@ public class ModalDialogFactory
     }
 
     /**
-     * Force operator response with a modal GUI which asks a fill-in-the-blank question.
+     * Force user response with a modal GUI which asks a fill-in-the-blank question.
      *
      * @param parentComponent 'null' is acceptable but does not seem to properly use the default parent component of the root frame
      * @param questionText can be HTML
@@ -106,7 +106,7 @@ public class ModalDialogFactory
     }
 
     /**
-     * Force operator response with a modal GUI which asks a fill-in-the-blank question.
+     * Force user response with a modal GUI which asks a fill-in-the-blank question.
      *
      * @param parentComponent 'null' is acceptable but does not seem to properly use the default parent component of the root frame
      * @param dialogTitle 'null' is acceptable but can -not- be HTML
@@ -133,16 +133,5 @@ public class ModalDialogFactory
                 , defaultResponse // nothing internally unexpected, does Object.toString()
                 );
         return response;
-    }
-
-    //... incomplete, see JDialog_GoTo
-//...for an implementation or use the JComboBox based JOptionPane.showInputDialog(...)
-    static private <T> T showMultipleChoiceQuestion
-            ( final Component parentComponent
-            , final String    questionText
-            , final T...      answers
-            )
-    {
-        return null;
     }
 }

@@ -17,7 +17,7 @@ import oz.zomg.jport.PortConstants;
 import oz.zomg.jport.TheApplication;
 import oz.zomg.jport.common.Elemental;
 import oz.zomg.jport.common.Elemental.EElemental;
-import oz.zomg.jport.common.GuiUtil_;
+import oz.zomg.jport.common.gui.GuiUtil;
 import oz.zomg.jport.common.HttpUtil;
 import oz.zomg.jport.common.ImageUtil_;
 import oz.zomg.jport.common.Interfacing_.Targetable;
@@ -77,7 +77,7 @@ public class JPanel_CommonInfo extends JPanel
         for( int i = 0; i < jLabels.length; i++ )
         {   // init array, lambda expressions would be nicer
             final JLabel jLabel = new JLabel();
-            jLabel.setBorder( BorderFactory.createEmptyBorder( GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL ) ); // T L B R
+            jLabel.setBorder( BorderFactory.createEmptyBorder( GuiUtil.GAP_PIXEL, GuiUtil.GAP_PIXEL, GuiUtil.GAP_PIXEL, GuiUtil.GAP_PIXEL ) ); // T L B R
             jLabel.setVerticalAlignment( SwingConstants.TOP );
             jLabel.setHorizontalAlignment( SwingConstants.LEFT );
             jLabel.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening

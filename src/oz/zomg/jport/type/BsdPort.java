@@ -143,7 +143,7 @@ class BsdPort //... refactor IndexPort?
     {
         ci_name           = pb.name.toLowerCase().intern(); // needed for dependency resolution as some are mis-cased
 
-        name              = pb.name    .intern();
+        name              = pb.name    .intern(); // Java6 puts these in PermGen memory which is limited, Java7 does not
         homepage          = pb.homepage.intern();
         epoch             = pb.epoch   .intern();
         version           = pb.version .intern();

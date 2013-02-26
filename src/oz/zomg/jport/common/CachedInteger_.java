@@ -26,10 +26,6 @@ public class CachedInteger_
     /** There simply is not enough time to perform a hash.get() so an array is employed. */
     static final private Integer[] _INTEGERS = new Integer[ 1 + _MAX_CACHED - _MIN_CACHED ];
 
-    static final private boolean _PROFILE = false;
-    static       private int MIN_PROFILE = Integer.MAX_VALUE;
-    static       private int MAX_PROFILE = Integer.MIN_VALUE;
-
     static // initializer block
     {}
 
@@ -40,15 +36,8 @@ public class CachedInteger_
         if( i == 0 ) return ZERO;
 
         if( i < _MIN_CACHED || i > _MAX_CACHED )
-        {   // cache miss
-            if( _PROFILE == true )
-            {
-                if( i < MIN_PROFILE ) MIN_PROFILE = i;
-                if( i > MAX_PROFILE ) MAX_PROFILE = i;
-                System.out.println( "No Integer=" + i + "  Min=" + MIN_PROFILE + "  Max=" + MAX_PROFILE );
-            }
-
-            return Integer.valueOf( i ); // perhaps some day zero-cost from JVM // access the negative number cache of Integer
+        {   // cache miss but perhaps some day zero-cost from JVM
+            return Integer.valueOf( i ); // access the negative number cache of Integer
         }
 
         Integer integer = _INTEGERS[ i - _MIN_CACHED ];

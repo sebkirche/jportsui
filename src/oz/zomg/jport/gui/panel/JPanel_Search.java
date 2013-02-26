@@ -14,7 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import oz.zomg.jport.common.GuiUtil_;
+import oz.zomg.jport.common.gui.GuiUtil;
 import oz.zomg.jport.common.Reset.Resetable;
 import oz.zomg.jport.gui.Commander;
 import oz.zomg.jport.gui.Commander.ESearchWhere;
@@ -45,6 +45,8 @@ class JPanel_Search extends JPanel
 
     JPanel_Search( final Commander commander )
     {
+        assert commander != null;
+
         fCommander = commander;
 
         ab_ClearSearch.setToolTipText( "Clear search text" );
@@ -59,7 +61,7 @@ class JPanel_Search extends JPanel
         jField_Search.requestFocusInWindow();
 
         ab_ClearSearch.setPreferredSize( new Dimension( 22, 22 ) ); // Mac-PLAF ignored .setMaximumSize() alone
-        ab_ClearSearch.setMargin( GuiUtil_.ZERO_INSET );
+        ab_ClearSearch.setMargin( GuiUtil.ZERO_INSET );
 
         // assemble
         this.add( jCombo_LookIn );

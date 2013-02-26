@@ -277,7 +277,7 @@ public class CachedUriContent
         }
 
         /**
-         * We could make sure the cache file will be completely written to disk by
+         * One could make sure the cache file will be completely written to disk by
          * calling through SwingUtilities.invokeLater().
          * Rather perverse as the UI thread is the only one guaranteed to keep the
          * JVM live without having to build a real ServiceProvider architecture.

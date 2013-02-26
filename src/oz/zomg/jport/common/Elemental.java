@@ -101,13 +101,18 @@ public class Elemental
         /** for automatic catch-up of listener when it subscribes with .add() */
         private E mLastRetrieved;
 
+        public Notifier()
+        {
+            this( null );
+        }
+
         /**
          *
-         * @param initialSelection usually a guard reference representing a NONE or UNKNOWN state.
+         * @param initiallyRetrieved usually a guard reference representing a NONE or UNKNOWN state but can be a "selection"
          */
-        public Notifier( final E initialSelection )
+        public Notifier( final E initiallyRetrieved )
         {
-            mLastRetrieved = initialSelection;
+            mLastRetrieved = initiallyRetrieved;
         }
 
         /**

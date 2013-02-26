@@ -82,7 +82,7 @@ public class PortsHistogramFactory
 
                     if( ok == true )
                     {
-                        final String sub = string.substring( begin, index ).toLowerCase().intern();
+                        final String sub = string.substring( begin, index ).toLowerCase().intern(); // Java6 puts these in PermGen memory which is limited, Java7 does not
                         _SCRATCH_WORD_SET.add( sub );
                     }
                     begin = index + 1; // skip space or other word break char

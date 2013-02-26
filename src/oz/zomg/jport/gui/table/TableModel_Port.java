@@ -40,7 +40,7 @@ import oz.zomg.jport.type.Portable;
  */
 @SuppressWarnings("serial")
 public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_Port.EColumn>
-    implements 
+    implements
           Elemental.Listenable<Portable>
         , Unleakable
 {
@@ -71,6 +71,9 @@ public class TableModel_Port extends AEnumTableModel_Array<Portable,TableModel_P
             );
 
         this.toggelSortColumn( EColumn.NAME );
+
+        // othewise column sizing is forgotten when TheAplication.causeReset()
+        getJTable().setAutoCreateColumnsFromModel( false );
 
         // listener
         TheApplication.INSTANCE.getCrudNotifier().addListenerWeakly( this );

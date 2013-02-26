@@ -151,5 +151,5 @@ public class JFrame_Main extends JFrame
     @Override public void stateChanged( final ChangeEvent e )
     {
         TheUiHolder.causeReset();
-    }    
+    }
 }

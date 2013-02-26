@@ -31,6 +31,8 @@ class Thread_Worker extends Thread
     /**
      * Worker daemon.
      * Terminates JVM if it and any other daemon threads are all that remain.
+     *
+     * @param name appended to the name of this thread
      */
     Thread_Worker( final String name )
     {
@@ -38,6 +40,7 @@ class Thread_Worker extends Thread
     }
 
     /**
+     * @param name appended to the name of this thread
      * @param isDaemon 'false' will keep the JVM running until this thread is killed
      */
     private Thread_Worker( final String name, final boolean isDaemon )

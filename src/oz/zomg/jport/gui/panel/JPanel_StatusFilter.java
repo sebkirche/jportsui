@@ -17,7 +17,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import oz.zomg.jport.TheOsBinaries;
-import oz.zomg.jport.common.GuiUtil_;
+import oz.zomg.jport.common.gui.GuiUtil;
 import oz.zomg.jport.common.Reset.Resetable;
 import oz.zomg.jport.gui.TheUiHolder;
 import oz.zomg.jport.type.EPortStatus;
@@ -54,7 +54,7 @@ public class JPanel_StatusFilter extends JPanel
     {
         super( new BorderLayout() );
 
-        this.setBorder( BorderFactory.createEmptyBorder( 10, GuiUtil_.GAP_PIXEL, GuiUtil_.GAP_PIXEL, 0 ) ); // T L B R
+        this.setBorder( BorderFactory.createEmptyBorder( 10, GuiUtil.GAP_PIXEL, GuiUtil.GAP_PIXEL, 0 ) ); // T L B R
         this.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening // this.setBackground( null ) <- copying in the JTabbedPane's background didn't work to darken as expected on Mac-PLAF
 
         jSpin_Day  .setToolTipText( "<HTML>Show Ports that have had their<BR>information updated within <I>X</I> days" );
@@ -65,7 +65,7 @@ public class JPanel_StatusFilter extends JPanel
         final int BUTTON_HEIGHT_PIX = 34; // needs to be big enough so that the square button Mac-PLAF
 
         // needs a sub-panel, otherwise buttons will not horiz stretch in BoxLayout
-        final JPanel northPanel = new JPanel( new GridLayout( 0, 1, 0, GuiUtil_.GAP_PIXEL ) );
+        final JPanel northPanel = new JPanel( new GridLayout( 0, 1, 0, GuiUtil.GAP_PIXEL ) );
         northPanel.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening
 
         final AbstractButton[] enumAbs = new AbstractButton[ EPortStatus.VALUES.length ]; // nulls
@@ -123,7 +123,7 @@ public class JPanel_StatusFilter extends JPanel
         subPanel.add( jSpin_Day );
 
         // south
-        final JPanel southPanel = new JPanel( new GridLayout( 0, 1, 0, GuiUtil_.GAP_PIXEL ) );
+        final JPanel southPanel = new JPanel( new GridLayout( 0, 1, 0, GuiUtil.GAP_PIXEL ) );
         southPanel.setOpaque( false ); // otherwise messes up Mac-PLAF tab pit darkening
         jSpin_Day.setEnabled( false );
 

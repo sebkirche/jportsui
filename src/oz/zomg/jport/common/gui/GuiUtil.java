@@ -1,21 +1,17 @@
-package oz.zomg.jport.common;
+package oz.zomg.jport.common.gui;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Insets;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.JMenu;
 
 
 /**
  * Utilities for Swing and AWT Graphical User Interfaces.
- * <H3><I><FONT color="#770000">Subset of original source.</FONT></I></H3>
  *
  * @author <SMALL>Copyright 2012 by Stephen Baber
  * &nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
@@ -23,7 +19,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
  * Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.</SMALL>
  */
-public class GuiUtil_
+public class GuiUtil
 {
     static final public int GAP_PIXEL = 5;
     static final public Insets ZERO_INSET = new Insets( 0, 0, 0, 0 );
@@ -31,7 +27,7 @@ public class GuiUtil_
     static
     {}
 
-    private GuiUtil_() {}
+    private GuiUtil() {}
 
 // ENHANCE
     /**
@@ -45,11 +41,12 @@ public class GuiUtil_
     @SuppressWarnings("unchecked")
     static public <T extends Component> Set<T> getChildren( final Class<T> ofClassType, final Container... fromContainers )
     {
-        if( fromContainers.length == 1 && fromContainers[ 0 ].getComponentCount() == 0 ) return Collections.emptySet();
+        if( fromContainers.length == 0 || ( fromContainers.length == 1 && fromContainers[ 0 ].getComponentCount() == 0 ) ) return Collections.emptySet();
 
         final Set<Component> allChildrenSet = new HashSet<Component>();
         _putAllChildren( allChildrenSet, fromContainers );
 
+        // reduce
         final Set<T> filteredSet = new HashSet<T>();
         for( final Component child : allChildrenSet )
         {
@@ -74,7 +71,12 @@ public class GuiUtil_
 
         for( final Component component : components )
         {
-            if( component instanceof Container )
+            if( component instanceof JMenu ) // BUGFIX
+            {   // hulk smash when .getComponents().length=0
+                final JMenu childMenu = (JMenu)component;
+                _putAllChildren( intoSet, childMenu.getMenuComponents() );
+            }
+            else if( component instanceof Container )
             {
                 final Container childContainer = (Container)component;
                 _putAllChildren( intoSet, childContainer.getComponents() );
@@ -82,51 +84,5 @@ public class GuiUtil_
         }
 
         intoSet.addAll( Arrays.asList( components ) ); // fast wrapper
-    }
-
-// ENHANCE to JTreeFactory / JTreeUtil
-    /**
-     *
-     * @param <E> Enum of class type
-     * @param <C> Collection of class type
-     * @param isExpandAll 'true' shows all branch nodes open
-     * @param fromMultiMap
-     * @return
-     */
-    static private <E extends Enum<E>, C extends Collection<?>> JTree createJTree
-            ( final boolean isExpandAll
-            , final Map<E,C> fromMultiMap
-            )
-    {
-        final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-        for( final Map.Entry<E,C> entry : fromMultiMap.entrySet() )
-        {
-            final E e = entry.getKey();
-            final C collection = entry.getValue();
-
-            if( collection.isEmpty() == false )
-            {
-                final DefaultMutableTreeNode branch = new DefaultMutableTreeNode( e, true );
-                root.add( branch );
-
-                for( final Object element : collection )
-                {
-                    branch.add( new DefaultMutableTreeNode( element, false ) ); // leaf
-                }
-            }
-        }
-
-        final JTree jTree = new JTree( root );
-        jTree.setRootVisible( false );
-
-        if( isExpandAll == true )
-        {
-            for( int i = 0; i < jTree.getRowCount(); i++ )
-            {   // expand all 1st tier branches
-                jTree.expandRow( i );
-            }
-        }
-
-        return jTree;
     }
 }

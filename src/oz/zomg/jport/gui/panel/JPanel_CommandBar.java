@@ -17,8 +17,8 @@ import oz.zomg.jport.PortConstants;
 import oz.zomg.jport.TheApplication;
 import oz.zomg.jport.common.Elemental;
 import oz.zomg.jport.common.Elemental.EElemental;
-import oz.zomg.jport.common.GuiUtil_;
 import oz.zomg.jport.common.HttpUtil;
+import oz.zomg.jport.common.gui.GuiUtil;
 import oz.zomg.jport.gui.Commander;
 import oz.zomg.jport.gui.TheUiHolder;
 import oz.zomg.jport.gui.window.JDialog_AboutApp;
@@ -137,7 +137,7 @@ public class JPanel_CommandBar extends JPanel
         TheApplication.INSTANCE.getCrudNotifier().addListenerWeakly( this );
 
         // downside to this type of List Comprehension is that IDE's "Find Usages" is unavailable
-        for( final AbstractButton ab : GuiUtil_.getChildren( AbstractButton.class, jPop_MoreCmd, (Container)this ) )
+        for( final AbstractButton ab : GuiUtil.getChildren( AbstractButton.class, jPop_MoreCmd, (Container)this ) )
         {   // popup menu items and panel's other ABs
             ab.addActionListener( this );
         }

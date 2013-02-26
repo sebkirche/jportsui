@@ -324,7 +324,7 @@ public class CliUtil
                 , final List<String> lineList
                 )
         {
-            super( Thread_InputStreamDrain.class.getCanonicalName() ); // name the thread, setDaemon() default=false
+            super( Thread_InputStreamDrain.class.getCanonicalName() +" <- "+ Thread.currentThread().getName() ); // name the thread, setDaemon() default=false
 
             fListener = listener;
             fInputStream = inputStream;

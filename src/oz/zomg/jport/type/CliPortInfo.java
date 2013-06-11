@@ -21,10 +21,12 @@ public class CliPortInfo
     static
     {}
 
-    final private String   fCi_name;
-    final private String   fName;
-    final private String   fVersionInstalled;
-    final private String   fRevisionInstalled;
+    final private String
+              fCi_name
+            , fName
+            , fVersionInstalled
+            , fRevisionInstalled
+            ;
     final private String[] fVariants;
 
     /**

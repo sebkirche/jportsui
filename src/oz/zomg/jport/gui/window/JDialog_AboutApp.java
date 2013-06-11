@@ -52,16 +52,18 @@ public class JDialog_AboutApp extends JDialog
 {
     static final private int    _MAX_PIXEL_SIZE = 48;
     static final private Font   _SAN_SERIF_9_FONT = new Font( Font.SANS_SERIF, Font.PLAIN, 9 );
-    static final private String _DEV_ENV = "Originally designed and coded in NetBeans IDE 7.2 on JDK 1.6.0_35";
-    static final private String _COPYRIGHT_NOTICE = "(c) 2012 by Stephen Baber";
-    static final private String _LICENSE_TEXT = "<HTML><CENTER><SMALL>"
-            + _COPYRIGHT_NOTICE +"<BR>"
-            +"<BR>"
-            +"<IMG src=\"http://i.creativecommons.org/l/by-sa/3.0/80x15.png\"><BR><FONT color=blue><U>"
-            +"This work is licensed under<BR>"
-            +"a Creative Commons<BR>"
-            +"Attribution-ShareAlike<BR>"
-            +"3.0 Unported License<BR>";
+    static final private String
+              _DEV_ENV = "Originally designed and coded in NetBeans IDE 7.2 on JDK 1.6.0_35"
+            , _COPYRIGHT_NOTICE = "(c) 2012 by Stephen Baber"
+            , _LICENSE_TEXT = "<HTML><CENTER><SMALL>"
+                    + _COPYRIGHT_NOTICE +"<BR>"
+                    +"<BR>"
+                    +"<IMG src=\"http://i.creativecommons.org/l/by-sa/3.0/80x15.png\"><BR><FONT color=blue><U>"
+                    +"This work is licensed under<BR>"
+                    +"a Creative Commons<BR>"
+                    +"Attribution-ShareAlike<BR>"
+                    +"3.0 Unported License<BR>"
+            ;
 
     static
     {}

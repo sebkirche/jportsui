@@ -29,12 +29,14 @@ public class PortsDep
     {}
 
     /** Cache non-sorted arrays. */
-    final private Map<Portable, Portable[]> fPort_to_FullDependenciesOf = new HashMap<Portable, Portable[]>();
-    final private Map<Portable, Portable[]> fPort_to_Dependants         = new HashMap<Portable, Portable[]>();
+    final private Map<Portable, Portable[]>
+              fPort_to_FullDependenciesOf = new HashMap<Portable, Portable[]>()
+            , fPort_to_Dependants         = new HashMap<Portable, Portable[]>();
 
     /** Cache Sets for .contains() */
-    final private Map<Portable, Set<Portable>> fPort_to_FullDependenciesOfSet = new HashMap<Portable, Set<Portable>>();
-    final private Map<Portable, Set<Portable>> fPort_to_DependantSet          = new HashMap<Portable, Set<Portable>>();
+    final private Map<Portable, Set<Portable>> 
+              fPort_to_FullDependenciesOfSet = new HashMap<Portable, Set<Portable>>()
+            , fPort_to_DependantSet          = new HashMap<Portable, Set<Portable>>();
 
     final private PortsCatalog fPortsCatalog;
 

@@ -36,7 +36,8 @@ public class PortsCliUtil
     /** Non-running thread for Windows. */
     static final private Thread DEAD_THREAD = new Thread( new Runnable() { @Override public void run() {} }, "NO_RUN_THREAD" );
 
-    static final private String _PORT_BIN_PATH = "/opt/local/bin/port"; //... this is non-portable, use "which port" command instead
+    /** Normally "/opt/local/bin/port". */
+    static final private String _PORT_BIN_PATH = new PortsFinder().toString();
     static final public boolean HAS_PORT_CLI = new File( _PORT_BIN_PATH ).exists();
 
     /** Note: Will be incorrect after the "port selfupdate" that actually gets a new version of the Port CLI tool.  But this is rare. */
@@ -299,5 +300,25 @@ public class PortsCliUtil
                 System.out.println( "\t variants="+ Arrays.toString( cpi.getVariants() ) );
             }
         }
+    }
+
+
+    // ================================================================================
+    /**
+     * More portable implementation of finding the active 'port' binary.
+     */
+    static private class PortsFinder
+    {
+        final private String fPortBinPath ;
+
+        public PortsFinder()
+        {
+            final String[] outs = CliUtil.executeCommand( "which", "port" ); // -a option lists all
+            fPortBinPath = ( outs.length > 0 )
+                    ? outs[ 0 ]
+                    : "/opt/local/bin/port";  // fail over in case "makewhatis" has not been run recently
+        }
+
+        @Override public String toString() { return fPortBinPath; }
     }
 }

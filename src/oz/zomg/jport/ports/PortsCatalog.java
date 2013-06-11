@@ -78,7 +78,7 @@ public class PortsCatalog
     public PortsCatalog( final PortsCatalog prevCatalog )
     {
         final Map<String,Portable> ciName_to_PortMap = ( _IS_PREV_MAP_REUSED == false )
-                ? _parsePortIndex( PortConstants.PORTS_PATH + _PORTS_FILE_NAME ) // *BLOCKS* for disk I/O
+                ? _parsePortIndex( PortConstants.PORTS_PATH + File.separator + _PORTS_FILE_NAME ) // *BLOCKS* for disk I/O
                 : prevCatalog.fCiName_to_PortMap;
 
         final Set<Portable> allPortSet = new HashSet<Portable>( _FORECAST_COUNT );

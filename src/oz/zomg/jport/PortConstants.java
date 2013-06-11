@@ -19,18 +19,42 @@ public class PortConstants
 {
     static final public String
               APP_NAME      = "JPortsUI"
-            , PORTS_PATH    = "/opt/local/var/macports/sources/rsync.macports.org/release/ports/" // Mac only, may want to use `which port`
             , PROJ_HOSTING  = "https://code.google.com/p/jportsui/downloads"
+            , PORTS_PATH
             ;
 
     static final public boolean    
-              HAS_MAC_PORTS      = Util.isOnMac() == true && new File( PORTS_PATH ).exists()
-            , IS_SHOWING_FAVICON = true // Java not so good with ".ico" image format and transparency, bummer!
-            , DEBUG              = false
+              DEBUG              = false
             , OPTIMIZATION       = true // prematurely, it is the root of all evil -- D. Knuth
+            , IS_SHOWING_FAVICON = true // Java not so good with ".ico" image format and transparency, bummer!
+            , HAS_MAC_PORTS
             ;
 
     static final public Portable[] NO_PORTS = new Portable[ 0 ];
+
+    static
+    {
+        if( Util.isOnMac() == true )
+        {
+            File portsPath = new File( "/opt/local/var/macports/sources/rsync.macports.org/release/ports/" );
+            if( portsPath.exists() == true )
+            {   // try source code distro
+                PORTS_PATH = portsPath.getAbsolutePath();
+                HAS_MAC_PORTS = true;
+            }
+            else
+            {   // try the non-source code distro
+                portsPath = new File( "/opt/local/var/macports/sources/rsync.macports.org/release/tarballs/ports/" );
+                PORTS_PATH = portsPath.getAbsolutePath();
+                HAS_MAC_PORTS = portsPath.exists();
+            }
+        }
+        else
+        {   // BSD unix
+            PORTS_PATH = "/usr/sbin/";
+            HAS_MAC_PORTS = false;
+        }
+    }
 
     /**
      *

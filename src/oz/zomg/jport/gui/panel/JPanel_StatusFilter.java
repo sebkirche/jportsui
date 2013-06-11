@@ -42,10 +42,12 @@ public class JPanel_StatusFilter extends JPanel
 {
     static final private int DEFAULT_WHATS_NEW_DAY = 2;
 
+    final private AbstractButton
+              ab_Marked   = new JToggleButton( "<HTML><FONT size=+0><I>Marked" )
+            , ab_Native   = new JToggleButton( "<HTML><I>Native" )
+            , ab_WhatsNew = new JToggleButton( "<HTML><I>What's new?" )
+            ;
     final private ButtonGroup    fButtonGroup    = new ButtonGroup(); // needed for prefs
-    final private AbstractButton ab_Marked       = new JToggleButton( "<HTML><FONT size=+0><I>Marked" );
-    final private AbstractButton ab_Native       = new JToggleButton( "<HTML><I>Native" );
-    final private AbstractButton ab_WhatsNew     = new JToggleButton( "<HTML><I>What's new?" );
     final private JSpinner       jSpin_Day       = new JSpinner( new SpinnerNumberModel( DEFAULT_WHATS_NEW_DAY, 1, 9999, 1 ) ); // val min max step
 
           private long mAgeMillisec =  ( 1000 * 60 * 60 * 24L * DEFAULT_WHATS_NEW_DAY );

@@ -36,9 +36,11 @@ public class PortFilterPredicates
     final private JLabel_HitTotal jLabel_HitTotal = new JLabel_HitTotal();
 
     // mutable
-    private Predicatable mStatusFilterPredicate = Predicatable.ANY;
-    private Predicatable mHistoFilterPredicate  = Predicatable.ANY;
-    private Predicatable mTextSearchPredicate   = Predicatable.ANY;
+    private Predicatable
+              mStatusFilterPredicate = Predicatable.ANY
+            , mHistoFilterPredicate  = Predicatable.ANY
+            , mTextSearchPredicate   = Predicatable.ANY
+            ;
 
     PortFilterPredicates( final TableModel_Port tmp )
     {

@@ -47,21 +47,23 @@ public class JPanel_CommandBar extends JPanel
     final private Commander      fCommander;
 
     // ignored on Mac-PLAF are .setBackground() and .setContentAreaFilled()
-    final private AbstractButton ab_Sync              = new JButton( "\u21BB Sync" ); // unicode clockwise arrow
-    final private AbstractButton ab_MarkOutdated      = new JButton( "Mark \u2192 All Upgrades" ); // unicode right arrow
-    final private AbstractButton ab_ApplyMarks        = new JButton( "\u221A Apply..." ); // unicode square root
-    final private AbstractButton ab_MoreCommand       = new JButton( "More \u25BC" ); // unicode downward triangle, can not be HTML or will wreck BoxLayout
-
-    final private JMenuItem      jItem_PortDetail     = new JMenuItem( "Details..." );
-    final private JMenuItem      jItem_ResetMark      = new JMenuItem( "Reset Marks" );
-    final private JMenuItem      jItem_ResetFilter    = new JMenuItem( "Reset Filters" );
-    final private JMenuItem      jItem_ResetCache     = new JMenuItem( "<HTML><SMALL>Reset Logo Cache" );
-    final private JMenuItem      jItem_MarkInactive   = new JMenuItem( "<HTML><SMALL>Mark \u2192 All Inactive" );
-    final private JMenuItem      jItem_CleanInstalled = new JMenuItem( "<HTML><SMALL>Clean Ports..." );
-    final private JMenuItem      jItem_UpgradeCli     = new JMenuItem( "Update MacPorts..." );
-    final private JMenuItem      jItem_AppUpdate      = new JMenuItem( "<HTML><SMALL>Check for Update..." );
-    final private JMenuItem      jItem_AppAbout       = new JMenuItem( "About "+ PortConstants.APP_NAME +"..." );
-
+    final private AbstractButton
+              ab_Sync              = new JButton( "\u21BB Sync" ) // unicode clockwise arrow
+            , ab_MarkOutdated      = new JButton( "Mark \u2192 All Upgrades" ) // unicode right arrow
+            , ab_ApplyMarks        = new JButton( "\u221A Apply..." ) // unicode square root
+            , ab_MoreCommand       = new JButton( "More \u25BC" ) // unicode downward triangle, can not be HTML or will wreck BoxLayout
+            ;
+    final private JMenuItem
+              jItem_PortDetail     = new JMenuItem( "Details..." )
+            , jItem_ResetMark      = new JMenuItem( "Reset Marks" )
+            , jItem_ResetFilter    = new JMenuItem( "Reset Filters" )
+            , jItem_ResetCache     = new JMenuItem( "<HTML><SMALL>Reset Logo Cache" )
+            , jItem_MarkInactive   = new JMenuItem( "<HTML><SMALL>Mark \u2192 All Inactive" )
+            , jItem_CleanInstalled = new JMenuItem( "<HTML><SMALL>Clean Ports..." )
+            , jItem_UpgradeCli     = new JMenuItem( "Update MacPorts..." )
+            , jItem_AppUpdate      = new JMenuItem( "<HTML><SMALL>Check for Update..." )
+            , jItem_AppAbout       = new JMenuItem( "About "+ PortConstants.APP_NAME +"..." )
+            ;
     final private JPopupMenu     jPop_MoreCmd         = new JPopupMenu();
 
     /**

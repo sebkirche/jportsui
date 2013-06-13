@@ -311,10 +311,10 @@ public class PortsCliUtil
     {
         final private String fPortBinPath ;
 
-        public PortsFinder()
+        private PortsFinder()
         {
             final String[] outs = CliUtil.executeCommand( "which", "port" ); // -a option lists all
-            fPortBinPath = ( outs.length > 0 )
+            fPortBinPath = ( outs.length != 0 && outs[ 0 ].isEmpty() == false )
                     ? outs[ 0 ]
                     : "/opt/local/bin/port";  // fail over in case "makewhatis" has not been run recently
         }

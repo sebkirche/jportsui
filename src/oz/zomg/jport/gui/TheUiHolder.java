@@ -51,7 +51,7 @@ public class TheUiHolder
     final private Commander            fCommander             = new Commander();
 
     /** Let selection stabilize before updating UI. This reduces CPU thrashing of the Dependants check. */
-    final private javax.swing.Timer    mSelectionHoldingTimer = new Timer( SELECTION_DEFER_MILLISEC, this );
+    final private javax.swing.Timer    fSelectionHoldingTimer = new Timer( SELECTION_DEFER_MILLISEC, this );
 
     final private TableModel_Port      fTableModel_Port       = new TableModel_Port();
     final private PortFilterPredicates fPortFilterPredicate   = new PortFilterPredicates( fTableModel_Port );
@@ -59,7 +59,7 @@ public class TheUiHolder
 
     private TheUiHolder()
     {
-        mSelectionHoldingTimer.setRepeats( false );
+        fSelectionHoldingTimer.setRepeats( false );
 
         final Component commandBarComponent = new JPanel_CommandBar( fCommander, fPortFilterPredicate.getHitTotalComponent() );
 
@@ -136,7 +136,7 @@ public class TheUiHolder
 
     @Override public void actionPerformed( final ActionEvent e )
     {
-        if( e.getSource() == mSelectionHoldingTimer )
+        if( e.getSource() == fSelectionHoldingTimer )
         {
             final Portable selectedPort = TheUiHolder.INSTANCE.getSelectedPort();
             TheUiHolder.INSTANCE.getCommander().selectPort( selectedPort );
@@ -154,7 +154,7 @@ public class TheUiHolder
      */
     @Override public void valueChanged( final ListSelectionEvent e )
     {   // start over previously pending selection change as mouse is still moving or arrow / page keys may be down
-        mSelectionHoldingTimer.restart();
+        fSelectionHoldingTimer.restart();
     }
 
     /**

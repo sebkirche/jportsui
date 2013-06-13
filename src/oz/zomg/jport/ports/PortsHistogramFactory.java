@@ -112,7 +112,7 @@ public class PortsHistogramFactory
         return new Predicatable() // anonymous class
                 {   @Override public boolean evaluate( final Portable port )
                     {   switch( ofHistogram )
-                        {   // not associated in EHistogram because Predicatable has no context for search
+                        {   // made for messy code -> return ofHistogram.create( search );
                             case Domains      : return search.equals( port.getDomain() );
                             case Homepages    : return search.equals( port.getHomepage() );
                             case Dates        : return search.equals( StringsUtil_.getDateString( port.getModificationEpoch() ) );
@@ -126,7 +126,5 @@ public class PortsHistogramFactory
                         }
                     }
                 };
-
-// made for messy code -> return ofHistogram.create( search );
     }
 }
